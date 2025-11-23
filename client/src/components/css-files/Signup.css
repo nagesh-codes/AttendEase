@@ -1,0 +1,53 @@
+.SignupPage{
+    height: 100vh;
+    width: 100%;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.SignupPage .wrapper{
+    display: flex;
+    flex-direction: column;
+    background-color: #fff;
+    padding: 40px 40px 55px 40px;
+    border-radius: 10px;
+    gap: 20px;
+    height: auto;
+}
+
+.SignupPage .logo{
+    text-align: center;
+    font-size: 2rem;
+    font-weight: bolder;
+}
+
+.SignupPage .title{
+    font-size: 1.5rem;
+    font-weight: bolder;
+}
+
+.SignupPage .input-field{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.SignupPage input{
+    padding: 5px 10px;
+    border: 2px solid black;
+    outline: 0;
+}
+
+.SignupPage .btn-field{
+    width: 100%;
+}
+
+.SignupPage button{
+    width: 100%;
+    padding: 5px;
+    font-size: 1.2rem;
+    background-color: rgb(0, 0, 255);
+    color: #fff;
+}
