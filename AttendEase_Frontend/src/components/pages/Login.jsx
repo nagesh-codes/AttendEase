@@ -3,25 +3,27 @@ import '../css-files/Login.css'
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import logo from '../../assets/logo.png'
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { apiClient } from '../../apiClient'
 
 
 const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [show, setShow] = useState(true);
 
     const handleSubmit = async (e) => {
-            e.preventDefault();
-            try {
-                const response = await apiClient.post("/api/auth/login", { email, password,username:name })
-                    .then(() => {
-                        alert('user found successfully');
-                    })
-            } catch (er) {
-                console.log(er);
-                alert('user not exist');
-            }
+        e.preventDefault();
+        try {
+            const response = await apiClient.post("/api/auth/login", { email, password, username: name })
+                .then(() => {
+                    alert('user found successfully');
+                })
+        } catch (er) {
+            console.log(er);
+            alert('user not exist');
         }
+    }
 
     return (
         <div className='LoginPage'>
@@ -37,7 +39,10 @@ const Login = () => {
                 </div>
                 <div className="input-field">
                     <label htmlFor="password">Enter Your Password</label>
-                    <input type="password" value={password} onInput={e => setPassword(e.target.value)} required id='password' />
+                    <div>
+                        <input type={show ? "password" : "text"} value={password} onInput={e => setPassword(e.target.value)} required id='password' />
+                        <span onClick={e => setShow(!show)}> {show ? <FaEyeSlash /> : <FaEye />} </span>
+                    </div>
                 </div>
                 <div className="rem-box">
                     <input type="checkbox" id="rem" />

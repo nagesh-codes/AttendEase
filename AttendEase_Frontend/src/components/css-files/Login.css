@@ -42,10 +42,20 @@
     gap: 10px;
 }
 
-.LoginPage input {
-    padding: 5px 10px;
+.LoginPage .input-field div{
+    position: relative;
+}
+.LoginPage .input-field div span{
+    position: absolute;
+    top: 25%;
+    right: 5%;
+}
+
+.LoginPage input:not(#rem) {
+    padding: 5px 30px 5px 10px;
     border: 2px solid black;
     outline: 0;
+    width: 100%;
 }
 
 .LoginPage .btn-field {

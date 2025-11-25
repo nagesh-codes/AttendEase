@@ -5,12 +5,10 @@ import Signup from './components/pages/Signup'
 
 function App() {
   return (
-    <>
-      <Routes>
-        <Route path={"/"} element={<Login/>} />
-        <Route path={"/signup"} element={<Signup/>} />
-      </Routes>
-    </>
+    <Routes>
+      <Route path={"/"} element={<Login />} />
+      <Route path={"/signup"} element={<Signup />} />
+    </Routes>
   )
 }
 

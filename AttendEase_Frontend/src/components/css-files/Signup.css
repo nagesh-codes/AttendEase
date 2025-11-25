@@ -42,10 +42,24 @@
     gap: 10px;
 }
 
+.SignupPage .input-field div{
+    position: relative;
+}
+.SignupPage .input-field div span{
+    position: absolute;
+    top: 25%;
+    right: 5%;
+}
+
 .SignupPage input {
     padding: 5px 10px;
     border: 2px solid black;
     outline: 0;
+    width: 100%;
+}
+
+.SignupPage .diff-padding{
+    padding: 5px 30px 5px 10px;
 }
 
 .SignupPage .btn-field {

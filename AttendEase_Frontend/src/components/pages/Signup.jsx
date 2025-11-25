@@ -1,9 +1,10 @@
 import React from 'react'
-import '../css-files/Signup.css'
+import logo from '../../assets/logo.png'
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import logo from '../../assets/logo.png'
 import { apiClient } from '../../apiClient'
+import { FaEye, FaEyeSlash } from "react-icons/fa";
+import '../css-files/Signup.css'
 
 
 const Signup = () => {
@@ -11,6 +12,8 @@ const Signup = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [rpassword, setRpassword] = useState('');
+    const [show, setShow] = useState(true);
+    const [rshow, setRshow] = useState(true);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -19,7 +22,7 @@ const Signup = () => {
             return;
         }
         try {
-            const response = await apiClient.post("/api/auth/signup", { email, password,username:name })
+            const response = await apiClient.post("/api/auth/signup", { email, password, username: name })
                 .then(() => {
                     alert('user created');
                 })
@@ -47,11 +50,17 @@ const Signup = () => {
                 </div>
                 <div className="input-field">
                     <label htmlFor="password">Enter Your Password</label>
-                    <input type="password" value={password} onInput={e => setPassword(e.target.value)} required id='password' />
+                    <div>
+                        <input type={show ? "password" : "text"} value={password} onInput={e => setPassword(e.target.value)} required id='password' className='diff-padding' />
+                        <span onClick={e => setShow(!show)}> {show ? <FaEyeSlash /> : <FaEye />} </span>
+                    </div>
                 </div>
                 <div className="input-field">
                     <label htmlFor="rpassword">Re-Type Your Password</label>
-                    <input type="password" value={rpassword} onInput={e => setRpassword(e.target.value)} required id='rpassword' />
+                    <div>
+                        <input type={rshow ? "password" : "text"} value={rpassword} onInput={e => setRpassword(e.target.value)} required id='rpassword' className='diff-padding' />
+                        <span onClick={e => setRshow(!rshow)}> {rshow ? <FaEyeSlash /> : <FaEye />} </span>
+                    </div>
                 </div>
                 <div className="btn-field">
                     <button type='submit'>Sign Up</button>
