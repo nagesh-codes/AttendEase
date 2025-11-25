@@ -1,4 +1,4 @@
-.SignupPage{
+.SignupPage {
     height: 100vh;
     width: 100%;
     overflow: hidden;
@@ -7,7 +7,7 @@
     justify-content: center;
 }
 
-.SignupPage .wrapper{
+.SignupPage .wrapper {
     display: flex;
     flex-direction: column;
     background-color: #fff;
@@ -17,34 +17,42 @@
     height: auto;
 }
 
-.SignupPage .logo{
+.SignupPage .logo {
     text-align: center;
     font-size: 2rem;
     font-weight: bolder;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
 }
 
-.SignupPage .title{
+.SignupPage .logo img {
+    height: 2.9rem;
+}
+
+.SignupPage .title {
     font-size: 1.5rem;
     font-weight: bolder;
 }
 
-.SignupPage .input-field{
+.SignupPage .input-field {
     display: flex;
     flex-direction: column;
     gap: 10px;
 }
 
-.SignupPage input{
+.SignupPage input {
     padding: 5px 10px;
     border: 2px solid black;
     outline: 0;
 }
 
-.SignupPage .btn-field{
+.SignupPage .btn-field {
     width: 100%;
 }
 
-.SignupPage button{
+.SignupPage button {
     width: 100%;
     padding: 5px;
     font-size: 1.2rem;

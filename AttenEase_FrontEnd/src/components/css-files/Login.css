@@ -1,4 +1,4 @@
-.LoginPage{
+.LoginPage {
     height: 100vh;
     width: 100%;
     overflow: hidden;
@@ -7,7 +7,7 @@
     justify-content: center;
 }
 
-.LoginPage .wrapper{
+.LoginPage .wrapper {
     display: flex;
     flex-direction: column;
     background-color: #fff;
@@ -17,34 +17,42 @@
     height: auto;
 }
 
-.LoginPage .logo{
+.LoginPage .logo {
     text-align: center;
     font-size: 2rem;
     font-weight: bolder;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: center;
 }
 
-.LoginPage .title{
+.LoginPage .logo img {
+    height: 2.9rem;
+}
+
+.LoginPage .title {
     font-size: 1.5rem;
     font-weight: bolder;
 }
 
-.LoginPage .input-field{
+.LoginPage .input-field {
     display: flex;
     flex-direction: column;
     gap: 10px;
 }
 
-.LoginPage input{
+.LoginPage input {
     padding: 5px 10px;
     border: 2px solid black;
     outline: 0;
 }
 
-.LoginPage .btn-field{
+.LoginPage .btn-field {
     width: 100%;
 }
 
-.LoginPage button{
+.LoginPage button {
     width: 100%;
     padding: 5px;
     font-size: 1.2rem;

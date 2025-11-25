@@ -2,20 +2,32 @@ import React from 'react'
 import '../css-files/Login.css'
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import logo from '../../assets/logo.png'
+import { apiClient } from '../../apiClient'
 
 
 const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-    }
+    const handleSubmit = async (e) => {
+            e.preventDefault();
+            try {
+                const response = await apiClient.post("/api/auth/login", { email, password,username:name })
+                    .then(() => {
+                        alert('user found successfully');
+                    })
+            } catch (er) {
+                console.log(er);
+                alert('user not exist');
+            }
+        }
 
     return (
         <div className='LoginPage'>
             <form className="wrapper" onSubmit={handleSubmit}>
                 <div className="logo">
+                    <img src={logo} alt="logo" />
                     AttendEase
                 </div>
                 <div className="title">Login</div>
