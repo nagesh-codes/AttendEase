@@ -1,0 +1,137 @@
+.appShell {
+    display: flex;
+    min-height: 100vh;
+    background: #f5f7fb;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        sans-serif;
+}
+
+.appShell *::-webkit-scrollbar {
+    display: none;
+}
+
+.appShell .appShell__sidebar {
+    width: 240px;
+    background: linear-gradient(180deg, #071a3c, #020817);
+    color: #e5edff;
+    padding: 1.5rem 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.appShell .appShell__brand {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.appShell .appShell__logoCircle {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+.appShell .appShell__logoCircle img {
+    height: 2.1rem;
+}
+
+.appShell .appShell__brandText {
+    font-weight: 700;
+    letter-spacing: 0.02em;
+}
+
+.appShell .appShell__nav {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.appShell .appShell__navItem {
+    border: none;
+    outline: none;
+    background: transparent;
+    color: #c4d1ff;
+    text-align: left;
+    padding: 0.7rem 0.9rem;
+    border-radius: 0.75rem;
+    font-size: 0.95rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    transition: background 0.15s ease, color 0.15s ease, transform 0.1s ease;
+}
+
+.appShell .appShell__navItem:hover {
+    background: rgba(79, 139, 255, 0.15);
+    transform: translateX(2px);
+}
+
+.appShell .appShell__navItem.is-active {
+    background: #ffffff;
+    color: #0f172a;
+    font-weight: 600;
+}
+
+.appShell .appShell__main {
+    flex: 1;
+    height: 100%;
+    width: 100%;
+    /* padding: 2rem 2.5rem; */
+    /* max-width: 1200px; */
+    /* margin: 0 auto; */
+}
+
+.appShell .dashSection h1 {
+    font-size: 1.6rem;
+    margin-bottom: 0.75rem;
+}
+
+.appShell .dashSection p {
+    color: #6b7280;
+    font-size: 0.95rem;
+}
+
+@media (max-width: 900px) {
+    .appShell {
+        flex-direction: column;
+    }
+
+    .appShell .appShell__sidebar {
+        width: 100%;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.75rem 1rem;
+    }
+
+    .appShell .appShell__brand {
+        margin-bottom: 0;
+    }
+
+    .appShell .appShell__nav {
+        flex-direction: row;
+        gap: 0.25rem;
+        overflow-x: auto;
+    }
+
+    .appShell .appShell__navItem {
+        white-space: nowrap;
+        font-size: 0.85rem;
+        padding: 0.5rem 0.75rem;
+    }
+
+    .appShell .appShell__main {
+        padding: 1.5rem 1.25rem 2rem;
+    }
+}
+
+@media (max-width: 500px) {
+    .appShell .appShell__brandText {
+        display: none;
+    }
+}

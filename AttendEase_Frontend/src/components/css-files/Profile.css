@@ -1,0 +1,245 @@
+/* src/css-files/Profile.css */
+/* Full screen, no-scroll profile page. All rules start with .profile-page */
+
+.profile-page {
+  width: 100%;
+  height: 100vh;              /* full viewport */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: radial-gradient(circle at top left, #e0f2fe 0, #e5e7eb 40%, #f9fafb 100%);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  overflow: hidden;           /* no scroll inside this view */
+  box-sizing: border-box;
+}
+
+.profile-page .profile-shell {
+  width: 100%;
+  /* max-width: 1040px; */
+  /* height: 90vh;               give some margin from edges */
+  background: #ffffff;
+  border-radius: 1.5rem;
+  box-shadow: 0 24px 60px rgba(15, 23, 42, 0.18);
+  border: 1px solid #e5e7eb;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  /* align-items: center; */
+  padding: 1.5rem 1.75rem;
+  box-sizing: border-box;
+}
+
+/* top bar */
+
+.profile-page .profile-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+}
+
+.profile-page .profile-topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.profile-page .profile-app-logo {
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  background: #2563eb;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.profile-page .profile-app-title {
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: #111827;
+}
+
+.profile-page .profile-logout-btn {
+  padding: 0.45rem 1.1rem;
+  border-radius: 999px;
+  border: 1px solid #f97373;
+  background: #fee2e2;
+  color: #b91c1c;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
+  box-shadow: 0 4px 10px rgba(248, 113, 113, 0.35);
+}
+
+.profile-page .profile-logout-btn:hover {
+  background: #fecaca;
+  transform: translateY(-1px);
+}
+
+/* main layout */
+
+.profile-page .profile-main {
+  flex: 1;
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+}
+
+/* profile card */
+
+.profile-page .profile-card {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  border-radius: 1.25rem;
+  padding: 1.5rem 1.75rem 1.75rem;
+  background: #f9fafb;
+  box-sizing: border-box;
+}
+
+/* header row (avatar + basic info) */
+
+.profile-page .profile-header {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.profile-page .profile-avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 999px;
+  background: #2563eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.28);
+}
+
+.profile-page .profile-avatar-text {
+  color: #ffffff;
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.profile-page .profile-header-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.profile-page .profile-name {
+  margin: 0;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+.profile-page .profile-role {
+  margin: 0;
+  font-size: 0.95rem;
+  color: #6b7280;
+}
+
+/* info rows */
+
+.profile-page .profile-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  padding: 1rem 1.25rem;
+  border-radius: 1rem;
+  background: #ffffff;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.06);
+  margin-bottom: 1.5rem;
+}
+
+.profile-page .profile-info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #f3f4f6;
+  padding-bottom: 0.4rem;
+}
+
+.profile-page .profile-info-row:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.profile-page .profile-info-label {
+  font-size: 0.85rem;
+  color: #6b7280;
+}
+
+.profile-page .profile-info-value {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+/* action boxes */
+
+.profile-page .profile-actions-grid {
+  margin-top: 1rem;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.profile-page .profile-action-card {
+  border-radius: 0.95rem;
+  border: 1px solid #e5e7eb;
+  background: #ffffff;
+  padding: 0.9rem 0.9rem 0.95rem;
+  text-align: left;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.1s ease;
+}
+
+.profile-page .profile-action-card:hover {
+  border-color: #2563eb;
+  box-shadow: 0 10px 22px rgba(37, 99, 235, 0.18);
+  transform: translateY(-2px);
+}
+
+.profile-page .profile-action-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+.profile-page .profile-action-desc {
+  font-size: 0.8rem;
+  color: #6b7280;
+}
+
+/* Responsive: stack cards on small screens and allow scroll if needed */
+
+@media (max-width: 768px) {
+  .profile-page {
+    padding: 0.75rem;
+    overflow-y: auto;      /* small screens can scroll */
+  }
+
+  .profile-page .profile-shell {
+    height: auto;
+  }
+
+  .profile-page .profile-actions-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .profile-page .profile-card {
+    padding: 1.25rem;
+  }
+}

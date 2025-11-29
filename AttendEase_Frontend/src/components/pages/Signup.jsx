@@ -2,9 +2,9 @@ import React from 'react'
 import logo from '../../assets/logo.png'
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { apiClient } from '../../apiClient'
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import '../css-files/Signup.css'
+import { apiClient } from '../../API/apiClient';
 
 
 const Signup = () => {

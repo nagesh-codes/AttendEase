@@ -1,29 +1,51 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import '../css-files/Login.css'
-import { useState } from 'react'
-import { Link } from 'react-router-dom'
 import logo from '../../assets/logo.png'
+import { useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { apiClient } from '../../apiClient'
+import { apiClient } from '../../API/apiClient'
+import { toast } from 'react-toastify';
+import { setCookie } from '../../other_func/setCookies'
+import { getCookie } from '../../other_func/getCookies'
 
 
 const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [show, setShow] = useState(true);
+    const [Remember, setRemember] = useState(false);
+    const [isdisable, setIsdisable] = useState(false);
+    const [btntxt, setBtntxt] = useState("Login");
+    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setIsdisable(true);
+        setBtntxt("Checking...");
         try {
             const response = await apiClient.post("/api/auth/login", { email, password, username: name })
-                .then(() => {
-                    alert('user found successfully');
-                })
+            if (response.status === 201) {
+                if (Remember) {
+                    setCookie('email', email, 10);
+                    setCookie('password', password, 10);
+                }
+                toast.success("Successfully Login!");
+                navigate("/dashboard");
+            }
         } catch (er) {
-            console.log(er);
-            alert('user not exist');
+            toast.error("Combination of email and password is not valid!");
         }
+        setBtntxt("Login");
+        setIsdisable(false);
     }
+
+    useEffect(() => {
+        if (getCookie('email')) {
+            navigate("/dashboard");
+        }
+        console.log('email')
+    }, [])
 
     return (
         <div className='LoginPage'>
@@ -46,10 +68,10 @@ const Login = () => {
                 </div>
                 <div className="rem-box">
                     <input type="checkbox" id="rem" />
-                    <label htmlFor="rem"> Remember Me</label>
+                    <label htmlFor="rem" onClick={() => { setRemember(!Remember) }}> Remember Me</label>
                 </div>
                 <div className="btn-field">
-                    <button type='submit'>Login</button>
+                    <button type='submit' disabled={isdisable}>{btntxt}</button>
                 </div>
                 <div className="footer">
                     Don't Have Any Account? <Link to={"/signup"}>Signup</Link>

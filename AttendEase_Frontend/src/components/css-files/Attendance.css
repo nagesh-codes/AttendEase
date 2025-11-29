@@ -1,0 +1,101 @@
+.attendance-page {
+  padding: 1.5rem;
+  background: #f4f6fb;
+  min-height: 100vh;
+  box-sizing: border-box;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+.attendance-page .attendance-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  align-items: center;
+  margin-bottom: 1.2rem;
+}
+
+.attendance-page .attendance-title {
+  margin: 0;
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+.attendance-page .attendance-filters {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.attendance-page .attendance-select,
+.attendance-page .attendance-date {
+  padding: 0.4rem 0.7rem;
+  border-radius: 0.5rem;
+  border: 1px solid #d1d5db;
+  background: #ffffff;
+  font-size: 0.85rem;
+}
+
+.attendance-page .attendance-table-wrapper {
+  background: #ffffff;
+  border-radius: 0.9rem;
+  padding: 1rem;
+  box-shadow: 0 8px 18px rgba(15, 23, 42, 0.05);
+  overflow-x: auto;
+}
+
+.attendance-page .attendance-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+.attendance-page .attendance-table th,
+.attendance-page .attendance-table td {
+  padding: 0.55rem 0.6rem;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.attendance-page .attendance-table thead th {
+  font-weight: 500;
+  color: #6b7280;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.attendance-page .attendance-table tbody tr:nth-child(even) {
+  background: #f9fafb;
+}
+
+.attendance-page .attendance-pill {
+  display: inline-flex;
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+}
+
+.attendance-page .attendance-present {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.attendance-page .attendance-absent {
+  background: #fee2e2;
+  color: #b91c1c;
+}
+
+.attendance-page .attendance-late {
+  background: #fef9c3;
+  color: #92400e;
+}
+
+@media (max-width: 768px) {
+  .attendance-page {
+    padding: 1rem;
+  }
+
+  .attendance-page .attendance-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
