@@ -2,9 +2,8 @@ import React, { useState } from 'react';
 import '../css-files/Home.css';
 import Dashboard from './Dashboard';
 import Profile from './Profile';
-import Students from './Students';
 import logo from '../../assets/logo.png'
-
+import Classes from './Classes'
 
 const Home = () => {
     const [activeSection, setActiveSection] = useState('profile');
@@ -13,8 +12,8 @@ const Home = () => {
         switch (activeSection) {
             case 'dashboard':
                 return <Dashboard />;
-            case 'students':
-                return <Students />;
+            case 'classes':
+                return <Classes />;
             case 'profile':
                 return <Profile />;
             default:
@@ -52,11 +51,11 @@ const Home = () => {
                     </button>
 
                     <button
-                        className={`appShell__navItem ${activeSection === 'students' ? 'is-active' : ''
+                        className={`appShell__navItem ${activeSection === 'classes' ? 'is-active' : ''
                             }`}
-                        onClick={() => setActiveSection('students')}
+                        onClick={() => setActiveSection('classes')}
                     >
-                        Students
+                        Classes
                     </button>
 
                 </nav>

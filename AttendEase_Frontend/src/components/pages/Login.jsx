@@ -42,7 +42,7 @@ const Login = () => {
 
     useEffect(() => {
         if (getCookie('email')) {
-            navigate("/dashboard");
+            navigate("/home");
         }
         console.log('email')
     }, [])
