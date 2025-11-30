@@ -21,9 +21,9 @@ function App() {
         theme="light"
       />
       <Routes>
-        <Route path={"/"} element={<Login />} />
+        <Route path={"/"} element={<Home />} />
         <Route path={"/signup"} element={<Signup />} />
-        <Route path={"/home"} element={<Home />} />
+        <Route path={"/login"} element={<Login />} />
       </Routes>
     </>
   )

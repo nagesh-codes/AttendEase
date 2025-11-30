@@ -11,7 +11,7 @@ import com.attendease.backend.service.UserService;
 
 @RestController
 @RequestMapping("/api/auth")
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = "${FRONTEND_URL}")
 public class AuthController {
 
     private final UserService userService;

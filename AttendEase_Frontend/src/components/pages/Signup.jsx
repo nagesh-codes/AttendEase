@@ -1,7 +1,7 @@
 import React from 'react'
 import logo from '../../assets/logo.png'
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import '../css-files/Signup.css'
 import { apiClient } from '../../API/apiClient';
@@ -14,6 +14,9 @@ const Signup = () => {
     const [rpassword, setRpassword] = useState('');
     const [show, setShow] = useState(true);
     const [rshow, setRshow] = useState(true);
+    const [isdisable, setIsdisable] = useState(false);
+    const [btntxt, setBtntxt] = useState("Signup");
+    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -21,6 +24,8 @@ const Signup = () => {
             alert("password does not matched");
             return;
         }
+        setIsdisable(true);
+        setBtntxt("Checking...");
         try {
             const response = await apiClient.post("/api/auth/signup", { email, password, username: name })
                 .then(() => {
@@ -30,6 +35,8 @@ const Signup = () => {
             console.log(er);
             alert('duplicate username or the email has already taken');
         }
+        setBtntxt("Signup");
+        setIsdisable(false);
     }
 
     return (
@@ -63,7 +70,7 @@ const Signup = () => {
                     </div>
                 </div>
                 <div className="btn-field">
-                    <button type='submit'>Sign Up</button>
+                    <button type='submit' disabled={isdisable}>{btntxt}</button>
                 </div>
                 <div className="footer">
                     Already Have An Account? <Link to={"/"}>Login</Link>

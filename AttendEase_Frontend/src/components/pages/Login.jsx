@@ -40,13 +40,6 @@ const Login = () => {
         setIsdisable(false);
     }
 
-    useEffect(() => {
-        if (getCookie('email')) {
-            navigate("/home");
-        }
-        console.log('email')
-    }, [])
-
     return (
         <div className='LoginPage'>
             <form className="wrapper" onSubmit={handleSubmit}>
