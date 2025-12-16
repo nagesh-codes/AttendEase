@@ -8,25 +8,49 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    
+    @Column(nullable = false)
+    private String name;
 
     @Column(nullable=false, unique=true)
-    private String username; // email or username
+    private String username; // username
 
     @Column(nullable=false)
     private String password; // hashed
 
     @Column(nullable=false, unique=true)
     private String email;
+    
+    @Column(nullable = false)
+    private String role;
 
-    public User() {}
+    public String getRole() {
+		return role;
+	}
 
-    public User(String username, String password, String email) {
+	public void setRole(String role) {
+		this.role = role;
+	}
+
+	public User() {}
+
+    public User(String name,String username, String email, String password,String role) {
+    	this.name = name;
         this.username = username;
         this.password = password;
         this.email = email;
+        this.role = role;
     }
 
-    // Getters and setters
+    public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	// Getters and setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 

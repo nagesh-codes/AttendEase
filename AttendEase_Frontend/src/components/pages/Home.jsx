@@ -8,10 +8,11 @@ import { getCookie } from '../../other_func/getCookies';
 import { useNavigate } from 'react-router-dom';
 
 const Home = () => {
-    const [activeSection, setActiveSection] = useState('profile');
+    const [activeSection, setActiveSection] = useState(sessionStorage.getItem('currentSection')||'profile');
     const navigate = useNavigate();
 
     const renderContent = () => {
+        sessionStorage.setItem('currentSection',activeSection);
         switch (activeSection) {
             case 'dashboard':
                 return <Dashboard />;

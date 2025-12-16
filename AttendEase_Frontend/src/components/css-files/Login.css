@@ -42,10 +42,11 @@
     gap: 10px;
 }
 
-.LoginPage .input-field div{
+.LoginPage .input-field div {
     position: relative;
 }
-.LoginPage .input-field div span{
+
+.LoginPage .input-field div span {
     position: absolute;
     top: 25%;
     right: 5%;
@@ -56,6 +57,7 @@
     border: 2px solid black;
     outline: 0;
     width: 100%;
+    border-radius: 10px;
 }
 
 .LoginPage .btn-field {

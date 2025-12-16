@@ -42,28 +42,30 @@
     gap: 10px;
 }
 
-.SignupPage .input-field div{
+.SignupPage .input-field div {
     position: relative;
 }
-.SignupPage .input-field div span{
+
+.SignupPage .input-field div span {
     position: absolute;
     top: 25%;
     right: 5%;
 }
 
-.SignupPage input {
+.SignupPage input, .SignupPage select {
     padding: 5px 10px;
     border: 2px solid black;
     outline: 0;
     width: 100%;
+    border-radius: 10px;
 }
 
-.SignupPage .diff-padding{
-    padding: 5px 30px 5px 10px;
+.SignupPage .diff-padding {
+    /* padding: 5px 30px 5px 10px; */
 }
 
 .SignupPage .btn-field {
-    width: 100%;
+    width: auto;
 }
 
 .SignupPage button {
@@ -72,4 +74,15 @@
     font-size: 1.2rem;
     background-color: rgb(0, 0, 255);
     color: #fff;
+}
+
+.SignupPage .div {
+    display: flex;
+    gap: 20px;
+}
+
+@media (max-width: 479px) {
+    .SignupPage .div {
+        flex-direction: column;
+    }
 }

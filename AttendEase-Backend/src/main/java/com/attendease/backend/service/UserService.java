@@ -31,7 +31,7 @@ public class UserService {
 
         String encoded = passwordEncoder.encode(req.getPassword());
 
-        User user = new User(req.getUsername(), encoded, req.getEmail());
+        User user = new User(req.getName(),req.getUsername(), req.getEmail(),encoded,req.getRole());
         return userRepository.save(user);
     }
     
