@@ -11,7 +11,7 @@ const Signup = () => {
     const [name, setName] = useState('');
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
-    const [role,setRole] = useState('Admin');
+    const [joinCode, setJoinCode] = useState();
     const [password, setPassword] = useState('');
     const [rpassword, setRpassword] = useState('');
     const [show, setShow] = useState(true);
@@ -29,7 +29,7 @@ const Signup = () => {
         setIsdisable(true);
         setBtntxt("Checking...");
         try {
-            const response = await apiClient.post("/api/auth/signup", { email, password, username, name,role })
+            const response = await apiClient.post("/api/auth/signup", { email, password, username, name, role })
                 .then(() => {
                     alert('user created');
                 })
@@ -65,11 +65,8 @@ const Signup = () => {
                         <input type="email" value={email} onInput={e => setEmail(e.target.value)} required id='email' />
                     </div>
                     <div className="input-field">
-                        <label htmlFor="email">Choose Your Role</label>
-                        <select onInput={e => setRole(e.target.value)} value={role}>
-                            <option value="Admin">Admin</option>
-                            <option value="Teacher">Teacher</option>
-                        </select>
+                        <label htmlFor="code">Enter Your College Code</label>
+                        <input type="number" value={joinCode} onInput={e => setJoinCode(e.target.value)} id="code" />
                     </div>
                 </div>
                 <div className="div">
