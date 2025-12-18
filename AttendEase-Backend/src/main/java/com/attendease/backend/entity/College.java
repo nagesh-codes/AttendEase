@@ -15,9 +15,6 @@ public class College{
 	@Column(nullable = false)
 	private String name;
 	
-	@Column(name = "join_code",nullable = false,unique = true)
-	private Long joinCode;
-	
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
 	private CollegeStatus status;
@@ -39,14 +36,6 @@ public class College{
 
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	public Long getJoinCode() {
-		return joinCode;
-	}
-
-	public void setJoinCode(Long joinCode) {
-		this.joinCode = joinCode;
 	}
 
 	public CollegeStatus getStatus() {

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import logo from '../../assets/logo.png'
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
@@ -11,14 +11,16 @@ const Signup = () => {
     const [name, setName] = useState('');
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
-    const [joinCode, setJoinCode] = useState();
     const [password, setPassword] = useState('');
     const [rpassword, setRpassword] = useState('');
     const [show, setShow] = useState(true);
     const [rshow, setRshow] = useState(true);
     const [isdisable, setIsdisable] = useState(false);
     const [btntxt, setBtntxt] = useState("Signup");
+    const [college, setCollege] = useState([]);
+    const [clg, setClg] = useState();
     const navigate = useNavigate();
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -29,7 +31,7 @@ const Signup = () => {
         setIsdisable(true);
         setBtntxt("Checking...");
         try {
-            const response = await apiClient.post("/api/auth/signup", { email, password, username, name, role })
+            const response = await apiClient.post("/api/auth/signup", { email, password, username, name, collegeId:clg })
                 .then(() => {
                     alert('user created');
                 })
@@ -40,6 +42,24 @@ const Signup = () => {
         setBtntxt("Signup");
         setIsdisable(false);
     }
+
+    useEffect(() => {
+        const getColleges = async () => {
+            try {
+
+                const clg = await apiClient.get("/api/colleges/getCollegeList");
+                setCollege(clg.data);
+                console.log(clg);
+            } catch (e) {
+                console.log(e);
+                setCollege([])
+            }
+        }
+
+        getColleges();
+    }, []);
+
+
 
     return (
         <div className='SignupPage'>
@@ -65,8 +85,24 @@ const Signup = () => {
                         <input type="email" value={email} onInput={e => setEmail(e.target.value)} required id='email' />
                     </div>
                     <div className="input-field">
-                        <label htmlFor="code">Enter Your College Code</label>
-                        <input type="number" value={joinCode} onInput={e => setJoinCode(e.target.value)} id="code" />
+                        <label htmlFor="college">Choose Your College</label>
+                        <select
+                            value={clg}
+                            onChange={(e) => setClg(e.target.value)}
+                            id="college"
+                            required
+                        >
+                            <option value="">-- Select Your College --</option>
+                            {college.length > 0 ? (
+                                college.map((item, index) => (
+                                    <option key={index} value={item.id}>
+                                        {item.name}
+                                    </option>
+                                ))
+                            ) : (
+                                <option disabled>Loading...</option>
+                            )}
+                        </select>
                     </div>
                 </div>
                 <div className="div">
@@ -89,7 +125,8 @@ const Signup = () => {
                     <button type='submit' disabled={isdisable}>{btntxt}</button>
                 </div>
                 <div className="footer">
-                    Already Have An Account? <Link to={"/"}>Login</Link>
+                    <span> Already Have An Account? <Link to={"/"}>Login</Link> </span>
+                    <span><Link to={"/add_college"}> Want To List Your College with AttendEase </Link></span>
                 </div>
             </form>
         </div>

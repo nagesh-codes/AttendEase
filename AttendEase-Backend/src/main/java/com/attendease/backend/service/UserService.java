@@ -1,49 +1,53 @@
 package com.attendease.backend.service;
 
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
 
+import com.attendease.backend.dto.TeacherSignupRequestDto;
+import com.attendease.backend.entity.College;
+import com.attendease.backend.entity.Role;
 import com.attendease.backend.entity.User;
-import com.attendease.backend.repository.UserRepository;
-import com.attendease.backend.dto.LoginRequest;
-import com.attendease.backend.dto.SignupRequest;
+import com.attendease.backend.entity.UserStatus;
+import com.attendease.backend.repository.*;
 
 @Service
 public class UserService {
 
     private final UserRepository userRepository;
+    private final CollegeRepository collegeRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository,
+                       CollegeRepository collegeRepository,
+                       PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.collegeRepository = collegeRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
-    @Transactional
-    public User registerNewUser(SignupRequest req) {
-        if (req.getUsername() == null || req.getPassword() == null) {
-            throw new IllegalArgumentException("username and password are required");
-        }
-        if (userRepository.existsByUsername(req.getUsername()) || userRepository.existsByEmail(req.getEmail())) {
-            throw new IllegalStateException("username already taken");
-        }
+    public void registerTeacher(TeacherSignupRequestDto dto) {
 
-        String encoded = passwordEncoder.encode(req.getPassword());
+        // 1️⃣ Fetch college entity
+        College college = collegeRepository.findById(dto.getCollegeId())
+                .orElseThrow(() -> new RuntimeException("College not found"));
 
-        User user = new User(req.getName(),req.getUsername(), req.getEmail(),encoded,req.getRole());
-        return userRepository.save(user);
-    }
-    
-    @Transactional
-    public boolean login(LoginRequest req) {
-        if (req.getEmail() == null || req.getPassword() == null) {
-            throw new IllegalArgumentException("Email and password are required");
-        }
-//        if (userRepository.existsByEmail(req.getEmail()) || userRepository.existsByEmail(req.getEmail())) {
-//            throw new IllegalStateException("username already taken");
-//        }
-        String hashedPassword = userRepository.findByEmail(req.getEmail()).getPassword();
-        return passwordEncoder.matches(req.getPassword(), hashedPassword);
+        // 2️⃣ Create User entity
+        User teacher = new User();
+        teacher.setName(dto.getName());
+        teacher.setUsername(dto.getUsername());
+        teacher.setEmail(dto.getEmail());
+
+        // 3️⃣ Hash password
+        teacher.setPasswordHash(passwordEncoder.encode(dto.getPassword()));
+
+        // 4️⃣ Set role & status
+        teacher.setRole(Role.TEACHER);
+        teacher.setAccountStatus(UserStatus.PENDING);
+
+        // 5️⃣ Set college (FK handled automatically)
+        teacher.setCollege(college);
+
+        // 6️⃣ Save teacher
+        userRepository.save(teacher);
     }
 }
