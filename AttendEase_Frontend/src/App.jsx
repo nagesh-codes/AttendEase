@@ -4,6 +4,8 @@ import './App.css'
 import Login from './components/pages/Login'
 import Signup from './components/pages/Signup'
 import Home from './components/pages/Home';
+import ApplyCollege from './components/pages/ApplyCollege';
+import SystemAdmin from './components/pages/SystemAdmin';
 
 function App() {
   return (
@@ -24,6 +26,8 @@ function App() {
         <Route path={"/"} element={<Home />} />
         <Route path={"/signup"} element={<Signup />} />
         <Route path={"/login"} element={<Login />} />
+        <Route path={"/apply-college"} element={<ApplyCollege />} />
+        <Route path={"/system-admin-panel"} element={<SystemAdmin />} />
       </Routes>
     </>
   )

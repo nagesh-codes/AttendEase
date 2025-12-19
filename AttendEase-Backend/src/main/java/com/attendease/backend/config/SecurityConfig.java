@@ -22,7 +22,8 @@ public class SecurityConfig {
           .csrf(csrf -> csrf.disable())
           .authorizeHttpRequests(auth -> auth
               .requestMatchers("/api/auth/**").permitAll()
-              .requestMatchers("/api/colleges/getCollegeList").permitAll()
+              .requestMatchers("/api/colleges/**").permitAll()
+              .requestMatchers("/api/systemadmin/**").permitAll()
               .anyRequest().authenticated()
           )
           .httpBasic();

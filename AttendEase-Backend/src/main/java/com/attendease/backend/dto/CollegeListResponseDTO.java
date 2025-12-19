@@ -1,10 +1,10 @@
 package com.attendease.backend.dto;
 
-public class CollegeResponseDTO{
+public class CollegeListResponseDTO{
 	private String name;
 	private Long id;
 	
-	public CollegeResponseDTO(String name, Long id) {
+	public CollegeListResponseDTO(String name, Long id) {
 		this.name = name;
 		this.id = id;
 	}
@@ -17,7 +17,7 @@ public class CollegeResponseDTO{
 		this.id = id;
 	}
 
-	public CollegeResponseDTO(String name) {
+	public CollegeListResponseDTO(String name) {
 		this.name = name;
 	}
 

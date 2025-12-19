@@ -1,4 +1,4 @@
-.SignupPage {
+.ApplyCollege {
     height: 100vh;
     width: 100%;
     overflow: hidden;
@@ -7,7 +7,7 @@
     justify-content: center;
 }
 
-.SignupPage .wrapper {
+.ApplyCollege .wrapper {
     display: flex;
     flex-direction: column;
     background-color: #fff;
@@ -15,83 +15,61 @@
     border-radius: 10px;
     gap: 20px;
     height: auto;
-    width: 530px;
 }
 
-.SignupPage .logo {
+.ApplyCollege .logo {
     text-align: center;
     font-size: 2rem;
     font-weight: bolder;
     display: flex;
     align-items: center;
-    justify-content: center;
     gap: 10px;
+    justify-content: center;
 }
 
-.SignupPage .logo img {
+.ApplyCollege .logo img {
     height: 2.9rem;
 }
 
-.SignupPage .title {
+.ApplyCollege .title {
     font-size: 1.5rem;
     font-weight: bolder;
 }
 
-.SignupPage .input-field {
+.ApplyCollege .input-field {
     display: flex;
     flex-direction: column;
     gap: 10px;
-    width: 100%;
 }
 
-.SignupPage .input-field div {
+.ApplyCollege .input-field div {
     position: relative;
 }
 
-.SignupPage .input-field div span {
+.ApplyCollege .input-field div span {
     position: absolute;
     top: 25%;
     right: 5%;
 }
 
-.SignupPage input,
-.SignupPage select {
-    padding: 5px 10px;
+.ApplyCollege input,
+.ApplyCollege select {
+    padding: 5px 30px 5px 10px;
     border: 2px solid black;
     outline: 0;
     width: 100%;
     border-radius: 10px;
 }
 
-.SignupPage .diff-padding {
-    padding: 5px 30px 5px 10px;
+.ApplyCollege .btn-field {
+    width: 100%;
 }
 
-.SignupPage .btn-field {
-    width: auto;
-}
-
-.SignupPage button {
+.ApplyCollege button {
     width: 100%;
     padding: 5px;
     font-size: 1.2rem;
     background-color: rgb(0, 0, 255);
     color: #fff;
     cursor: pointer;
-}
-
-.SignupPage .div {
-    display: flex;
-    gap: 20px;
-}
-
-.SignupPage .footer {
-    display: flex;
-    flex-direction: column;
-}
-
-@media (max-width: 479px) {
-    .SignupPage .div {
-        flex-direction: column;
-    }
 }

@@ -3,10 +3,7 @@ package com.attendease.backend.controller;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.attendease.backend.dto.SignupRequest;
 import com.attendease.backend.dto.TeacherSignupRequestDto;
-import com.attendease.backend.dto.UserResponse;
-import com.attendease.backend.entity.User;
 import com.attendease.backend.service.UserService;
 
 @RestController

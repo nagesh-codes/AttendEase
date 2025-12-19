@@ -9,7 +9,6 @@ import { toast } from 'react-toastify';
 import { setCookie } from '../../other_func/setCookies'
 import { getCookie } from '../../other_func/getCookies'
 
-
 const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');

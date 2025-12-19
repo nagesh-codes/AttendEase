@@ -1,10 +1,11 @@
 import React, { useEffect } from 'react'
 import logo from '../../assets/logo.png'
 import { useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import '../css-files/Signup.css'
 import { apiClient } from '../../API/apiClient';
+import { toast } from 'react-toastify';
 
 
 const Signup = () => {
@@ -19,25 +20,22 @@ const Signup = () => {
     const [btntxt, setBtntxt] = useState("Signup");
     const [college, setCollege] = useState([]);
     const [clg, setClg] = useState();
-    const navigate = useNavigate();
-
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (password != rpassword) {
-            alert("password does not matched");
+            toast.error("password does not matched");
             return;
         }
         setIsdisable(true);
         setBtntxt("Checking...");
         try {
-            const response = await apiClient.post("/api/auth/signup", { email, password, username, name, collegeId:clg })
+            const response = await apiClient.post("/api/auth/signup", { email, password, username, name, collegeId: clg })
                 .then(() => {
-                    alert('user created');
+                    toast.success("Successfully Created Account");
                 })
         } catch (er) {
-            console.log(er);
-            alert('duplicate username or the email has already taken');
+            toast.error("Email or Username is Already registered with AttendEase.")
         }
         setBtntxt("Signup");
         setIsdisable(false);
@@ -46,20 +44,15 @@ const Signup = () => {
     useEffect(() => {
         const getColleges = async () => {
             try {
-
                 const clg = await apiClient.get("/api/colleges/getCollegeList");
                 setCollege(clg.data);
-                console.log(clg);
             } catch (e) {
-                console.log(e);
-                setCollege([])
+                setCollege([]);
             }
         }
 
         getColleges();
     }, []);
-
-
 
     return (
         <div className='SignupPage'>
@@ -126,7 +119,7 @@ const Signup = () => {
                 </div>
                 <div className="footer">
                     <span> Already Have An Account? <Link to={"/"}>Login</Link> </span>
-                    <span><Link to={"/add_college"}> Want To List Your College with AttendEase </Link></span>
+                    <span><Link to={"/apply-college"}> Want To List Your College with AttendEase </Link></span>
                 </div>
             </form>
         </div>
