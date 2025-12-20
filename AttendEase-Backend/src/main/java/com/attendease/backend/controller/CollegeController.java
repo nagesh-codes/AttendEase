@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.attendease.backend.service.CollegeApplicationService;
 import com.attendease.backend.service.CollegeService;
+import com.attendease.backend.service.EmailService;
 import com.attendease.backend.dto.*;
 import java.util.*;
 
@@ -22,14 +23,16 @@ public class CollegeController{
 	@Autowired
     private CollegeService collegeService;
 	private CollegeApplicationService collegeApplicationService;
+	private EmailService emailService;
 	
-	public CollegeController(CollegeService collegeService,CollegeApplicationService collegeApplicationService) {
+	public CollegeController(CollegeService collegeService,CollegeApplicationService collegeApplicationService, EmailService emailService) {
 		this.collegeService = collegeService;
 		this.collegeApplicationService = collegeApplicationService;
+		this.emailService = emailService;
 	}
 	
 	@PostMapping("/collegeApplication")
-	public ResponseEntity<?> newCollegeApplication(@RequestBody CollegeApplicationRequestDTO dto){
+	public ResponseEntity<?> newCollegeApplication(@RequestBody CollegeApplicationRequestDTO dto){		
 		collegeApplicationService.addCollegeApllication(dto);
 		return ResponseEntity.ok("Application submitted.");
 	}

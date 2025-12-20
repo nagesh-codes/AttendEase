@@ -18,8 +18,8 @@ const SystemAdmin = () => {
     }, [])
 
     return (
-        <div>
-            {}
+        <div className="sys-admin">
+            
         </div>
     )
 }

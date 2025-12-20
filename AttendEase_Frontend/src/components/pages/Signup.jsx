@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import logo from '../../assets/logo.png'
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import '../css-files/Signup.css'
 import { apiClient } from '../../API/apiClient';
@@ -19,7 +19,8 @@ const Signup = () => {
     const [isdisable, setIsdisable] = useState(false);
     const [btntxt, setBtntxt] = useState("Signup");
     const [college, setCollege] = useState([]);
-    const [clg, setClg] = useState();
+    const [clg, setClg] = useState(0);
+    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -33,6 +34,7 @@ const Signup = () => {
             const response = await apiClient.post("/api/auth/signup", { email, password, username, name, collegeId: clg })
                 .then(() => {
                     toast.success("Successfully Created Account");
+                    navigate("/login");
                 })
         } catch (er) {
             toast.error("Email or Username is Already registered with AttendEase.")
@@ -83,9 +85,8 @@ const Signup = () => {
                             value={clg}
                             onChange={(e) => setClg(e.target.value)}
                             id="college"
-                            required
                         >
-                            <option value="">-- Select Your College --</option>
+                            <option value="0">-- Select Your College --</option>
                             {college.length > 0 ? (
                                 college.map((item, index) => (
                                     <option key={index} value={item.id}>

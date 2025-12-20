@@ -6,6 +6,7 @@ import Signup from './components/pages/Signup'
 import Home from './components/pages/Home';
 import ApplyCollege from './components/pages/ApplyCollege';
 import SystemAdmin from './components/pages/SystemAdmin';
+import SysAdminLogin from './components/pages/SysAdminLogin';
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
         <Route path={"/signup"} element={<Signup />} />
         <Route path={"/login"} element={<Login />} />
         <Route path={"/apply-college"} element={<ApplyCollege />} />
+        <Route path={"/SysAdminLogin"} element={<SysAdminLogin />} />
         <Route path={"/system-admin-panel"} element={<SystemAdmin />} />
       </Routes>
     </>

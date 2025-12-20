@@ -66,7 +66,8 @@ const Login = () => {
                     <button type='submit' disabled={isdisable}>{btntxt}</button>
                 </div>
                 <div className="footer">
-                    Don't Have Any Account? <Link to={"/signup"}>Signup</Link>
+                    <span>Don't Have Any Account? <Link to={"/signup"}>Signup</Link></span>
+                    <span><Link to={"/SysAdminLogin"}>Are You AttendEase System Admin ? Login</Link></span>
                 </div>
             </form>
         </div>

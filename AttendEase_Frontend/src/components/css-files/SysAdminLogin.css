@@ -1,4 +1,4 @@
-.LoginPage {
+.sys-login {
     height: 100vh;
     width: 100%;
     overflow: hidden;
@@ -7,7 +7,7 @@
     justify-content: center;
 }
 
-.LoginPage .wrapper {
+.sys-login .wrapper {
     display: flex;
     flex-direction: column;
     background-color: #fff;
@@ -17,7 +17,7 @@
     height: auto;
 }
 
-.LoginPage .logo {
+.sys-login .logo {
     text-align: center;
     font-size: 2rem;
     font-weight: bolder;
@@ -27,32 +27,32 @@
     justify-content: center;
 }
 
-.LoginPage .logo img {
+.sys-login .logo img {
     height: 2.9rem;
 }
 
-.LoginPage .title {
+.sys-login .title {
     font-size: 1.5rem;
     font-weight: bolder;
 }
 
-.LoginPage .input-field {
+.sys-login .input-field {
     display: flex;
     flex-direction: column;
     gap: 10px;
 }
 
-.LoginPage .input-field div {
+.sys-login .input-field div {
     position: relative;
 }
 
-.LoginPage .input-field div span {
+.sys-login .input-field div span {
     position: absolute;
     top: 25%;
     right: 5%;
 }
 
-.LoginPage input:not(#rem) {
+.sys-login input:not(#rem) {
     padding: 5px 30px 5px 10px;
     border: 2px solid black;
     outline: 0;
@@ -60,22 +60,20 @@
     border-radius: 10px;
 }
 
-.LoginPage .btn-field {
+.sys-login .btn-field {
     width: 100%;
 }
 
-.LoginPage button {
+.sys-login button {
     width: 100%;
     padding: 5px;
     font-size: 1.2rem;
     background-color: rgb(0, 0, 255);
     color: #fff;
-    border-radius: 10px;
     cursor: pointer;
+    border-radius: 10px;
 }
 
-.LoginPage .footer {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+.sys-login .hide{
+    display: none;
 }

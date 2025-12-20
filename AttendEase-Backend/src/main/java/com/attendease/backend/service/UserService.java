@@ -28,26 +28,27 @@ public class UserService {
     public void registerTeacher(TeacherSignupRequestDto dto) {
 
         // 1️⃣ Fetch college entity
-        College college = collegeRepository.findById(dto.getCollegeId())
-                .orElseThrow(() -> new RuntimeException("College not found"));
+//        College college = collegeRepository.findById(dto.getCollegeId())
+//                .orElseThrow(() -> new RuntimeException("College not found"));
+        
+        College college = collegeRepository.findById(dto.getCollegeId()).orElse(null);
 
-        // 2️⃣ Create User entity
         User teacher = new User();
         teacher.setName(dto.getName());
         teacher.setUsername(dto.getUsername());
         teacher.setEmail(dto.getEmail());
 
-        // 3️⃣ Hash password
         teacher.setPasswordHash(passwordEncoder.encode(dto.getPassword()));
 
-        // 4️⃣ Set role & status
         teacher.setRole(Role.TEACHER);
-        teacher.setAccountStatus(UserStatus.PENDING);
+        if(college == null) {        	
+        	teacher.setAccountStatus(UserStatus.ACTIVE);
+        }else {
+        	teacher.setAccountStatus(UserStatus.PENDING);
+        }
 
-        // 5️⃣ Set college (FK handled automatically)
         teacher.setCollege(college);
 
-        // 6️⃣ Save teacher
         userRepository.save(teacher);
     }
 }
