@@ -1,97 +1,98 @@
 .SignupPage {
-    height: 100vh;
-    width: 100%;
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .SignupPage .wrapper {
-    display: flex;
-    flex-direction: column;
-    background-color: #fff;
-    padding: 40px 40px 55px 40px;
-    border-radius: 10px;
-    gap: 20px;
-    height: auto;
-    width: 530px;
+  display: flex;
+  flex-direction: column;
+  background-color: #fff;
+  padding: 40px 40px 55px 40px;
+  border-radius: 10px;
+  gap: 20px;
+  height: auto;
+  width: 530px;
 }
 
 .SignupPage .logo {
-    text-align: center;
-    font-size: 2rem;
-    font-weight: bolder;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
+  text-align: center;
+  font-size: 2rem;
+  font-weight: bolder;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
 }
 
 .SignupPage .logo img {
-    height: 2.9rem;
+  height: 2.9rem;
 }
 
 .SignupPage .title {
-    font-size: 1.5rem;
-    font-weight: bolder;
+  font-size: 1.5rem;
+  font-weight: bolder;
 }
 
 .SignupPage .input-field {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
 }
 
 .SignupPage .input-field div {
-    position: relative;
+  position: relative;
 }
 
 .SignupPage .input-field div span {
-    position: absolute;
-    top: 25%;
-    right: 5%;
+  position: absolute;
+  top: 25%;
+  right: 5%;
 }
 
 .SignupPage input,
 .SignupPage select {
-    padding: 5px 10px;
-    border: 2px solid black;
-    outline: 0;
-    width: 100%;
-    border-radius: 10px;
+  padding: 5px 10px;
+  border: 2px solid black;
+  outline: 0;
+  width: 100%;
+  border-radius: 10px;
 }
 
 .SignupPage .diff-padding {
-    padding: 5px 30px 5px 10px;
+  padding: 5px 30px 5px 10px;
 }
 
 .SignupPage .btn-field {
-    width: auto;
+  width: auto;
 }
 
 .SignupPage button {
-    width: 100%;
-    padding: 5px;
-    font-size: 1.2rem;
-    background-color: rgb(0, 0, 255);
-    color: #fff;
-    cursor: pointer;
+  width: 100%;
+  padding: 5px;
+  font-size: 1.2rem;
+  background-color: rgb(0, 0, 255);
+  color: #fff;
+  cursor: pointer;
+  border-radius: 10px;
 }
 
 .SignupPage .div {
-    display: flex;
-    gap: 20px;
+  display: flex;
+  gap: 20px;
 }
 
 .SignupPage .footer {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
 @media (max-width: 479px) {
-    .SignupPage .div {
-        flex-direction: column;
-    }
+  .SignupPage .div {
+    flex-direction: column;
+  }
 }

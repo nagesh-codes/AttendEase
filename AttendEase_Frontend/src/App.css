@@ -18,13 +18,14 @@
   color: #888;
 } */
 
-*{
+* {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
 }
 
-body,html{
+body,
+html {
   height: 100dvh;
   width: 100dvw;
   overflow: hidden;

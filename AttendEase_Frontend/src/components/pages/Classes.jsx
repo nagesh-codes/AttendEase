@@ -1,11 +1,11 @@
-import React from 'react';
-import '../css-files/Classes.css';
+import React from "react";
+import "../css-files/Classes.css";
 
 const Students = () => {
   const students = [
-    { id: 1, name: 'Rahul Sharma', roll: '101', course: 'BSc CS', sem: '6' },
-    { id: 2, name: 'Priya Patel', roll: '102', course: 'BSc CS', sem: '6' },
-    { id: 3, name: 'Arjun Verma', roll: '103', course: 'BSc CS', sem: '6' },
+    { id: 1, name: "Rahul Sharma", roll: "101", course: "BSc CS", sem: "6" },
+    { id: 2, name: "Priya Patel", roll: "102", course: "BSc CS", sem: "6" },
+    { id: 3, name: "Arjun Verma", roll: "103", course: "BSc CS", sem: "6" },
   ];
 
   return (
@@ -13,7 +13,9 @@ const Students = () => {
       <header className="students-header">
         <div>
           <h1 className="students-title">Students</h1>
-          <p className="students-subtitle">Manage and view all enrolled students</p>
+          <p className="students-subtitle">
+            Manage and view all enrolled students
+          </p>
         </div>
         <button className="students-add-btn">+ Add Student</button>
       </header>

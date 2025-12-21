@@ -1,5 +1,5 @@
-import React from 'react';
-import '../css-files/Dashboard.css';
+import React from "react";
+import "../css-files/Dashboard.css";
 
 const Dashboard = () => {
   return (
@@ -7,7 +7,9 @@ const Dashboard = () => {
       <header className="dashboard-header">
         <div className="dashboard-header-left">
           <h1 className="dashboard-title">Dashboard</h1>
-          <p className="dashboard-subtitle">Quick overview of today’s attendance</p>
+          <p className="dashboard-subtitle">
+            Quick overview of today’s attendance
+          </p>
         </div>
         <div className="dashboard-header-right">
           <span className="dashboard-date">
@@ -56,14 +58,18 @@ const Dashboard = () => {
                   <p className="dashboard-class-name">BCA - Semester 4</p>
                   <p className="dashboard-class-time">11:00 AM - 12:00 PM</p>
                 </div>
-                <span className="dashboard-badge dashboard-badge-warning">Ongoing</span>
+                <span className="dashboard-badge dashboard-badge-warning">
+                  Ongoing
+                </span>
               </li>
               <li className="dashboard-class-item">
                 <div>
                   <p className="dashboard-class-name">MSc IT - Semester 2</p>
                   <p className="dashboard-class-time">02:00 PM - 03:00 PM</p>
                 </div>
-                <span className="dashboard-badge dashboard-badge-muted">Upcoming</span>
+                <span className="dashboard-badge dashboard-badge-muted">
+                  Upcoming
+                </span>
               </li>
             </ul>
           </div>
@@ -89,19 +95,31 @@ const Dashboard = () => {
                     <td>Rahul Sharma</td>
                     <td>BSc CS</td>
                     <td>09:00 AM</td>
-                    <td><span className="dashboard-status-pill dashboard-status-present">Present</span></td>
+                    <td>
+                      <span className="dashboard-status-pill dashboard-status-present">
+                        Present
+                      </span>
+                    </td>
                   </tr>
                   <tr>
                     <td>Priya Patel</td>
                     <td>BCA</td>
                     <td>11:00 AM</td>
-                    <td><span className="dashboard-status-pill dashboard-status-absent">Absent</span></td>
+                    <td>
+                      <span className="dashboard-status-pill dashboard-status-absent">
+                        Absent
+                      </span>
+                    </td>
                   </tr>
                   <tr>
                     <td>Arjun Verma</td>
                     <td>MSc IT</td>
                     <td>02:00 PM</td>
-                    <td><span className="dashboard-status-pill dashboard-status-late">Late</span></td>
+                    <td>
+                      <span className="dashboard-status-pill dashboard-status-late">
+                        Late
+                      </span>
+                    </td>
                   </tr>
                 </tbody>
               </table>

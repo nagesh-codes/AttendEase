@@ -1,52 +1,86 @@
-import React from 'react'
-import logo from '../../assets/logo.png'
-import '../css-files/SysAdminLogin.css'
-import { useState } from 'react'
-import { apiClient } from '../../API/apiClient';
-import { toast } from 'react-toastify';
+import React from "react";
+import logo from "../../assets/logo.png";
+import "../css-files/SysAdminLogin.css";
+import { useState } from "react";
+import { apiClient } from "../../API/apiClient";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 const SysAdminLogin = () => {
-    const [otp, setOtp] = useState('');
-    const [otpsent, setOtpsent] = useState(false);
-    const [btntxt,setBtntxt] = useState('Verify');
-    const [isdisable,setIsdisable] = useState(false);
+  const [otp, setOtp] = useState("");
+  const [otpsent, setOtpsent] = useState(false);
+  const [btntxt1, setBtntxt1] = useState("Send OTP");
+  const [btntxt2, setBtntxt2] = useState("Verify");
+  const [isdisable, setIsdisable] = useState(false);
+  const navigate = useNavigate();
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsdisable(true);
+    setBtntxt2("Verifying...");
+    try {
+      const response = await apiClient.post("/api/system-admin/verify-otp", {
+        otp,
+      });
+      toast.success("OTP Successfully Verified.");
+      navigate("/system-admin-panel");
+    } catch (error) {
+      console.error(error);
+      toast.error("Incorrect OTP");
     }
+    setIsdisable(false);
+    setBtntxt2("Verify");
+  };
 
-    const sendOTP = async () => {
-        setOtpsent(true);
-        try {
-            const response = await apiClient.post("/api/email/sendotp");
-            toast.success('OTP Successfully Sent');
-        } catch (error) {
-            console.error(error);
-            toast.error('Failed to Send OTP');
-        }
+  const sendOTP = async () => {
+    setIsdisable(true);
+    setBtntxt1("Sending OTP...");
+    try {
+      const response = await apiClient.post("/api/system-admin/send-otp");
+      toast.success("OTP Successfully Sent");
+      setOtpsent(true);
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to Send OTP");
+      setOtpsent(false);
     }
+    setIsdisable(false);
+    setBtntxt1("");
+  };
 
-    return (
-        <div className="sys-login">
-            <form className="wrapper" onSubmit={handleSubmit}>
-                <div className="logo">
-                    <img src={logo} alt="logo" />
-                    AttendEase
-                </div>
-                <div className="title">System Admin Login</div>
-                <div className={`input-field ${otpsent ? 'hide' : ''}`}>
-                    <button type="button" onClick={sendOTP}>Send OTP On Email</button>
-                </div>
-                <div className={`rem-box ${otpsent ? '' : 'hide'}`}>
-                    <label htmlFor="otp">Enter Your OTP</label>
-                    <input type="text" value={otp} onInput={e => setOtp(e.target.value)} required id='otp' />
-                </div>
-                <div className={`btn-field ${otpsent ? '' : 'hide'}`}>
-                    <button type='submit' disabled={isdisable}>{btntxt}</button>
-                </div>
-            </form>
+  return (
+    <div className="sys-login">
+      <form className="wrapper" onSubmit={handleSubmit}>
+        <div className="logo">
+          <img src={logo} alt="logo" />
+          AttendEase
         </div>
-    )
-}
+        <div className="title">System Admin Login</div>
+        <div className={`input-field ${otpsent ? "hide" : ""}`}>
+          <button type="button" onClick={sendOTP}>
+            {btntxt1}
+          </button>
+        </div>
+        <div className={`rem-box ${otpsent ? "" : "hide"}`}>
+          <label htmlFor="otp">Enter Your OTP</label>
+          <input
+            type="text"
+            value={otp}
+            onInput={(e) => setOtp(e.target.value)}
+            required
+            id="otp"
+            minLength="6"
+            maxLength="6"
+          />
+        </div>
+        <div className={`btn-field ${otpsent ? "" : "hide"}`}>
+          <button type="submit" disabled={isdisable}>
+            {btntxt2}
+          </button>
+        </div>
+      </form>
+    </div>
+  );
+};
 
-export default SysAdminLogin
+export default SysAdminLogin;

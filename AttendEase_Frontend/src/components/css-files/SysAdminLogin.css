@@ -1,79 +1,79 @@
 .sys-login {
-    height: 100vh;
-    width: 100%;
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .sys-login .wrapper {
-    display: flex;
-    flex-direction: column;
-    background-color: #fff;
-    padding: 40px 40px 55px 40px;
-    border-radius: 10px;
-    gap: 20px;
-    height: auto;
+  display: flex;
+  flex-direction: column;
+  background-color: #fff;
+  padding: 40px 40px 55px 40px;
+  border-radius: 10px;
+  gap: 20px;
+  height: auto;
 }
 
 .sys-login .logo {
-    text-align: center;
-    font-size: 2rem;
-    font-weight: bolder;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    justify-content: center;
+  text-align: center;
+  font-size: 2rem;
+  font-weight: bolder;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: center;
 }
 
 .sys-login .logo img {
-    height: 2.9rem;
+  height: 2.9rem;
 }
 
 .sys-login .title {
-    font-size: 1.5rem;
-    font-weight: bolder;
+  font-size: 1.5rem;
+  font-weight: bolder;
 }
 
 .sys-login .input-field {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .sys-login .input-field div {
-    position: relative;
+  position: relative;
 }
 
 .sys-login .input-field div span {
-    position: absolute;
-    top: 25%;
-    right: 5%;
+  position: absolute;
+  top: 25%;
+  right: 5%;
 }
 
 .sys-login input:not(#rem) {
-    padding: 5px 30px 5px 10px;
-    border: 2px solid black;
-    outline: 0;
-    width: 100%;
-    border-radius: 10px;
+  padding: 5px 30px 5px 10px;
+  border: 2px solid black;
+  outline: 0;
+  width: 100%;
+  border-radius: 10px;
 }
 
 .sys-login .btn-field {
-    width: 100%;
+  width: 100%;
 }
 
 .sys-login button {
-    width: 100%;
-    padding: 5px;
-    font-size: 1.2rem;
-    background-color: rgb(0, 0, 255);
-    color: #fff;
-    cursor: pointer;
-    border-radius: 10px;
+  width: 100%;
+  padding: 5px;
+  font-size: 1.2rem;
+  background-color: rgb(0, 0, 255);
+  color: #fff;
+  cursor: pointer;
+  border-radius: 10px;
 }
 
-.sys-login .hide{
-    display: none;
+.sys-login .hide {
+  display: none;
 }

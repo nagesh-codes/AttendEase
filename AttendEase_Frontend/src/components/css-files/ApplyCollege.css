@@ -1,79 +1,79 @@
 .ApplyCollege {
-    height: 100vh;
-    width: 100%;
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .ApplyCollege .wrapper {
-    display: flex;
-    flex-direction: column;
-    background-color: #fff;
-    padding: 40px 40px 55px 40px;
-    border-radius: 10px;
-    gap: 20px;
-    height: auto;
+  display: flex;
+  flex-direction: column;
+  background-color: #fff;
+  padding: 40px 40px 55px 40px;
+  border-radius: 10px;
+  gap: 20px;
+  height: auto;
 }
 
 .ApplyCollege .logo {
-    text-align: center;
-    font-size: 2rem;
-    font-weight: bolder;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    justify-content: center;
+  text-align: center;
+  font-size: 2rem;
+  font-weight: bolder;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: center;
 }
 
 .ApplyCollege .logo img {
-    height: 2.9rem;
+  height: 2.9rem;
 }
 
 .ApplyCollege .title {
-    font-size: 1.5rem;
-    font-weight: bolder;
+  font-size: 1.5rem;
+  font-weight: bolder;
 }
 
 .ApplyCollege .input-field {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .ApplyCollege .input-field div {
-    position: relative;
+  position: relative;
 }
 
 .ApplyCollege .input-field div span {
-    position: absolute;
-    top: 25%;
-    right: 5%;
+  position: absolute;
+  top: 25%;
+  right: 5%;
 }
 
 .ApplyCollege input,
 .ApplyCollege select {
-    padding: 5px 30px 5px 10px;
-    border: 2px solid black;
-    outline: 0;
-    width: 100%;
-    border-radius: 10px;
+  padding: 5px 30px 5px 10px;
+  border: 2px solid black;
+  outline: 0;
+  width: 100%;
+  border-radius: 10px;
 }
 
 .ApplyCollege .btn-field {
-    width: 100%;
+  width: 100%;
 }
 
 .ApplyCollege button {
-    width: 100%;
-    padding: 5px;
-    font-size: 1.2rem;
-    background-color: rgb(0, 0, 255);
-    color: #fff;
-    cursor: pointer;
+  width: 100%;
+  padding: 5px;
+  font-size: 1.2rem;
+  background-color: rgb(0, 0, 255);
+  color: #fff;
+  cursor: pointer;
 }
 
-.ApplyCollege .hide{
-    display: none;
+.ApplyCollege .hide {
+  display: none;
 }

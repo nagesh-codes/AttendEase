@@ -1,11 +1,7 @@
-import React from 'react'
+import React from "react";
 
 const CreateNewClass = () => {
-  return (
-    <div>
-      
-    </div>
-  )
-}
+  return <div></div>;
+};
 
-export default CreateNewClass
+export default CreateNewClass;

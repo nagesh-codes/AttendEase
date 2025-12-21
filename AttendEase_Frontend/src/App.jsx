@@ -1,12 +1,12 @@
-import { Route, Routes } from 'react-router-dom'
-import { ToastContainer } from 'react-toastify';
-import './App.css'
-import Login from './components/pages/Login'
-import Signup from './components/pages/Signup'
-import Home from './components/pages/Home';
-import ApplyCollege from './components/pages/ApplyCollege';
-import SystemAdmin from './components/pages/SystemAdmin';
-import SysAdminLogin from './components/pages/SysAdminLogin';
+import { Route, Routes } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import "./App.css";
+import Login from "./components/pages/Login";
+import Signup from "./components/pages/Signup";
+import Home from "./components/pages/Home";
+import ApplyCollege from "./components/pages/ApplyCollege";
+import SystemAdmin from "./components/pages/SystemAdmin";
+import SysAdminLogin from "./components/pages/SysAdminLogin";
 
 function App() {
   return (
@@ -32,7 +32,7 @@ function App() {
         <Route path={"/system-admin-panel"} element={<SystemAdmin />} />
       </Routes>
     </>
-  )
+  );
 }
 
-export default App
+export default App;

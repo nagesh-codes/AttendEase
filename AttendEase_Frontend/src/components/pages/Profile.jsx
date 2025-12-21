@@ -1,21 +1,21 @@
 // src/components/pages/Profile.jsx
-import React from 'react';
-import '../css-files/Profile.css';
+import React from "react";
+import "../css-files/Profile.css";
 
 const Profile = ({ user, onLogout }) => {
   // dummy fallback data if props not passed
   const currentUser = user || {
-    name: 'Nagesh Kumar',
-    role: 'Final Year · CSE',
-    email: 'nagesh@example.com',
-    username: 'nagesh123',
-    section: 'CS-A',
+    name: "Nagesh Kumar",
+    role: "Final Year · CSE",
+    email: "nagesh@example.com",
+    username: "nagesh123",
+    section: "CS-A",
   };
 
   const handleLogout = () => {
     if (onLogout) onLogout();
     // fallback for now
-    console.log('Logout clicked');
+    console.log("Logout clicked");
   };
 
   return (
@@ -60,7 +60,9 @@ const Profile = ({ user, onLogout }) => {
               </div>
               <div className="profile-info-row">
                 <span className="profile-info-label">Section</span>
-                <span className="profile-info-value">{currentUser.section}</span>
+                <span className="profile-info-value">
+                  {currentUser.section}
+                </span>
               </div>
             </div>
 

@@ -1,5 +1,5 @@
-import React from 'react';
-import '../css-files/Attendance.css';
+import React from "react";
+import "../css-files/Attendance.css";
 
 const Attendance = () => {
   return (
@@ -32,21 +32,31 @@ const Attendance = () => {
               <td>101</td>
               <td>Rahul Sharma</td>
               <td>BSc CS</td>
-              <td><span className="attendance-pill attendance-present">Present</span></td>
+              <td>
+                <span className="attendance-pill attendance-present">
+                  Present
+                </span>
+              </td>
               <td>09:05 AM</td>
             </tr>
             <tr>
               <td>102</td>
               <td>Priya Patel</td>
               <td>BSc CS</td>
-              <td><span className="attendance-pill attendance-absent">Absent</span></td>
+              <td>
+                <span className="attendance-pill attendance-absent">
+                  Absent
+                </span>
+              </td>
               <td>—</td>
             </tr>
             <tr>
               <td>103</td>
               <td>Arjun Verma</td>
               <td>BSc CS</td>
-              <td><span className="attendance-pill attendance-late">Late</span></td>
+              <td>
+                <span className="attendance-pill attendance-late">Late</span>
+              </td>
               <td>09:15 AM</td>
             </tr>
           </tbody>
