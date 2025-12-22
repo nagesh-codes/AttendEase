@@ -12,5 +12,5 @@ import com.attendease.backend.entity.CollegeApplicationStatus;
 @Repository
 public interface CollegeApplicationRepository extends JpaRepository<CollegeApplication, Long>{
 	
-	List<CollegeApplication> findByStatus(CollegeApplicationStatus status);
+	List<CollegeApplication> findByStatusOrderByCreatedAtDesc(CollegeApplicationStatus status);
 }

@@ -36,7 +36,7 @@ const SysAdminLogin = () => {
     setIsdisable(true);
     setBtntxt1("Sending OTP...");
     try {
-      const response = await apiClient.post("/api/system-admin/send-otp");
+      await apiClient.post("/api/system-admin/send-otp");
       toast.success("OTP Successfully Sent");
       setOtpsent(true);
     } catch (error) {
@@ -45,7 +45,7 @@ const SysAdminLogin = () => {
       setOtpsent(false);
     }
     setIsdisable(false);
-    setBtntxt1("");
+    setBtntxt1("Semd OTP");
   };
 
   return (
@@ -57,7 +57,7 @@ const SysAdminLogin = () => {
         </div>
         <div className="title">System Admin Login</div>
         <div className={`input-field ${otpsent ? "hide" : ""}`}>
-          <button type="button" onClick={sendOTP}>
+          <button type="button" onClick={sendOTP} disabled={isdisable}>
             {btntxt1}
           </button>
         </div>

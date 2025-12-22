@@ -23,7 +23,7 @@ public class SecurityConfig {
           .authorizeHttpRequests(auth -> auth
               .requestMatchers("/api/auth/**").permitAll()
               .requestMatchers("/api/colleges/**").permitAll()
-              .requestMatchers("/api/systemadmin/**").permitAll()
+              .requestMatchers("/api/system-admin/**").permitAll()
               .anyRequest().authenticated()
           )
           .httpBasic();

@@ -105,11 +105,11 @@ public class CollegeApplicationService{
 				+ "</body>\r\n"
 				+ "</html>\r\n"
 				+ "";
-		emailService.sendSimpleEmail(dto.getOfficialEmail(), "College Application Submitted Successfully – AttendEase\r\n",text);
+		emailService.sendEmail(dto.getOfficialEmail(), "College Application Submitted Successfully – AttendEase\r\n",text);
 	}
 	
 	public List<CollegeApplicationResponseDTO> getAllPendingCollegeApplication(){
-		return collegeApplicationRespository.findByStatus(CollegeApplicationStatus.PENDING)
+		return collegeApplicationRespository.findByStatusOrderByCreatedAtDesc(CollegeApplicationStatus.PENDING)
 				.stream()
 				.map(c -> new CollegeApplicationResponseDTO(c.getId(),c.getCollegeName(),c.getAuthorityName(),c.getAuthorityRole(),c.getOfficialEmail(),c.getCreatedAt()))
 				.toList();

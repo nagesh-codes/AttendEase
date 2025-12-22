@@ -13,8 +13,9 @@ public class EmailService {
     @Autowired
     private JavaMailSender mailSender;
 
-    public void sendSimpleEmail(String toEmail, String subject, String body) {
+    public void sendEmail(String toEmail, String subject, String body) {
     	try {
+    		System.out.println(toEmail);
 			MimeMessage message = mailSender.createMimeMessage();
 			MimeMessageHelper helper = new MimeMessageHelper(message,true,"UTF-8");
 			helper.setFrom("${Email}");
@@ -22,7 +23,7 @@ public class EmailService {
 			helper.setSubject(subject);
 			helper.setText(body,true);
 			
-			mailSender.send(message);
+//			mailSender.send(message);
 			System.out.println("Mail Sent successfully...");
 		} catch (Exception e) {
 			// TODO: handle exception

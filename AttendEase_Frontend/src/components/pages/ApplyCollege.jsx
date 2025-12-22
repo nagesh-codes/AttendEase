@@ -35,7 +35,7 @@ const ApplyCollege = () => {
         }
       );
       toast.success("Your Application Submitted Successfully.");
-      localStorage.setItem("Application", "submitted");
+      // localStorage.setItem("Application", "submitted");
       setIsApplicationSubmitted(true);
     } catch (error) {
       toast.error(
