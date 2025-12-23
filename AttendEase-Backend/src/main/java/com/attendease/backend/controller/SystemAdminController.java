@@ -1,7 +1,6 @@
 package com.attendease.backend.controller;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +14,7 @@ import com.attendease.backend.service.CollegeApplicationService;
 import com.attendease.backend.service.SystemAdminOtpService;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/system-admin")
@@ -23,7 +23,6 @@ public class SystemAdminController{
 	private CollegeApplicationService collegeApplicationService;
 	private SystemAdminOtpService systemAdminOtpService;
 	private SystemAdminRequestOtpDTO systemAdminRequestOtpDTO;
-	
 	
 	public SystemAdminController(CollegeApplicationService collegeApplicationService,SystemAdminOtpService systemAdminOtpService) {
 		this.collegeApplicationService = collegeApplicationService;
@@ -37,13 +36,13 @@ public class SystemAdminController{
 	
 	@PostMapping("/send-otp")
 	public ResponseEntity<?> createOTP(){
-		systemAdminOtpService.generateAndSendOtp();
-		return ResponseEntity.ok("OTP successfully sent");
+		String refId = systemAdminOtpService.generateAndSendOtp();
+		return ResponseEntity.ok(Map.of("message","Email Sent","refId",refId));
 	}
 	
 	@PostMapping("/verify-otp")
 	public ResponseEntity<?> verifyOtp(@RequestBody SystemAdminRequestOtpDTO dto){
-		System.out.println(dto.getOtp());
+		System.out.println(dto.getRefId());
 		boolean isValid = systemAdminOtpService.verifyOtp(dto);
 		if(isValid) {
 			return ResponseEntity.ok("OTP SUCCESSFULLY MATCHED");

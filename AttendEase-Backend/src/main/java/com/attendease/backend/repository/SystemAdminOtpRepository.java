@@ -8,5 +8,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 @Repository
 public interface SystemAdminOtpRepository extends JpaRepository<SystemAdminOtp,Long>{
-	Optional<SystemAdminOtp> findTopByUsedFalseOrderByCreatedAtDesc();
+	Optional<SystemAdminOtp> findByRefId(String RefId);
 }

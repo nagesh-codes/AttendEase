@@ -28,6 +28,18 @@ public class SystemAdminOtp{
 	
 	@Column(name = "used")
 	private Boolean used;
+	
+	@Column(name = "ref_id")
+	private String refId;
+	
+
+	public String getRefId() {
+		return refId;
+	}
+
+	public void setRefId(String refId) {
+		this.refId = refId;
+	}
 
 	public Long getId() {
 		return id;

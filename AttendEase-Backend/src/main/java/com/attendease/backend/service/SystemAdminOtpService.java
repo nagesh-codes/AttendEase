@@ -2,6 +2,7 @@ package com.attendease.backend.service;
 
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -38,14 +39,16 @@ public class SystemAdminOtpService {
 	}
 	
 	@Transactional
-	public void generateAndSendOtp() {
+	public String generateAndSendOtp() {
 		
 		String otp = generateOtp();
+		String refId = UUID.randomUUID().toString().substring(0,8);
 		
 		String hashedOtp = passwordEncoder.encode(otp);
 		
 		SystemAdminOtp otpEntity = new SystemAdminOtp();
 		
+		otpEntity.setRefId(refId);
 		otpEntity.setOtp(hashedOtp);
 		otpEntity.setUsed(false);
 		
@@ -138,14 +141,14 @@ public class SystemAdminOtpService {
 				+ "";
 		
 		emailService.sendEmail(adminEmail, "Your AttendEase System Admin Login OTP.",text);
+		
+		return refId;
 	}
 	
 	public boolean verifyOtp(SystemAdminRequestOtpDTO dto) {
-		
-		System.out.println("arrived in the service");
 		SystemAdminOtp otpEntity = systemAdminOtpRepository
-				.findTopByUsedFalseOrderByCreatedAtDesc()
-				.orElseThrow(() -> new RuntimeException("EMAIL NOT VERIFIED"));
+				.findByRefId(dto.getRefId())
+				.orElseThrow(() -> new RuntimeException("OTP NOT FOUND"));
 		
 		if(otpEntity.getExpiresAt().isBefore(LocalDateTime.now()) || otpEntity.getUsed()) {
 			return false;
@@ -154,6 +157,8 @@ public class SystemAdminOtpService {
 		if(passwordEncoder.matches(dto.getOtp(), otpEntity.getOtp())){
 			otpEntity.setUsed(true);
 			systemAdminOtpRepository.save(otpEntity);
+			
+			String AccessToken = jwtService
 			return true;
 		}else {
 			return false;

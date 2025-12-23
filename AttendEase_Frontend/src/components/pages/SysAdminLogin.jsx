@@ -21,6 +21,7 @@ const SysAdminLogin = () => {
     try {
       const response = await apiClient.post("/api/system-admin/verify-otp", {
         otp,
+        refId: sessionStorage.getItem("refid"),
       });
       toast.success("OTP Successfully Verified.");
       navigate("/system-admin-panel");
@@ -36,7 +37,8 @@ const SysAdminLogin = () => {
     setIsdisable(true);
     setBtntxt1("Sending OTP...");
     try {
-      await apiClient.post("/api/system-admin/send-otp");
+      const response = await apiClient.post("/api/system-admin/send-otp");
+      sessionStorage.setItem("refid", response.data.refId);
       toast.success("OTP Successfully Sent");
       setOtpsent(true);
     } catch (error) {

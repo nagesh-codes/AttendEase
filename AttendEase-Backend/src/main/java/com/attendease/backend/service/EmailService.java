@@ -23,7 +23,7 @@ public class EmailService {
 			helper.setSubject(subject);
 			helper.setText(body,true);
 			
-//			mailSender.send(message);
+			mailSender.send(message);
 			System.out.println("Mail Sent successfully...");
 		} catch (Exception e) {
 			// TODO: handle exception
