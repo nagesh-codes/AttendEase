@@ -24,6 +24,8 @@ const SysAdminLogin = () => {
         refId: sessionStorage.getItem("refid"),
       });
       toast.success("OTP Successfully Verified.");
+      localStorage.setItem('refreshToken',)
+      console.log(response);
       navigate("/system-admin-panel");
     } catch (error) {
       console.error(error);

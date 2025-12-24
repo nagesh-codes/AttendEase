@@ -27,7 +27,7 @@ public class EmailService {
 			System.out.println("Mail Sent successfully...");
 		} catch (Exception e) {
 			// TODO: handle exception
-			e.printStackTrace();			
+			e.printStackTrace();		
 		}
         
     }

@@ -11,51 +11,62 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.attendease.backend.dto.SystemAdminRequestOtpDTO;
+import com.attendease.backend.dto.SystemAdminTokenResponseDTO;
 import com.attendease.backend.entity.SystemAdminOtp;
+import com.attendease.backend.entity.SystemAdminRefreshTokens;
 import com.attendease.backend.repository.SystemAdminOtpRepository;
-
+import com.attendease.backend.repository.SystemAdminRefreshTokenRepository;
+import com.attendease.backend.util.HashUtil;
 
 @Service
 public class SystemAdminOtpService {
 	@Value("${SystemAdminEmail}")
-    private String adminEmail;
-	
+	private String adminEmail;
+
 	@Autowired
 	public static final SecureRandom secureRandom = new SecureRandom();
 	private final EmailService emailService;
 	private final SystemAdminOtpRepository systemAdminOtpRepository;
-	
+	private final SystemAdminRefreshTokenRepository systemAdminRefreshTokenRepository;
+	private final JwtService jwtService;
+	private final HashUtil hashUtil;
+
 	private final PasswordEncoder passwordEncoder;
-	
+
 	public static String generateOtp() {
-		int randomOtp = secureRandom.nextInt(0,1000000);
+		int randomOtp = secureRandom.nextInt(0, 1000000);
 		return String.format("%06d", randomOtp);
 	}
-	
-	public SystemAdminOtpService(EmailService emailService,SystemAdminOtpRepository systemAdminOtpRepository,PasswordEncoder passwordEncoder) {
+
+	public SystemAdminOtpService(EmailService emailService, SystemAdminOtpRepository systemAdminOtpRepository,
+			SystemAdminRefreshTokenRepository systemAdminRefreshTokenRepository, PasswordEncoder passwordEncoder,
+			JwtService jwtService, HashUtil hashUtil) {
 		this.emailService = emailService;
 		this.systemAdminOtpRepository = systemAdminOtpRepository;
 		this.passwordEncoder = passwordEncoder;
+		this.jwtService = jwtService;
+		this.hashUtil = hashUtil;
+		this.systemAdminRefreshTokenRepository = systemAdminRefreshTokenRepository;
 	}
-	
+
 	@Transactional
 	public String generateAndSendOtp() {
-		
+
 		String otp = generateOtp();
-		String refId = UUID.randomUUID().toString().substring(0,8);
-		
+		String refId = UUID.randomUUID().toString().substring(0, 8);
+
 		String hashedOtp = passwordEncoder.encode(otp);
-		
+
 		SystemAdminOtp otpEntity = new SystemAdminOtp();
-		
+
 		otpEntity.setRefId(refId);
 		otpEntity.setOtp(hashedOtp);
 		otpEntity.setUsed(false);
-		
+
 		otpEntity.setExpiresAt(LocalDateTime.now().plusMinutes(5));
-		
+
 		systemAdminOtpRepository.saveAndFlush(otpEntity);
-		
+
 		String text = "<!DOCTYPE html>\r\n"
 				+ "<html>\r\n"
 				+ "<head>\r\n"
@@ -104,7 +115,7 @@ public class SystemAdminOtpService {
 				+ "                            letter-spacing:6px;\r\n"
 				+ "                            color:#1abc9c;\r\n"
 				+ "                        \">\r\n"
-				+ "                            {'"+otp+"'}\r\n"
+				+ "                            {'" + otp + "'}\r\n"
 				+ "                        </div>\r\n"
 				+ "\r\n"
 				+ "                        <p>\r\n"
@@ -139,30 +150,44 @@ public class SystemAdminOtpService {
 				+ "</body>\r\n"
 				+ "</html>\r\n"
 				+ "";
-		
-		emailService.sendEmail(adminEmail, "Your AttendEase System Admin Login OTP.",text);
-		
+
+		emailService.sendEmail(adminEmail, "Your AttendEase System Admin Login OTP.", text);
+
 		return refId;
 	}
 	
-	public boolean verifyOtp(SystemAdminRequestOtpDTO dto) {
+	@Transactional
+	public SystemAdminTokenResponseDTO verifyOtp(SystemAdminRequestOtpDTO dto) {
 		SystemAdminOtp otpEntity = systemAdminOtpRepository
 				.findByRefId(dto.getRefId())
 				.orElseThrow(() -> new RuntimeException("OTP NOT FOUND"));
-		
-		if(otpEntity.getExpiresAt().isBefore(LocalDateTime.now()) || otpEntity.getUsed()) {
-			return false;
+
+		if (otpEntity.getExpiresAt().isBefore(LocalDateTime.now()) || otpEntity.getUsed()) {
+			throw new RuntimeException("OTP EXPIRED");
 		}
-		
-		if(passwordEncoder.matches(dto.getOtp(), otpEntity.getOtp())){
+
+		if (passwordEncoder.matches(dto.getOtp(), otpEntity.getOtp())) {
 			otpEntity.setUsed(true);
 			systemAdminOtpRepository.save(otpEntity);
+
+			systemAdminRefreshTokenRepository.findAll()
+					.forEach(token -> token.setRevoked(true));
+
+			String AccessToken = jwtService.generateSystemAdminToken();
+			String refreshToken = UUID.randomUUID().toString() + UUID.randomUUID();
+
+			String refreshTokenHash = hashUtil.sha256(AccessToken);
 			
-			String AccessToken = jwtService
-			return true;
-		}else {
-			return false;
+			SystemAdminRefreshTokens tokenEntity = new SystemAdminRefreshTokens();
+			tokenEntity.setToken(refreshTokenHash);
+			tokenEntity.setExpiresAt(LocalDateTime.now().plusDays(7));
+			
+			systemAdminRefreshTokenRepository.save(tokenEntity);
+
+			return new SystemAdminTokenResponseDTO(refreshToken, AccessToken);
+		} else {
+			throw new RuntimeException("OTP INVALID");
 		}
 	}
-	
+
 }
