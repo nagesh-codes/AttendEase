@@ -39,6 +39,7 @@ public class JwtService{
 				.setSubject(subject)
 				.setIssuedAt(new Date())
 				.setExpiration(new Date(System.currentTimeMillis() + expiryMillis))
+				.signWith(signingKey)
 				.compact();
 	}
 	

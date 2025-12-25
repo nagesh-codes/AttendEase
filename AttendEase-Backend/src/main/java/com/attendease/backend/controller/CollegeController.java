@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -41,5 +42,17 @@ public class CollegeController{
     public List<CollegeListResponseDTO> getAllActiveColleges() {
 			return collegeService.getActiveColleges();
     }
+	
+	@PatchMapping("/approve-appn")
+	public ResponseEntity<?> approveCollege(@RequestBody CollegeApplicationStatusRequestDTO dto){
+		collegeApplicationService.approveCollege(dto);
+		return ResponseEntity.ok("Changes Saved");
+	}
+	
+	@PatchMapping("/reject-appn")
+	public ResponseEntity<?> rejectCollege(@RequestBody CollegeApplicationStatusRequestDTO dto){
+		collegeApplicationService.rejectCollege(dto);
+		return ResponseEntity.ok("Changes Saved");
+	}
 	
 }

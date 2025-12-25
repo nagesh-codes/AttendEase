@@ -1,32 +1,65 @@
 import React, { useEffect, useState } from "react";
 import "../css-files/SystemAdmin.css";
 import { apiClient } from "../../API/apiClient";
+import { toast } from "react-toastify";
 
-const optionsWithTime = { 
-    year: 'numeric', 
-    month: 'short', 
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit'
+const optionsWithTime = {
+  year: "numeric",
+  month: "short",
+  day: "numeric",
+  hour: "2-digit",
+  minute: "2-digit",
 };
 
 const CollegeApplications = () => {
   const [ClgAppn, setClgAppn] = useState([]);
 
   useEffect(() => {
-    const getPendingCollegeApplications = async () => {
-      try {
-        const response = await apiClient.get(
-          "api/system-admin/pendingCollegeApplications"
-        );
-        setClgAppn(response.data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
     getPendingCollegeApplications();
   }, []);
+
+  const getPendingCollegeApplications = async () => {
+    try {
+      const response = await apiClient.get(
+        "api/system-admin/pendingCollegeApplications"
+      );
+      setClgAppn(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const approveCollege = async (id) => {
+    try {
+      const response = await apiClient.patch("api/colleges/approve-appn", {
+        id,
+      });
+      if (response) {
+        toast.success("Changes Saved");
+      } else {
+        toast.error("Internal Server Error");
+      }
+    } catch (error) {
+      console.error(error.message);
+      toast.error("Internal Server Error");
+    }
+  };
+
+  const rejectCollege = async (id) => {
+    try {
+      const response = await apiClient.patch("/api/colleges/reject-appn", {
+        id,
+      });
+      if (response) {
+        toast.success("changes saved");
+      } else {
+        toast.error("Internal Server Error");
+      }
+    } catch (error) {
+      console.error(error.message);
+      toast.error("Internal Server Error");
+    }
+  };
 
   return (
     <div className="college-application ">
@@ -51,17 +84,34 @@ const CollegeApplications = () => {
                   </div>
                   <div className="App-time">
                     <span>Submission Date:</span>
-                    {new Date(data.createdAt).toLocaleString('en-US', optionsWithTime)}
+                    {new Date(data.createdAt).toLocaleString(
+                      "en-US",
+                      optionsWithTime
+                    )}
                   </div>
                   <div className="btn-field">
-                    <button type="button">Approve</button>
-                    <button type="button">Reject</button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        approveCollege(data.id);
+                      }}
+                    >
+                      Approve
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        rejectCollege(data.id);
+                      }}
+                    >
+                      Reject
+                    </button>
                   </div>
                 </div>
               );
             })
           ) : (
-            <div className="r"></div>
+            <div className="loading"> Loading Applications </div>
           )}
         </div>
       </div>
@@ -85,18 +135,6 @@ const SystemAdmin = () => {
   const [activeSection, setActiveSection] = useState("College Application");
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
 
-  const renderPlaceholderList = (count) => {
-    return Array.from({ length: count }).map((_, index) => (
-      <div className="list-item-wrapper" key={index}>
-        <div className="placeholder-icon"></div>
-        <div className="placeholder-text-group">
-          <div className="placeholder-bar long"></div>
-          <div className="placeholder-bar short"></div>
-        </div>
-      </div>
-    ));
-  };
-
   const handleMenuClick = (sectionName) => {
     setActiveSection(sectionName);
     setIsMobileSidebarOpen(false);
@@ -109,21 +147,6 @@ const SystemAdmin = () => {
   const renderContent = () => {
     switch (activeSection) {
       case "College Application":
-        // return (
-        //   <>
-        //     <h1 className="sa-page-title">System Admin Dashboard</h1>
-        //     <div className="sa-dashboard-grid">
-        //       <section className="sa-card">
-        //         <h2 className="sa-card-title">Recent College Applications</h2>
-        //         <div className="sa-card-body">{renderPlaceholderList(6)}</div>
-        //       </section>
-        //       <section className="sa-card">
-        //         <h2 className="sa-card-title">Active Colleges</h2>
-        //         <div className="sa-card-body">{renderPlaceholderList(3)}</div>
-        //       </section>
-        //     </div>
-        //   </>
-        // );
         return <CollegeApplications />;
       case "Colleges":
         return <CollegesContent />;
@@ -142,9 +165,9 @@ const SystemAdmin = () => {
       >
         <div
           className={`sa-menu-item ${
-            activeSection === "College Application" ? "active" : ""
+            activeSection === "Users" ? "active" : ""
           }`}
-          onClick={() => handleMenuClick("College Application")}
+          onClick={() => handleMenuClick("Users")}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -158,12 +181,10 @@ const SystemAdmin = () => {
             strokeLinejoin="round"
             className="menu-icon"
           >
-            <rect x="3" y="3" width="7" height="7"></rect>
-            <rect x="14" y="3" width="7" height="7"></rect>
-            <rect x="14" y="14" width="7" height="7"></rect>
-            <rect x="3" y="14" width="7" height="7"></rect>
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
           </svg>
-          <span>College Application</span>
+          <span>Users</span>
         </div>
         <div
           className={`sa-menu-item ${
@@ -188,11 +209,12 @@ const SystemAdmin = () => {
           </svg>
           <span>Colleges</span>
         </div>
+
         <div
           className={`sa-menu-item ${
-            activeSection === "Users" ? "active" : ""
+            activeSection === "College Application" ? "active" : ""
           }`}
-          onClick={() => handleMenuClick("Users")}
+          onClick={() => handleMenuClick("College Application")}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -206,10 +228,12 @@ const SystemAdmin = () => {
             strokeLinejoin="round"
             className="menu-icon"
           >
-            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-            <circle cx="12" cy="7" r="4"></circle>
+            <rect x="3" y="3" width="7" height="7"></rect>
+            <rect x="14" y="3" width="7" height="7"></rect>
+            <rect x="14" y="14" width="7" height="7"></rect>
+            <rect x="3" y="14" width="7" height="7"></rect>
           </svg>
-          <span>Users</span>
+          <span>College Application</span>
         </div>
       </aside>
 

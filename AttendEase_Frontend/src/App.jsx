@@ -13,7 +13,7 @@ function App() {
   return (
     <>
       <ToastContainer
-        position="top-right"
+        position="bottom-right"
         autoClose={5000}
         hideProgressBar={false}
         newestOnTop={false}
@@ -22,7 +22,8 @@ function App() {
         pauseOnFocusLoss={false}
         draggable
         pauseOnHover={false}
-        theme="light"
+        theme="dark"
+        stacked
       />
       <Routes>
         <Route path={"/"} element={<Home />} />
@@ -31,7 +32,7 @@ function App() {
         <Route path={"/apply-college"} element={<ApplyCollege />} />
         <Route path={"/SysAdminLogin"} element={<SysAdminLogin />} />
         <Route path={"/system-admin-panel"} element={<SystemAdmin />} />
-        <Route path={"*"} element={<ApplicationList/>} />
+        <Route path={"*"} element={<ApplicationList />} />
       </Routes>
     </>
   );

@@ -44,16 +44,10 @@ public class SystemAdminController{
 	public SystemAdminTokenResponseDTO verifyOtp(@RequestBody SystemAdminRequestOtpDTO dto){
 		System.out.println(dto.getRefId());
 		return systemAdminOtpService.verifyOtp(dto);
-//		if(isValid) {
-//			return ResponseEntity.ok("OTP SUCCESSFULLY MATCHED");
-//		}else {
-//			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("OTP NOT MATCHED");
-////			return ResponseEntity.ok("");
-//		}
 	}
 	
-	@PostMapping("/refresh-token")
-	public SystemAdminTokenResponseDTO refreshToken() {
-		
-	}
+//	@PostMapping("/refresh-token")
+//	public SystemAdminTokenResponseDTO refreshToken() {
+//		
+//	}
 }

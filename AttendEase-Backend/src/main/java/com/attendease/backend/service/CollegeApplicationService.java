@@ -5,6 +5,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.attendease.backend.dto.CollegeApplicationRequestDTO;
 import com.attendease.backend.dto.CollegeApplicationResponseDTO;
+import com.attendease.backend.dto.CollegeApplicationStatusRequestDTO;
 import com.attendease.backend.entity.CollegeApplication;
 import com.attendease.backend.entity.CollegeApplicationStatus;
 import com.attendease.backend.repository.CollegeApplicationRepository;
@@ -113,5 +114,19 @@ public class CollegeApplicationService{
 				.stream()
 				.map(c -> new CollegeApplicationResponseDTO(c.getId(),c.getCollegeName(),c.getAuthorityName(),c.getAuthorityRole(),c.getOfficialEmail(),c.getCreatedAt()))
 				.toList();
+	}
+	
+	public void approveCollege(CollegeApplicationStatusRequestDTO dto) {
+		CollegeApplication clgEntity = collegeApplicationRespository.findById(dto.getId())
+				.orElseThrow(() -> new RuntimeException("college not found"));
+		clgEntity.setStatus(CollegeApplicationStatus.APPROVED);
+		collegeApplicationRespository.save(clgEntity);
+	}
+	
+	public void rejectCollege(CollegeApplicationStatusRequestDTO dto) {
+		CollegeApplication clgEntity = collegeApplicationRespository.findById(dto.getId())
+				.orElseThrow(() -> new RuntimeException("college not found"));
+		clgEntity.setStatus(CollegeApplicationStatus.REJECTED);
+		collegeApplicationRespository.save(clgEntity);
 	}
 }

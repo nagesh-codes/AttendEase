@@ -1,144 +1,148 @@
-export default function ApplicationList() {
-  const applications = [
-    {
-      applicant: "Sangola Mahavidyalaya, Sangola.",
-      contact: "Nagesh Ghodake (HOD)",
-      email: "nagesh@gmail.com",
-      date: "2025-12-12",
-    },
-  ];
+import React from 'react';
+import { Check, X, Mail, GraduationCap } from 'lucide-react';
 
+const ApplicationList = ({ applications = [
+  { id: 1, name: "Alice Johnson", username: "alice_j", email: "alice@example.edu", college: "Harvard University" },
+  { id: 2, name: "Mark Smith", username: "msmith99", email: "mark.s@college.com", college: "Stanford University" },
+  { id: 3, name: "Sarah Lee", username: "slee_dev", email: "sarah@tech.edu", college: "MIT" }
+], onApprove, onReject }) => {
   return (
     <>
-      <style>
-        {`
-        .app-list {
+      {/* Vanilla CSS Block */}
+      <style>{`
+        .table-container {
+          overflow-x: auto;
+          border-radius: 8px;
+          border: 1px solid #e5e7eb;
+          box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+          margin: 20px;
+          font-family: sans-serif;
+        }
+        .user-table {
           width: 100%;
-          padding: 16px;
-          box-sizing: border-box;
-          font-family: Arial, sans-serif;
+          border-collapse: collapse;
+          text-align: left;
+          font-size: 14px;
+          background-color: #ffffff;
         }
-
-        .app-item {
-          border: 1px solid #ddd;
-          border-radius: 6px;
-          padding: 12px;
-          margin-bottom: 12px;
+        .user-table thead {
+          background-color: #f9fafb;
+          text-transform: uppercase;
+          font-size: 12px;
+          letter-spacing: 0.05em;
+          color: #374151;
         }
-
-        .field {
-          margin-bottom: 8px;
+        .user-table th, .user-table td {
+          padding: 16px 24px;
         }
-
-        .label {
+        .user-table tbody tr {
+          border-bottom: 1px solid #f3f4f6;
+          transition: background-color 0.2s;
+        }
+        .user-table tbody tr:hover {
+          background-color: #f9fafb;
+        }
+        .applicant-name {
           font-weight: 600;
-          color: #444;
+          color: #111827;
         }
-
-        .value {
-          color: #111;
-        }
-
-        .actions {
+        .applicant-email {
           display: flex;
+          align-items: center;
+          color: #6b7280;
+          font-size: 12px;
+          margin-top: 4px;
+        }
+        .college-info {
+          display: flex;
+          align-items: center;
+          color: #374151;
+        }
+        .status-badge {
+          padding: 4px 8px;
+          border-radius: 9999px;
+          font-size: 12px;
+          font-weight: 500;
+          background-color: #fef9c3;
+          color: #854d0e;
+        }
+        .action-container {
+          display: flex;
+          justify-content: center;
           gap: 8px;
         }
-
-        .actions button {
-          padding: 6px 14px;
+        .btn-action {
+          padding: 8px;
+          border-radius: 8px;
           border: none;
-          border-radius: 4px;
           cursor: pointer;
-          font-weight: 600;
+          transition: all 0.2s;
+          display: flex;
+          align-items: center;
+          justify-content: center;
         }
+        .btn-approve { background-color: #f0fdf4; color: #16a34a; }
+        .btn-approve:hover { background-color: #16a34a; color: white; }
+        .btn-reject { background-color: #fef2f2; color: #dc2626; }
+        .btn-reject:hover { background-color: #dc2626; color: white; }
+      `}</style>
 
-        .approve {
-          background-color: #2e7d32;
-          color: #fff;
-        }
-
-        .reject {
-          background-color: #c62828;
-          color: #fff;
-        }
-
-        /* ========================= */
-        /* Desktop View (≥ 768px) */
-        /* ========================= */
-        @media (min-width: 768px) {
-          .app-item {
-            display: grid;
-            grid-template-columns: 2.5fr 2fr 2.5fr 1.5fr 2fr;
-            align-items: center;
-            gap: 12px;
-          }
-
-          .field {
-            display: flex;
-            flex-direction: column;
-            margin-bottom: 0;
-          }
-
-          .actions {
-            justify-content: flex-end;
-          }
-        }
-
-        /* ========================= */
-        /* Mobile View (< 768px) */
-        /* ========================= */
-        @media (max-width: 767px) {
-          .field {
-            display: flex;
-            justify-content: space-between;
-          }
-
-          .actions {
-            margin-top: 10px;
-            justify-content: space-between;
-          }
-
-          .actions button {
-            width: 48%;
-          }
-        }
-        `}
-      </style>
-
-      <div className="app-list">
-        {applications.map((app, index) => (
-          <div className="app-item" key={index}>
-            <div className="field">
-              <span className="label">Applicant:</span>
-              <span className="value">{app.applicant}</span>
-            </div>
-
-            <div className="field">
-              <span className="label">Contact Person:</span>
-              <span className="value">{app.contact}</span>
-            </div>
-
-            <div className="field">
-              <span className="label">Email:</span>
-              <span className="value">{app.email}</span>
-            </div>
-
-            <div className="field">
-              <span className="label">Submission Date:</span>
-              <span className="value">{app.date}</span>
-            </div>
-
-            <div className="actions">
-              <button className="approve" type="button">
-                Approve
-              </button>
-              <button className="reject" type="button">
-                Reject
-              </button>
-            </div>
-          </div>
-        ))}
+      {/* Table Structure */}
+      <div className="table-container">
+        <table className="user-table">
+          <thead>
+            <tr>
+              <th>Applicant</th>
+              <th>Username</th>
+              <th>College</th>
+              <th>Status</th>
+              <th style={{ textAlign: 'center' }}>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {applications.map((app) => (
+              <tr key={app.id}>
+                <td>
+                  <div className="applicant-name">{app.name}</div>
+                  <div className="applicant-email">
+                    <Mail size={12} style={{ marginRight: '4px' }} /> {app.email}
+                  </div>
+                </td>
+                <td style={{ color: '#4b5563' }}>@{app.username}</td>
+                <td>
+                  <div className="college-info">
+                    <GraduationCap size={16} style={{ marginRight: '8px', color: '#3b82f6' }} />
+                    {app.college}
+                  </div>
+                </td>
+                <td>
+                  <span className="status-badge">Pending</span>
+                </td>
+                <td>
+                  <div className="action-container">
+                    <button 
+                      onClick={() => onApprove(app.id)}
+                      className="btn-action btn-approve"
+                      title="Approve"
+                    >
+                      <Check size={18} />
+                    </button>
+                    <button 
+                      onClick={() => onReject(app.id)}
+                      className="btn-action btn-reject"
+                      title="Reject"
+                    >
+                      <X size={18} />
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     </>
   );
-}
+};
+
+export default ApplicationList;
