@@ -4,22 +4,20 @@ import jakarta.persistence.*;
 import java.time.LocalDate;
 
 @Entity
-@Table(
-    name = "attendance_sessions",
-    uniqueConstraints = @UniqueConstraint(columnNames = {"class_id", "session_date"})
-)
+@Table(name = "attendance_sessions", uniqueConstraints = @UniqueConstraint(columnNames = { "class_id",
+		"session_date" }))
 public class AttendanceSession {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "class_id", nullable = false)
-    private ClassEntity classEntity;
+	@ManyToOne
+	@JoinColumn(name = "class_id", nullable = false)
+	private ClassEntity classEntity;
 
-    @Column(name = "session_date", nullable = false)
-    private LocalDate sessionDate;
+	@Column(name = "session_date", nullable = false)
+	private LocalDate sessionDate;
 
 	public Long getId() {
 		return id;
@@ -45,6 +43,6 @@ public class AttendanceSession {
 		this.sessionDate = sessionDate;
 	}
 
-    // getters and setters
-    
+	// getters and setters
+
 }

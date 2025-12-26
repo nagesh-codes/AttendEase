@@ -7,37 +7,37 @@ import java.time.LocalDateTime;
 @Table(name = "users")
 public class User {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-    // NEW FIELD
-    @Column(nullable = false)
-    private String name;
+	// NEW FIELD
+	@Column(nullable = false)
+	private String name;
 
-    @Column(unique = true, nullable = false)
-    private String username;
+	@Column(unique = true, nullable = false)
+	private String username;
 
-    @Column(unique = true, nullable = false)
-    private String email;
+	@Column(unique = true, nullable = false)
+	private String email;
 
-    @Column(name = "password_hash", nullable = false)
-    private String passwordHash;
+	@Column(name = "password_hash", nullable = false)
+	private String passwordHash;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private Role role;
+	@Enumerated(EnumType.STRING)
+	@Column(nullable = false)
+	private Role role;
 
-    @ManyToOne
-    @JoinColumn(name = "college_id")
-    private College college;
+	@ManyToOne
+	@JoinColumn(name = "college_id")
+	private College college;
 
-    @Column(name = "created_at")
-    private LocalDateTime createdAt = LocalDateTime.now();
-    
-    @Enumerated(EnumType.STRING)
-    @Column(name = "account_status")
-    private UserStatus accountStatus;
+	@Column(name = "created_at")
+	private LocalDateTime createdAt = LocalDateTime.now();
+
+	@Enumerated(EnumType.STRING)
+	@Column(name = "account_status")
+	private UserStatus accountStatus;
 
 	public Long getId() {
 		return id;
@@ -110,5 +110,5 @@ public class User {
 	public void setAccountStatus(UserStatus accountStatus) {
 		this.accountStatus = accountStatus;
 	}
-    
+
 }

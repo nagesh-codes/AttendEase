@@ -1,6 +1,6 @@
 package com.attendease.backend.entity;
 
-public enum UserStatus{
+public enum UserStatus {
 	PENDING,
 	ACTIVE,
 	STATUS

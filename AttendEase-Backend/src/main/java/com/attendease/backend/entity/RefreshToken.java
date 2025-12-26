@@ -7,21 +7,21 @@ import java.time.Instant;
 @Table(name = "refresh_tokens")
 public class RefreshToken {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+	@ManyToOne
+	@JoinColumn(name = "user_id", nullable = false)
+	private User user;
 
-    @Column(unique = true, nullable = false)
-    private String token;
+	@Column(unique = true, nullable = false)
+	private String token;
 
-    @Column(name = "expires_at", nullable = false)
-    private Instant expiresAt;
+	@Column(name = "expires_at", nullable = false)
+	private Instant expiresAt;
 
-    private boolean revoked = false;
+	private boolean revoked = false;
 
 	public Long getId() {
 		return id;
@@ -63,6 +63,6 @@ public class RefreshToken {
 		this.revoked = revoked;
 	}
 
-    // getters and setters
-    
+	// getters and setters
+
 }

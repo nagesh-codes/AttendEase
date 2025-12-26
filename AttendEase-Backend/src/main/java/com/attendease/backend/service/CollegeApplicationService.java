@@ -10,29 +10,31 @@ import com.attendease.backend.entity.CollegeApplication;
 import com.attendease.backend.entity.CollegeApplicationStatus;
 import com.attendease.backend.repository.CollegeApplicationRepository;
 import java.util.List;
+
 @Service
-public class CollegeApplicationService{
-	
+public class CollegeApplicationService {
+
 	private CollegeApplicationRepository collegeApplicationRespository;
 	private EmailService emailService;
-	
-	public CollegeApplicationService(CollegeApplicationRepository collegeApplicationRepository,EmailService emailService) {
+
+	public CollegeApplicationService(CollegeApplicationRepository collegeApplicationRepository,
+			EmailService emailService) {
 		this.collegeApplicationRespository = collegeApplicationRepository;
 		this.emailService = emailService;
 	}
-	
+
 	@Transactional
 	public void addCollegeApllication(CollegeApplicationRequestDTO dto) {
 		CollegeApplication clgApp = new CollegeApplication();
-		
+
 		clgApp.setCollegeName(dto.getCollegeName());
 		clgApp.setAuthorityName(dto.getAuthorityName());
 		clgApp.setAuthorityRole(dto.getAuthorityRole());
 		clgApp.setOfficialEmail(dto.getOfficialEmail());
 		clgApp.setStatus(CollegeApplicationStatus.PENDING);
-		
+
 		collegeApplicationRespository.saveAndFlush(clgApp);
-		
+
 		String text = "<!DOCTYPE html>\r\n"
 				+ "<html>\r\n"
 				+ "<head>\r\n"
@@ -106,23 +108,25 @@ public class CollegeApplicationService{
 				+ "</body>\r\n"
 				+ "</html>\r\n"
 				+ "";
-		emailService.sendEmail(dto.getOfficialEmail(), "College Application Submitted Successfully – AttendEase\r\n",text);
+		emailService.sendEmail(dto.getOfficialEmail(), "College Application Submitted Successfully – AttendEase\r\n",
+				text);
 	}
-	
-	public List<CollegeApplicationResponseDTO> getAllPendingCollegeApplication(){
+
+	public List<CollegeApplicationResponseDTO> getAllPendingCollegeApplication() {
 		return collegeApplicationRespository.findByStatusOrderByCreatedAtDesc(CollegeApplicationStatus.PENDING)
 				.stream()
-				.map(c -> new CollegeApplicationResponseDTO(c.getId(),c.getCollegeName(),c.getAuthorityName(),c.getAuthorityRole(),c.getOfficialEmail(),c.getCreatedAt()))
+				.map(c -> new CollegeApplicationResponseDTO(c.getId(), c.getCollegeName(), c.getAuthorityName(),
+						c.getAuthorityRole(), c.getOfficialEmail(), c.getCreatedAt()))
 				.toList();
 	}
-	
+
 	public void approveCollege(CollegeApplicationStatusRequestDTO dto) {
 		CollegeApplication clgEntity = collegeApplicationRespository.findById(dto.getId())
 				.orElseThrow(() -> new RuntimeException("college not found"));
 		clgEntity.setStatus(CollegeApplicationStatus.APPROVED);
 		collegeApplicationRespository.save(clgEntity);
 	}
-	
+
 	public void rejectCollege(CollegeApplicationStatusRequestDTO dto) {
 		CollegeApplication clgEntity = collegeApplicationRespository.findById(dto.getId())
 				.orElseThrow(() -> new RuntimeException("college not found"));

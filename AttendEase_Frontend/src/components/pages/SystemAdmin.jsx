@@ -21,7 +21,7 @@ const CollegeApplications = () => {
   const getPendingCollegeApplications = async () => {
     try {
       const response = await apiClient.get(
-        "api/system-admin/pendingCollegeApplications"
+        "/api/system-admin/pendingCollegeApplications"
       );
       setClgAppn(response.data);
     } catch (error) {
@@ -62,7 +62,7 @@ const CollegeApplications = () => {
   };
 
   return (
-    <div className="college-application ">
+    <div className="college-application">
       <div className="wrapper">
         <div className="header">College Applications</div>
         <div className="application-list">
@@ -118,21 +118,134 @@ const CollegeApplications = () => {
     </div>
   );
 };
-const CollegesContent = () => (
-  <div className="sa-placeholder-page">
-    <h2>Colleges Management</h2>
-    <p>Content for Colleges goes here.</p>
-  </div>
-);
-const UsersContent = () => (
-  <div className="sa-placeholder-page">
-    <h2>User Management</h2>
-    <p>Content for Users goes here.</p>
-  </div>
-);
+const CollegesContent = () => {
+  const [clg, setClg] = useState([]);
+
+  const getCollegeList = async () => {
+    try {
+      const response = await apiClient.get("/api/colleges/getCollegeInfoList");
+      if (response) {
+        setClg(response.data);
+      } else {
+        toast.error("Internal Server Error");
+      }
+    } catch (error) {
+      toast.error("Internal Server Error");
+      console.error(error.message);
+    }
+  };
+
+  useEffect(() => {
+    getCollegeList();
+  }, []);
+
+  return (
+    <div className="colleges">
+      <div className="wrapper">
+        <div className="header">Colleges</div>
+        <div className="college-list">
+          {clg.length > 0 ? (
+            clg.map((data, key) => {
+              return (
+                <div className="appn" key={key}>
+                  <div className="ClgName">
+                    <span>College Name:</span>
+                    {data.name}
+                  </div>
+                  <div className="AuthName">
+                    <span>Created By:</span>
+                    {data.createdBy ? data.createdBy : "N/A"}
+                  </div>
+                  <div className="Email">
+                    <span>Email:</span>
+                    {data.officialEmail ? data.officialEmail : "N/A"}
+                  </div>
+                  <div className="App-time">
+                    <span>Creation Date:</span>
+                    {new Date(data.createdAt).toLocaleString(
+                      "en-US",
+                      optionsWithTime
+                    )}
+                  </div>
+                </div>
+              );
+            })
+          ) : (
+            <div className="loading"> Loading Applications </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+const UsersContent = () => {
+  const [clg, setClg] = useState([]);
+
+  const getUsersInfo = async () => {
+    try {
+      const response = await apiClient.get("/api/colleges/getUsersInfoList");
+      console.log(response.data);
+      setClg(response.data);
+    } catch (error) {
+      console.error(error.message);
+    }
+  };
+
+  useEffect(() => {
+    getUsersInfo();
+  }, []);
+  return (
+    <div className="users">
+      <div className="wrapper">
+        <div className="header">Users</div>
+        <div className="user-list">
+          {clg.length > 0 ? (
+            clg.map((data, key) => {
+              return (
+                <div className="appn" key={key}>
+                  <div className="field">
+                    <span>Name:</span>
+                    {data.name}
+                  </div>
+                  <div className="field">
+                    <span>username:</span>
+                    {data.username ? data.username : "N/A"}
+                  </div>
+                  <div className="field">
+                    <span>Email:</span>
+                    {data.email ? data.email : "N/A"}
+                  </div>
+                  <div className="field">
+                    <span>Role:</span>
+                    {data.role ? data.role : "N/A"}
+                  </div>
+                  <div className="field">
+                    <span>College:</span>
+                    {data.college ? data.college : "N/A"}
+                  </div>
+                  <div className="App-time">
+                    <span>Created At:</span>
+                    {new Date(data.createdAt).toLocaleString(
+                      "en-US",
+                      optionsWithTime
+                    )}
+                  </div>
+                </div>
+              );
+            })
+          ) : (
+            <div className="loading"> Loading Applications </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const SystemAdmin = () => {
-  const [activeSection, setActiveSection] = useState("College Application");
+  const [activeSection, setActiveSection] = useState(
+    sessionStorage.getItem("current_tab") || "College Application"
+  );
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
 
   const handleMenuClick = (sectionName) => {
@@ -147,10 +260,13 @@ const SystemAdmin = () => {
   const renderContent = () => {
     switch (activeSection) {
       case "College Application":
+        sessionStorage.setItem("current_tab", "College Application");
         return <CollegeApplications />;
       case "Colleges":
+        sessionStorage.setItem("current_tab", "Colleges");
         return <CollegesContent />;
       case "Users":
+        sessionStorage.setItem("current_tab", "Users");
         return <UsersContent />;
       default:
         return <div>Page not found</div>;

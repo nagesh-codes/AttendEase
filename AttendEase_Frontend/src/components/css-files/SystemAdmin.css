@@ -66,12 +66,16 @@
   cursor: pointer;
 }
 
-.system-admin-wrapper .college-application {
+.system-admin-wrapper .college-application,
+.system-admin-wrapper .colleges,
+.system-admin-wrapper .users {
   width: 100%;
   height: 100%;
 }
 
-.system-admin-wrapper .college-application .wrapper {
+.system-admin-wrapper .college-application .wrapper,
+.system-admin-wrapper .colleges .wrapper,
+.system-admin-wrapper .users .wrapper {
   width: 100%;
   padding: 12px;
   display: flex;
@@ -79,7 +83,9 @@
   gap: 12px;
 }
 
-.system-admin-wrapper .college-application .header {
+.system-admin-wrapper .college-application .header,
+.system-admin-wrapper .colleges .header,
+.system-admin-wrapper .users .header {
   width: 100%;
   padding: 12px;
   font-size: 1.8rem;
@@ -90,7 +96,9 @@
   border-radius: 10px;
 }
 
-.system-admin-wrapper .application-list {
+.system-admin-wrapper .application-list,
+.system-admin-wrapper .colleges .college-list,
+.system-admin-wrapper .users .user-list {
   width: 100%;
   padding: 12px;
   display: grid;
@@ -112,7 +120,8 @@
 .system-admin-wrapper .ClgName,
 .system-admin-wrapper .AuthName,
 .system-admin-wrapper .Email,
-.system-admin-wrapper .App-time {
+.system-admin-wrapper .App-time,
+.system-admin-wrapper .field {
   display: flex;
   flex-direction: column;
   font-size: 0.95rem;
@@ -122,7 +131,8 @@
 .system-admin-wrapper .ClgName span,
 .system-admin-wrapper .AuthName span,
 .system-admin-wrapper .Email span,
-.system-admin-wrapper .App-time span {
+.system-admin-wrapper .App-time span,
+.system-admin-wrapper .field span {
   font-weight: 600;
   color: #444;
   margin-bottom: 2px;

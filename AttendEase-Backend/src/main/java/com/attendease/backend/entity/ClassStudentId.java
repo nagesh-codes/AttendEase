@@ -12,11 +12,13 @@ public class ClassStudentId implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof ClassStudentId)) return false;
+        if (this == o)
+            return true;
+        if (!(o instanceof ClassStudentId))
+            return false;
         ClassStudentId that = (ClassStudentId) o;
         return Objects.equals(classId, that.classId)
-            && Objects.equals(studentId, that.studentId);
+                && Objects.equals(studentId, that.studentId);
     }
 
     @Override

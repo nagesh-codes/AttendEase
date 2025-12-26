@@ -1,6 +1,6 @@
 package com.attendease.backend.dto;
 
-public class CollegeApplicationStatusRequestDTO{
+public class CollegeApplicationStatusRequestDTO {
 	private Long id;
 
 	public Long getId() {
@@ -10,5 +10,5 @@ public class CollegeApplicationStatusRequestDTO{
 	public void setId(Long id) {
 		this.id = id;
 	}
-	
+
 }

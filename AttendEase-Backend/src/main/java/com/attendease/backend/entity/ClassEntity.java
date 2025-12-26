@@ -7,23 +7,23 @@ import java.time.LocalDateTime;
 @Table(name = "classes")
 public class ClassEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-    @Column(nullable = false)
-    private String name;
+	@Column(nullable = false)
+	private String name;
 
-    @ManyToOne
-    @JoinColumn(name = "owner_id", nullable = false)
-    private User owner;
+	@ManyToOne
+	@JoinColumn(name = "owner_id", nullable = false)
+	private User owner;
 
-    @ManyToOne
-    @JoinColumn(name = "college_id", nullable = false)
-    private College college;
+	@ManyToOne
+	@JoinColumn(name = "college_id", nullable = false)
+	private College college;
 
-    @Column(name = "created_at")
-    private LocalDateTime createdAt = LocalDateTime.now();
+	@Column(name = "created_at")
+	private LocalDateTime createdAt = LocalDateTime.now();
 
 	public Long getId() {
 		return id;
@@ -65,6 +65,6 @@ public class ClassEntity {
 		this.createdAt = createdAt;
 	}
 
-    // getters and setters
-    
+	// getters and setters
+
 }

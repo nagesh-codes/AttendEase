@@ -11,27 +11,26 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "")
-public class SystemAdminOtp{
-	
+public class SystemAdminOtp {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
+
 	@Column(name = "otp")
 	private String otp;
-	
+
 	@Column(name = "created_at")
 	private LocalDateTime createdAt = LocalDateTime.now();
-	
+
 	@Column(name = "expires_at")
 	private LocalDateTime expiresAt;
-	
+
 	@Column(name = "used")
 	private Boolean used;
-	
+
 	@Column(name = "ref_id")
 	private String refId;
-	
 
 	public String getRefId() {
 		return refId;
@@ -80,7 +79,5 @@ public class SystemAdminOtp{
 	public void setUsed(Boolean used) {
 		this.used = used;
 	}
-	
-	
-	
+
 }

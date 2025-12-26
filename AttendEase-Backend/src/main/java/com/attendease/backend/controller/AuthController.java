@@ -22,5 +22,5 @@ public class AuthController {
         userService.registerTeacher(dto);
         return ResponseEntity.ok("Signup request submitted for approval");
     }
-    
+
 }

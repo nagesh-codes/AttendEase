@@ -12,11 +12,13 @@ public class AttendanceRecordId implements Serializable {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof AttendanceRecordId)) return false;
+        if (this == o)
+            return true;
+        if (!(o instanceof AttendanceRecordId))
+            return false;
         AttendanceRecordId that = (AttendanceRecordId) o;
         return Objects.equals(sessionId, that.sessionId)
-            && Objects.equals(studentId, that.studentId);
+                && Objects.equals(studentId, that.studentId);
     }
 
     @Override

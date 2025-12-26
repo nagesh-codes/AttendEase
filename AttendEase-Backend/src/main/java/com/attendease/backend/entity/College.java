@@ -6,21 +6,27 @@ import jakarta.persistence.*;
 
 @Entity
 @Table(name = "colleges")
-public class College{
-	
+public class College {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private long id;
-	
+
 	@Column(nullable = false)
 	private String name;
-	
+
 	@Enumerated(EnumType.STRING)
 	@Column(nullable = false)
 	private CollegeStatus status;
-	
-	@Column(name="created_at")
+
+	@Column(name = "created_at")
 	private LocalDateTime createdAt = LocalDateTime.now();
+
+	@Column(name = "created_by")
+	private String createdBy;
+
+	@Column(name = "Email")
+	private String email;
 
 	public long getId() {
 		return id;
@@ -53,6 +59,21 @@ public class College{
 	public void setCreatedAt(LocalDateTime createdAt) {
 		this.createdAt = createdAt;
 	}
-	
-	
+
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
 }

@@ -9,10 +9,10 @@ import org.springframework.stereotype.Repository;
 import com.attendease.backend.entity.CollegeApplication;
 import com.attendease.backend.entity.CollegeApplicationStatus;
 
-
 @Repository
-public interface CollegeApplicationRepository extends JpaRepository<CollegeApplication, Long>{
-	
+public interface CollegeApplicationRepository extends JpaRepository<CollegeApplication, Long> {
+
 	List<CollegeApplication> findByStatusOrderByCreatedAtDesc(CollegeApplicationStatus status);
+
 	Optional<CollegeApplication> findById(Long id);
 }

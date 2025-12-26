@@ -18,8 +18,8 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
 
     public UserService(UserRepository userRepository,
-                       CollegeRepository collegeRepository,
-                       PasswordEncoder passwordEncoder) {
+            CollegeRepository collegeRepository,
+            PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.collegeRepository = collegeRepository;
         this.passwordEncoder = passwordEncoder;
@@ -28,9 +28,9 @@ public class UserService {
     public void registerTeacher(TeacherSignupRequestDto dto) {
 
         // 1️⃣ Fetch college entity
-//        College college = collegeRepository.findById(dto.getCollegeId())
-//                .orElseThrow(() -> new RuntimeException("College not found"));
-        
+        // College college = collegeRepository.findById(dto.getCollegeId())
+        // .orElseThrow(() -> new RuntimeException("College not found"));
+
         College college = collegeRepository.findById(dto.getCollegeId()).orElse(null);
 
         User teacher = new User();
@@ -41,10 +41,10 @@ public class UserService {
         teacher.setPasswordHash(passwordEncoder.encode(dto.getPassword()));
 
         teacher.setRole(Role.TEACHER);
-        if(college == null) {        	
-        	teacher.setAccountStatus(UserStatus.ACTIVE);
-        }else {
-        	teacher.setAccountStatus(UserStatus.PENDING);
+        if (college == null) {
+            teacher.setAccountStatus(UserStatus.ACTIVE);
+        } else {
+            teacher.setAccountStatus(UserStatus.PENDING);
         }
 
         teacher.setCollege(college);

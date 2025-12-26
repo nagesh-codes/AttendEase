@@ -14,30 +14,30 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "college_applications")
 public class CollegeApplication {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
+
 	@Column(name = "college_name", nullable = false)
 	private String collegeName;
-	
-	@Column(name = "authority_name",nullable = false)
+
+	@Column(name = "authority_name", nullable = false)
 	private String authorityName;
-	
-	@Column(name = "authority_role",nullable = false)
+
+	@Column(name = "authority_role", nullable = false)
 	private String authorityRole;
-	
-	@Column(name = "Official_email",nullable = false)
+
+	@Column(name = "Official_email", nullable = false)
 	private String officialEmail;
-	
-	@Column(name = "status",nullable = false)
+
+	@Column(name = "status", nullable = false)
 	@Enumerated(EnumType.STRING)
 	private CollegeApplicationStatus status;
-	
-	@Column(name = "created_at",nullable = false)
+
+	@Column(name = "created_at", nullable = false)
 	private LocalDateTime createdAt = LocalDateTime.now();
-	
+
 	@Column(name = "reviewed_at")
 	private LocalDateTime reviewedAt;
 
@@ -104,6 +104,5 @@ public class CollegeApplication {
 	public void setReviewedAt(LocalDateTime reviewedAt) {
 		this.reviewedAt = reviewedAt;
 	}
-	
-	
+
 }

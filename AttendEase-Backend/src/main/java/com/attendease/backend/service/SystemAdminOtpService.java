@@ -155,7 +155,7 @@ public class SystemAdminOtpService {
 
 		return refId;
 	}
-	
+
 	@Transactional
 	public SystemAdminTokenResponseDTO verifyOtp(SystemAdminRequestOtpDTO dto) {
 		SystemAdminOtp otpEntity = systemAdminOtpRepository
@@ -177,11 +177,11 @@ public class SystemAdminOtpService {
 			String refreshToken = UUID.randomUUID().toString() + UUID.randomUUID();
 
 			String refreshTokenHash = hashUtil.sha256(AccessToken);
-			
+
 			SystemAdminRefreshTokens tokenEntity = new SystemAdminRefreshTokens();
 			tokenEntity.setToken(refreshTokenHash);
 			tokenEntity.setExpiresAt(LocalDateTime.now().plusDays(7));
-			
+
 			systemAdminRefreshTokenRepository.save(tokenEntity);
 
 			return new SystemAdminTokenResponseDTO(refreshToken, AccessToken);

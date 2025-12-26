@@ -1,7 +1,6 @@
 package com.attendease.backend.entity;
 
-public enum Role{
+public enum Role {
 	ADMIN,
 	TEACHER
 }
-

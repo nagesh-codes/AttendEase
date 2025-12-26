@@ -10,27 +10,26 @@ import jakarta.mail.internet.MimeMessage;
 @Service
 public class EmailService {
 
-    @Autowired
-    private JavaMailSender mailSender;
+	@Autowired
+	private JavaMailSender mailSender;
 
-    public void sendEmail(String toEmail, String subject, String body) {
-    	try {
-    		System.out.println(toEmail);
+	public void sendEmail(String toEmail, String subject, String body) {
+		try {
+			System.out.println(toEmail);
 			MimeMessage message = mailSender.createMimeMessage();
-			MimeMessageHelper helper = new MimeMessageHelper(message,true,"UTF-8");
+			MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
 			helper.setFrom("${Email}");
 			helper.setTo(toEmail);
 			helper.setSubject(subject);
-			helper.setText(body,true);
-			
+			helper.setText(body, true);
+
 			mailSender.send(message);
 			System.out.println("Mail Sent successfully...");
 		} catch (Exception e) {
 			// TODO: handle exception
-			e.printStackTrace();		
+			e.printStackTrace();
 		}
-        
-    }
-    
-    
+
+	}
+
 }

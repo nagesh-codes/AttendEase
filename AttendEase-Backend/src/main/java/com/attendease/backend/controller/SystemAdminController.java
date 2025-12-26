@@ -19,35 +19,36 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/system-admin")
 @CrossOrigin(origins = "${FRONTEND_URL}")
-public class SystemAdminController{
+public class SystemAdminController {
 	private CollegeApplicationService collegeApplicationService;
 	private SystemAdminOtpService systemAdminOtpService;
 	private SystemAdminRequestOtpDTO systemAdminRequestOtpDTO;
-	
-	public SystemAdminController(CollegeApplicationService collegeApplicationService,SystemAdminOtpService systemAdminOtpService) {
+
+	public SystemAdminController(CollegeApplicationService collegeApplicationService,
+			SystemAdminOtpService systemAdminOtpService) {
 		this.collegeApplicationService = collegeApplicationService;
 		this.systemAdminOtpService = systemAdminOtpService;
 	}
-	
+
 	@GetMapping("/pendingCollegeApplications")
-	public List<CollegeApplicationResponseDTO> getAllPendingApplications(){
+	public List<CollegeApplicationResponseDTO> getAllPendingApplications() {
 		return collegeApplicationService.getAllPendingCollegeApplication();
 	}
-	
+
 	@PostMapping("/send-otp")
-	public ResponseEntity<?> createOTP(){
+	public ResponseEntity<?> createOTP() {
 		String refId = systemAdminOtpService.generateAndSendOtp();
-		return ResponseEntity.ok(Map.of("message","Email Sent","refId",refId));
+		return ResponseEntity.ok(Map.of("message", "Email Sent", "refId", refId));
 	}
-	
+
 	@PostMapping("/verify-otp")
-	public SystemAdminTokenResponseDTO verifyOtp(@RequestBody SystemAdminRequestOtpDTO dto){
+	public SystemAdminTokenResponseDTO verifyOtp(@RequestBody SystemAdminRequestOtpDTO dto) {
 		System.out.println(dto.getRefId());
 		return systemAdminOtpService.verifyOtp(dto);
 	}
-	
-//	@PostMapping("/refresh-token")
-//	public SystemAdminTokenResponseDTO refreshToken() {
-//		
-//	}
+
+	// @PostMapping("/refresh-token")
+	// public SystemAdminTokenResponseDTO refreshToken() {
+	//
+	// }
 }

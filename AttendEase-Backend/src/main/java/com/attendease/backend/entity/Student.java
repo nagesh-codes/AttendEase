@@ -7,22 +7,22 @@ import java.time.LocalDateTime;
 @Table(name = "students")
 public class Student {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-    @Column(name = "roll_number", nullable = false)
-    private String rollNumber;
+	@Column(name = "roll_number", nullable = false)
+	private String rollNumber;
 
-    @Column(nullable = false)
-    private String name;
+	@Column(nullable = false)
+	private String name;
 
-    @ManyToOne
-    @JoinColumn(name = "college_id", nullable = false)
-    private College college;
+	@ManyToOne
+	@JoinColumn(name = "college_id", nullable = false)
+	private College college;
 
-    @Column(name = "created_at")
-    private LocalDateTime createdAt = LocalDateTime.now();
+	@Column(name = "created_at")
+	private LocalDateTime createdAt = LocalDateTime.now();
 
 	public Long getId() {
 		return id;
@@ -64,7 +64,6 @@ public class Student {
 		this.createdAt = createdAt;
 	}
 
-    // getters and setters
-    
-    
+	// getters and setters
+
 }

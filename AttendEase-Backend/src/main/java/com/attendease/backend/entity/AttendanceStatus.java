@@ -1,6 +1,6 @@
 package com.attendease.backend.entity;
 
-public enum AttendanceStatus{
+public enum AttendanceStatus {
 	PRESENT,
 	ABSENT
 }

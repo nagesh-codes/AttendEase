@@ -6,18 +6,18 @@ import jakarta.persistence.*;
 @Table(name = "class_students")
 public class ClassStudent {
 
-    @EmbeddedId
-    private ClassStudentId id;
+	@EmbeddedId
+	private ClassStudentId id;
 
-    @ManyToOne
-    @MapsId("classId")
-    @JoinColumn(name = "class_id")
-    private ClassEntity classEntity;
+	@ManyToOne
+	@MapsId("classId")
+	@JoinColumn(name = "class_id")
+	private ClassEntity classEntity;
 
-    @ManyToOne
-    @MapsId("studentId")
-    @JoinColumn(name = "student_id")
-    private Student student;
+	@ManyToOne
+	@MapsId("studentId")
+	@JoinColumn(name = "student_id")
+	private Student student;
 
 	public ClassStudentId getId() {
 		return id;
@@ -43,6 +43,6 @@ public class ClassStudent {
 		this.student = student;
 	}
 
-    // getters and setters
-    
+	// getters and setters
+
 }

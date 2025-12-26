@@ -6,20 +6,20 @@ import jakarta.persistence.*;
 
 @Entity
 @Table(name = "system_admin_refresh_tokens")
-public class SystemAdminRefreshTokens{
+public class SystemAdminRefreshTokens {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
-	@Column(name = "tokens",nullable = false,unique = true)
+
+	@Column(name = "tokens", nullable = false, unique = true)
 	private String token;
-	
+
 	@Column(name = "revoked")
 	private boolean revoked = false;
-	
+
 	@Column(name = "created_at")
 	private LocalDateTime createdAt = LocalDateTime.now();
-	
+
 	@Column(name = "expire_at")
 	private LocalDateTime expiresAt;
 
@@ -62,6 +62,5 @@ public class SystemAdminRefreshTokens{
 	public void setExpiresAt(LocalDateTime expiresAt) {
 		this.expiresAt = expiresAt;
 	}
-	
-	
+
 }
