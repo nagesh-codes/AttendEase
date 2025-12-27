@@ -1,5 +1,6 @@
 package com.attendease.backend.service;
 
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -10,9 +11,15 @@ import com.attendease.backend.entity.College;
 import com.attendease.backend.entity.CollegeApplication;
 import com.attendease.backend.entity.CollegeApplicationStatus;
 import com.attendease.backend.entity.CollegeStatus;
+import com.attendease.backend.entity.Role;
+import com.attendease.backend.entity.User;
+import com.attendease.backend.entity.UserStatus;
 import com.attendease.backend.repository.CollegeApplicationRepository;
 import com.attendease.backend.repository.CollegeRepository;
+import com.attendease.backend.repository.UserRepository;
+import com.attendease.backend.util.TemplateLoader;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -21,12 +28,19 @@ public class CollegeApplicationService {
 	private CollegeApplicationRepository collegeApplicationRespository;
 	private EmailService emailService;
 	private CollegeRepository collegeRepository;
+	private TemplateLoader templateLoader;
+	private final PasswordEncoder passwordEncoder;
+	private UserRepository userRepository;
 
 	public CollegeApplicationService(CollegeApplicationRepository collegeApplicationRepository,
-			EmailService emailService,CollegeRepository collegeRepository) {
+			EmailService emailService,CollegeRepository collegeRepository,TemplateLoader templateLoader,
+			PasswordEncoder passwordEncoder,UserRepository userRepository) {
 		this.collegeApplicationRespository = collegeApplicationRepository;
 		this.emailService = emailService;
 		this.collegeRepository = collegeRepository;
+		this.templateLoader = templateLoader;
+		this.passwordEncoder = passwordEncoder;
+		this.userRepository = userRepository;
 	}
 
 	@Transactional
@@ -41,79 +55,7 @@ public class CollegeApplicationService {
 
 		collegeApplicationRespository.saveAndFlush(clgApp);
 
-		String text = "<!DOCTYPE html>\r\n"
-				+ "<html>\r\n"
-				+ "<head>\r\n"
-				+ "    <meta charset=\"UTF-8\">\r\n"
-				+ "    <title>AttendEase - College Application</title>\r\n"
-				+ "</head>\r\n"
-				+ "<body style=\"margin:0; padding:0; font-family: Arial, Helvetica, sans-serif; background-color:#f4f6f8;\">\r\n"
-				+ "\r\n"
-				+ "    <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\">\r\n"
-				+ "        <tr>\r\n"
-				+ "            <td align=\"center\" style=\"padding: 30px 0;\">\r\n"
-				+ "                <table width=\"600\" cellpadding=\"0\" cellspacing=\"0\" style=\"background-color:#ffffff; border-radius:8px; overflow:hidden;\">\r\n"
-				+ "\r\n"
-				+ "                    <!-- Header -->\r\n"
-				+ "                    <tr>\r\n"
-				+ "                        <td align=\"center\" style=\"background-color:#1abc9c; padding:20px;\">\r\n"
-				+ "                            <h1 style=\"color:#ffffff; margin:0;\">AttendEase</h1>\r\n"
-				+ "                            <p style=\"color:#eafff9; margin:5px 0 0;\">Attendance Made Easy</p>\r\n"
-				+ "                        </td>\r\n"
-				+ "                    </tr>\r\n"
-				+ "\r\n"
-				+ "                    <!-- Content -->\r\n"
-				+ "                    <tr>\r\n"
-				+ "                        <td style=\"padding:30px; color:#333333;\">\r\n"
-				+ "                            <h2 style=\"color:#1abc9c;\">Application Submitted Successfully</h2>\r\n"
-				+ "\r\n"
-				+ "                            <p>Dear Applicant,</p>\r\n"
-				+ "\r\n"
-				+ "                            <p>\r\n"
-				+ "                                Thank you for submitting your request to add your college to the\r\n"
-				+ "                                <strong>AttendEase</strong> platform.\r\n"
-				+ "                            </p>\r\n"
-				+ "\r\n"
-				+ "                            <p>\r\n"
-				+ "                                We have successfully received your application and it is currently\r\n"
-				+ "                                under review by our system administration team. All submitted details\r\n"
-				+ "                                will be carefully verified to ensure accuracy and authenticity.\r\n"
-				+ "                            </p>\r\n"
-				+ "\r\n"
-				+ "                            <p>\r\n"
-				+ "                                Once the review process is completed, you will be notified via this\r\n"
-				+ "                                email regarding the approval status of your application. If any\r\n"
-				+ "                                additional information or clarification is required, our team will\r\n"
-				+ "                                contact you using the details you provided.\r\n"
-				+ "                            </p>\r\n"
-				+ "\r\n"
-				+ "                            <p>\r\n"
-				+ "                                We appreciate your interest in AttendEase and your initiative to adopt\r\n"
-				+ "                                a digital attendance management solution for your institution.\r\n"
-				+ "                            </p>\r\n"
-				+ "\r\n"
-				+ "                            <p style=\"margin-top:30px;\">\r\n"
-				+ "                                Warm regards,<br>\r\n"
-				+ "                                <strong>AttendEase Team</strong>\r\n"
-				+ "                            </p>\r\n"
-				+ "                        </td>\r\n"
-				+ "                    </tr>\r\n"
-				+ "\r\n"
-				+ "                    <!-- Footer -->\r\n"
-				+ "                    <tr>\r\n"
-				+ "                        <td align=\"center\" style=\"background-color:#f0f0f0; padding:15px; font-size:12px; color:#777777;\">\r\n"
-				+ "                            © 2025 AttendEase. All rights reserved.\r\n"
-				+ "                        </td>\r\n"
-				+ "                    </tr>\r\n"
-				+ "\r\n"
-				+ "                </table>\r\n"
-				+ "            </td>\r\n"
-				+ "        </tr>\r\n"
-				+ "    </table>\r\n"
-				+ "\r\n"
-				+ "</body>\r\n"
-				+ "</html>\r\n"
-				+ "";
+		String text = templateLoader.loadTemplate("college_application_submission");
 		emailService.sendEmail(dto.getOfficialEmail(), "College Application Submitted Successfully – AttendEase\r\n",
 				text);
 	}
@@ -131,6 +73,7 @@ public class CollegeApplicationService {
 		CollegeApplication clgAppnEntity = collegeApplicationRespository.findById(dto.getId())
 				.orElseThrow(() -> new RuntimeException("college not found"));
 		clgAppnEntity.setStatus(dto.getStatus());
+		clgAppnEntity.setReviewedAt(LocalDateTime.now());
 		
 		if(dto.getStatus() == CollegeApplicationStatus.APPROVED) {
 			College clgEntity = new College();
@@ -140,6 +83,26 @@ public class CollegeApplicationService {
 			clgEntity.setStatus(CollegeStatus.ACTIVE);
 			
 			collegeRepository.save(clgEntity);
+			
+			User userEntity = new User();
+			userEntity.setName(clgAppnEntity.getAuthorityName());
+			userEntity.setAccountStatus(UserStatus.ACTIVE);
+			userEntity.setEmail(clgAppnEntity.getOfficialEmail());
+			String username = clgAppnEntity.getOfficialEmail().split("@")[0];
+			userEntity.setUsername(username);
+			userEntity.setRole(Role.ADMIN);
+			userEntity.setCollege(clgEntity);
+			String hashedPassword = passwordEncoder.encode(clgAppnEntity.getOfficialEmail());
+			userEntity.setPasswordHash(hashedPassword);
+			
+			userRepository.save(userEntity);
+			
+			String text = templateLoader.loadTemplate("college_application_approval_email");
+			text = text.replace("{{USERNAME}}", username);
+			text = text.replace("{{PASSWORD}}", clgAppnEntity.getOfficialEmail());
+			text = text.replace("{{LOGIN_LINK}}", "${FRONTEND_URL}/Login");
+			text = text.replace("{{COLLEGE_NAME}}", clgAppnEntity.getCollegeName());
+			emailService.sendEmail(clgAppnEntity.getOfficialEmail(), "AttendEase - Application Approved & Login Credentials", text);
 		}
 		
 		collegeApplicationRespository.save(clgAppnEntity);

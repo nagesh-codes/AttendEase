@@ -48,12 +48,6 @@ public class SystemAdminController {
 		System.out.println(dto.getRefId());
 		return systemAdminOtpService.verifyOtp(dto);
 	}
-	
-	@PostMapping("/collegeApplication")
-	public ResponseEntity<?> newCollegeApplication(@RequestBody CollegeApplicationRequestDTO dto) {
-		collegeApplicationService.addCollegeApllication(dto);
-		return ResponseEntity.ok("Application submitted.");
-	}
 
 	@PatchMapping("/updateCollegeStatus")
 	public ResponseEntity<?> updateCollegeStatus(@RequestBody CollegeApplicationStatusRequestDTO dto) {
@@ -70,9 +64,5 @@ public class SystemAdminController {
 	public List<UsersInfoResponseDTO> getAllUers() {
 		return collegeService.getAllUsers();
 	}
-
-	// @PostMapping("/refresh-token")
-	// public SystemAdminTokenResponseDTO refreshToken() {
-	//
-	// }
+	
 }

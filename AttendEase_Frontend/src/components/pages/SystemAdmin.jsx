@@ -170,7 +170,7 @@ const CollegesContent = () => {
                   </div>
                   <div className="Email">
                     <span>Email:</span>
-                    {data.officialEmail ? data.officialEmail : "N/A"}
+                    {data.email ? data.email : "N/A"}
                   </div>
                   <div className="App-time">
                     <span>Creation Date:</span>
@@ -198,7 +198,6 @@ const UsersContent = () => {
       const response = await apiClient.get(
         "/api/system-admin/getUsersInfoList"
       );
-      console.log(response.data);
       setClg(response.data);
     } catch (error) {
       console.error(error.message);

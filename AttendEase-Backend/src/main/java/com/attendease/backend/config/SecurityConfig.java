@@ -24,6 +24,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/colleges/**").permitAll()
                         .requestMatchers("/api/system-admin/**").permitAll()
+                        .requestMatchers("/api/college-application/**").permitAll()
                         .anyRequest().authenticated())
                 .httpBasic();
         return http.build();

@@ -15,6 +15,7 @@ const ApplyCollege = () => {
   const [isApplicationSubmitted, setIsApplicationSubmitted] = useState(false);
 
   const handleSubmit = async (e) => {
+    const toastid = toast.loading("Submitting Your Application...");
     e.preventDefault();
     setDisable(true);
     console.log({
@@ -26,7 +27,7 @@ const ApplyCollege = () => {
     setBtntxt("Submitting");
     try {
       const response = await apiClient.post(
-        "/api/colleges/collegeApplication",
+        "/api/college-application/collegeApplication",
         {
           collegeName: clgName,
           authorityName,
@@ -34,13 +35,30 @@ const ApplyCollege = () => {
           officialEmail: email,
         }
       );
-      toast.success("Your Application Submitted Successfully.");
-      // localStorage.setItem("Application", "submitted");
-      setIsApplicationSubmitted(true);
+      if (response) {
+        toast.update(toastid, {
+          render: `Application has been Submitted!`,
+          type: "success",
+          isLoading: false,
+          autoClose: 3000,
+        });
+        localStorage.setItem("Application", "submitted");
+        setIsApplicationSubmitted(true);
+      } else {
+        toast.update(toastid, {
+          render: `Can't Submit Your Application`,
+          type: "error",
+          isLoading: false,
+          autoClose: 3000,
+        });
+      }
     } catch (error) {
-      toast.error(
-        "There is an Error While Submitting You Application. please try again later!"
-      );
+      toast.update(toastid, {
+        render: `Can't Submit Your Application, Please Try Again`,
+        type: "error",
+        isLoading: false,
+        autoClose: 3000,
+      });
     }
     setDisable(false);
     setBtntxt("Submit");
