@@ -125,7 +125,8 @@ public class CollegeApplicationService {
 						c.getAuthorityRole(), c.getOfficialEmail(), c.getCreatedAt()))
 				.toList();
 	}
-
+	
+	@Transactional
 	public void updateCollegeStatus(CollegeApplicationStatusRequestDTO dto) {
 		CollegeApplication clgAppnEntity = collegeApplicationRespository.findById(dto.getId())
 				.orElseThrow(() -> new RuntimeException("college not found"));
