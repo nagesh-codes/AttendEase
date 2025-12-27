@@ -39,7 +39,7 @@ const Signup = () => {
           collegeId: clg,
         })
         .then(() => {
-          toast.success("Successfully Created Account");
+          toast.success("Account Successfully Created.");
           navigate("/login");
         });
     } catch (er) {

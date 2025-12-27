@@ -29,35 +29,45 @@ const CollegeApplications = () => {
     }
   };
 
-  const approveCollege = async (id) => {
+  const updateCollegeStatus = async (id, newStatus) => {
+    const toastId = toast.loading("Updating status...");
     try {
-      const response = await apiClient.patch("api/colleges/approve-appn", {
-        id,
-      });
-      if (response) {
-        toast.success("Changes Saved");
-      } else {
-        toast.error("Internal Server Error");
-      }
-    } catch (error) {
-      console.error(error.message);
-      toast.error("Internal Server Error");
-    }
-  };
+      const response = await apiClient.patch(
+        "api/system-admin/updateCollegeStatus",
+        {
+          id,
+          status: newStatus,
+        }
+      );
 
-  const rejectCollege = async (id) => {
-    try {
-      const response = await apiClient.patch("/api/colleges/reject-appn", {
-        id,
-      });
       if (response) {
-        toast.success("changes saved");
+        toast.update(toastId, {
+          render: `Application has been ${newStatus.toLowerCase()}!`,
+          type: "success",
+          isLoading: false,
+          autoClose: 3000,
+        });
+        setClgAppn([]);
+        getPendingCollegeApplications();
       } else {
-        toast.error("Internal Server Error");
+        const errorMessage = "Failed to update status. Try again.";
+        toast.update(toastId, {
+          render: errorMessage,
+          type: "error",
+          isLoading: false,
+          autoClose: 4000,
+        });
       }
     } catch (error) {
       console.error(error.message);
-      toast.error("Internal Server Error");
+      const errorMessage =
+        error.response?.data?.message || "Failed to update status. Try again.";
+      toast.update(toastId, {
+        render: errorMessage,
+        type: "error",
+        isLoading: false,
+        autoClose: 4000,
+      });
     }
   };
 
@@ -93,7 +103,7 @@ const CollegeApplications = () => {
                     <button
                       type="button"
                       onClick={() => {
-                        approveCollege(data.id);
+                        updateCollegeStatus(data.id, "APPROVED");
                       }}
                     >
                       Approve
@@ -101,7 +111,7 @@ const CollegeApplications = () => {
                     <button
                       type="button"
                       onClick={() => {
-                        rejectCollege(data.id);
+                        updateCollegeStatus(data.id, "REJECTED");
                       }}
                     >
                       Reject
@@ -123,7 +133,9 @@ const CollegesContent = () => {
 
   const getCollegeList = async () => {
     try {
-      const response = await apiClient.get("/api/colleges/getCollegeInfoList");
+      const response = await apiClient.get(
+        "/api/system-admin/getCollegeInfoList"
+      );
       if (response) {
         setClg(response.data);
       } else {
@@ -183,7 +195,9 @@ const UsersContent = () => {
 
   const getUsersInfo = async () => {
     try {
-      const response = await apiClient.get("/api/colleges/getUsersInfoList");
+      const response = await apiClient.get(
+        "/api/system-admin/getUsersInfoList"
+      );
       console.log(response.data);
       setClg(response.data);
     } catch (error) {
@@ -221,7 +235,7 @@ const UsersContent = () => {
                   </div>
                   <div className="field">
                     <span>College:</span>
-                    {data.college ? data.college : "N/A"}
+                    {data.college?.name ? data.college?.name : "N/A"}
                   </div>
                   <div className="App-time">
                     <span>Created At:</span>
@@ -244,7 +258,7 @@ const UsersContent = () => {
 
 const SystemAdmin = () => {
   const [activeSection, setActiveSection] = useState(
-    sessionStorage.getItem("current_tab") || "College Application"
+    sessionStorage.getItem("current_tab") || "Users"
   );
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
 

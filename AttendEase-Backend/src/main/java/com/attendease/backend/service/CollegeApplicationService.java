@@ -6,9 +6,13 @@ import org.springframework.transaction.annotation.Transactional;
 import com.attendease.backend.dto.CollegeApplicationRequestDTO;
 import com.attendease.backend.dto.CollegeApplicationResponseDTO;
 import com.attendease.backend.dto.CollegeApplicationStatusRequestDTO;
+import com.attendease.backend.entity.College;
 import com.attendease.backend.entity.CollegeApplication;
 import com.attendease.backend.entity.CollegeApplicationStatus;
+import com.attendease.backend.entity.CollegeStatus;
 import com.attendease.backend.repository.CollegeApplicationRepository;
+import com.attendease.backend.repository.CollegeRepository;
+
 import java.util.List;
 
 @Service
@@ -16,11 +20,13 @@ public class CollegeApplicationService {
 
 	private CollegeApplicationRepository collegeApplicationRespository;
 	private EmailService emailService;
+	private CollegeRepository collegeRepository;
 
 	public CollegeApplicationService(CollegeApplicationRepository collegeApplicationRepository,
-			EmailService emailService) {
+			EmailService emailService,CollegeRepository collegeRepository) {
 		this.collegeApplicationRespository = collegeApplicationRepository;
 		this.emailService = emailService;
+		this.collegeRepository = collegeRepository;
 	}
 
 	@Transactional
@@ -120,17 +126,21 @@ public class CollegeApplicationService {
 				.toList();
 	}
 
-	public void approveCollege(CollegeApplicationStatusRequestDTO dto) {
-		CollegeApplication clgEntity = collegeApplicationRespository.findById(dto.getId())
+	public void updateCollegeStatus(CollegeApplicationStatusRequestDTO dto) {
+		CollegeApplication clgAppnEntity = collegeApplicationRespository.findById(dto.getId())
 				.orElseThrow(() -> new RuntimeException("college not found"));
-		clgEntity.setStatus(CollegeApplicationStatus.APPROVED);
-		collegeApplicationRespository.save(clgEntity);
-	}
-
-	public void rejectCollege(CollegeApplicationStatusRequestDTO dto) {
-		CollegeApplication clgEntity = collegeApplicationRespository.findById(dto.getId())
-				.orElseThrow(() -> new RuntimeException("college not found"));
-		clgEntity.setStatus(CollegeApplicationStatus.REJECTED);
-		collegeApplicationRespository.save(clgEntity);
+		clgAppnEntity.setStatus(dto.getStatus());
+		
+		if(dto.getStatus() == CollegeApplicationStatus.APPROVED) {
+			College clgEntity = new College();
+			clgEntity.setName(clgAppnEntity.getCollegeName());
+			clgEntity.setEmail(clgAppnEntity.getOfficialEmail());
+			clgEntity.setCreatedBy(clgAppnEntity.getAuthorityName());
+			clgEntity.setStatus(CollegeStatus.ACTIVE);
+			
+			collegeRepository.save(clgEntity);
+		}
+		
+		collegeApplicationRespository.save(clgAppnEntity);
 	}
 }
