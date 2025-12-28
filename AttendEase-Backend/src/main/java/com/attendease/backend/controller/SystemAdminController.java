@@ -42,7 +42,7 @@ public class SystemAdminController {
 		String refId = systemAdminOtpService.generateAndSendOtp();
 		return ResponseEntity.ok(Map.of("message", "Email Sent", "refId", refId));
 	}
-
+	
 	@PostMapping("/verify-otp")
 	public SystemAdminTokenResponseDTO verifyOtp(@RequestBody SystemAdminRequestOtpDTO dto) {
 		System.out.println(dto.getRefId());

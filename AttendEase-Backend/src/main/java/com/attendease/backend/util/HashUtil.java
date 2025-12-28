@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class HashUtil {
-	public static String sha256(String value) {
+	public String sha256(String value) {
 		try {
 			MessageDigest digest = MessageDigest.getInstance("SHA-256");
 			byte[] hashBytes = digest.digest(value.getBytes(StandardCharsets.UTF_8));

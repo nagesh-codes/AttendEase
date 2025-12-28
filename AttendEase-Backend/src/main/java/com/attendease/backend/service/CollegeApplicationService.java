@@ -46,7 +46,7 @@ public class CollegeApplicationService {
 	@Transactional
 	public void addCollegeApllication(CollegeApplicationRequestDTO dto) {
 		CollegeApplication clgApp = new CollegeApplication();
-
+		
 		clgApp.setCollegeName(dto.getCollegeName());
 		clgApp.setAuthorityName(dto.getAuthorityName());
 		clgApp.setAuthorityRole(dto.getAuthorityRole());

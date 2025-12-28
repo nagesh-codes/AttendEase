@@ -13,6 +13,8 @@ const ApplyCollege = () => {
   const [disable, setDisable] = useState(false);
   const [btntxt, setBtntxt] = useState("Submit");
   const [isApplicationSubmitted, setIsApplicationSubmitted] = useState(false);
+  const [emailError, setEmailError] = useState("");
+  const [isChecking, setIsChecking] = useState(false);
 
   const handleSubmit = async (e) => {
     const toastid = toast.loading("Submitting Your Application...");
@@ -63,6 +65,39 @@ const ApplyCollege = () => {
     setDisable(false);
     setBtntxt("Submit");
   };
+
+  useEffect(() => {
+    if (!email) {
+      setEmailError("");
+      return;
+    }
+    setDisable(true);
+
+    const delayDebounceFunc = setTimeout(async () => {
+      setIsChecking(true);
+      setEmailError("Checking.");
+      try {
+        const response = await apiClient.post(
+          "/api/college-application/checkEmail",
+          {
+            email,
+          }
+        );
+        if (response.data.exists) {
+          setEmailError("This email is already registered.");
+        } else {
+          setEmailError("");
+          setDisable(false);
+        }
+      } catch (error) {
+        console.error("check failed", error.message);
+      } finally {
+        setIsChecking(false);
+      }
+    }, 800);
+
+    return () => clearTimeout(delayDebounceFunc);
+  }, [email]);
 
   useEffect(() => {
     if (localStorage.getItem("Application") === "submitted") {
@@ -126,6 +161,13 @@ const ApplyCollege = () => {
             required
             id="email"
           />
+          <p
+            style={{
+              color: isChecking ? "blue" : "red",
+            }}
+          >
+            {emailError}
+          </p>
         </div>
         <div className="btn-field">
           <button type="submit" disabled={disable}>

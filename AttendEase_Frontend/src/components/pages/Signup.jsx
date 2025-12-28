@@ -16,9 +16,13 @@ const Signup = () => {
   const [show, setShow] = useState(true);
   const [rshow, setRshow] = useState(true);
   const [isdisable, setIsdisable] = useState(false);
-  const [btntxt, setBtntxt] = useState("Signup");
+  const [btntxt, setBtntxt] = useState("Fill All Fielda!"); //Signup
   const [college, setCollege] = useState([]);
   const [clg, setClg] = useState(0);
+  const [emailError, setEmailError] = useState("");
+  const [isEmailCheking, setIsEmailChecking] = useState(false);
+  const [usernameError, setUsernameError] = useState("");
+  const [isUsernameChecking, setIsUsernameChecking] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -62,6 +66,66 @@ const Signup = () => {
     getColleges();
   }, []);
 
+  useEffect(() => {
+    setIsdisable(true);
+    if (!email) {
+      setIsEmailChecking(false);
+      return;
+    }
+
+    const delayDebounceFunc = setTimeout(async () => {
+      setIsEmailChecking(true);
+      setEmailError("Checking.");
+      try {
+        const response = await apiClient.post("/api/auth/checkEmail", {
+          email,
+        });
+        if (response.data.exists) {
+          setEmailError("This email is already registered.");
+        } else {
+          setEmailError("");
+          setIsdisable(false);
+        }
+      } catch (error) {
+        console.error("check failed" + error.message);
+      } finally {
+        setIsEmailChecking(false);
+      }
+    }, 700);
+
+    return () => clearTimeout(delayDebounceFunc);
+  }, [email]);
+
+  useEffect(() => {
+    setIsdisable(true);
+    if (!username) {
+      setIsUsernameChecking(false);
+      return;
+    }
+
+    const delayDebounceFunc = setTimeout(async () => {
+      setIsUsernameChecking(true);
+      setUsernameError("Checking.");
+      try {
+        const response = await apiClient.post("/api/auth/checkUsername", {
+          username,
+        });
+        if (response.data.exists) {
+          setUsernameError("This Username is already registered.");
+        } else {
+          setUsernameError("");
+          setIsdisable(false);
+        }
+      } catch (error) {
+        console.error("check failed" + error.message);
+      } finally {
+        setIsUsernameChecking(false);
+      }
+    }, 700);
+
+    return () => clearTimeout(delayDebounceFunc);
+  }, [username]);
+
   return (
     <div className="SignupPage">
       <form className="wrapper" onSubmit={handleSubmit}>
@@ -90,6 +154,13 @@ const Signup = () => {
               required
               id="username"
             />
+            <p
+              style={{
+                color: isUsernameChecking ? "blue" : "red",
+              }}
+            >
+              {usernameError}
+            </p>
           </div>
         </div>
         <div className="div">
@@ -102,6 +173,13 @@ const Signup = () => {
               required
               id="email"
             />
+            <p
+              style={{
+                color: isEmailCheking ? "blue" : "red",
+              }}
+            >
+              {emailError}
+            </p>
           </div>
           <div className="input-field">
             <label htmlFor="college">Choose Your College</label>
