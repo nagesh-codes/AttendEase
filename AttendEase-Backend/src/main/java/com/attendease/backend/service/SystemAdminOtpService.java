@@ -57,7 +57,7 @@ public class SystemAdminOtpService {
 
 		String otp = generateOtp();
 		String refId = UUID.randomUUID().toString().substring(0, 8);
-
+		System.out.println(otp);
 		String hashedOtp = passwordEncoder.encode(otp);
 
 		SystemAdminOtp otpEntity = new SystemAdminOtp();
@@ -87,7 +87,6 @@ public class SystemAdminOtpService {
 		if (otpEntity.getExpiresAt().isBefore(LocalDateTime.now()) || otpEntity.getUsed()) {
 			throw new RuntimeException("OTP EXPIRED");
 		}
-
 		if (passwordEncoder.matches(dto.getOtp(), otpEntity.getOtp())) {
 			otpEntity.setUsed(true);
 			systemAdminOtpRepository.save(otpEntity);
@@ -98,7 +97,7 @@ public class SystemAdminOtpService {
 			String AccessToken = jwtService.generateSystemAdminToken();
 			String refreshToken = UUID.randomUUID().toString() + UUID.randomUUID();
 
-			String refreshTokenHash = hashUtil.sha256(AccessToken);
+			String refreshTokenHash = hashUtil.sha256(refreshToken);
 
 			SystemAdminRefreshTokens tokenEntity = new SystemAdminRefreshTokens();
 			tokenEntity.setToken(refreshTokenHash);
@@ -106,7 +105,7 @@ public class SystemAdminOtpService {
 
 			systemAdminRefreshTokenRepository.save(tokenEntity);
 
-			return new SystemAdminTokenResponseDTO(refreshToken, AccessToken);
+			return new SystemAdminTokenResponseDTO(refreshToken, AccessToken,"SYSTEM_ADMIN");
 		} else {
 			throw new RuntimeException("OTP INVALID");
 		}

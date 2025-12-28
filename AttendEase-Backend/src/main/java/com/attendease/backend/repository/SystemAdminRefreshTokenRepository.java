@@ -11,4 +11,5 @@ import com.attendease.backend.entity.SystemAdminRefreshTokens;
 public interface SystemAdminRefreshTokenRepository extends JpaRepository<SystemAdminRefreshTokens, Long> {
 
 	Optional<SystemAdminRefreshTokens> findByTokenAndRevokedFalse(String tokenhash);
+	Optional<SystemAdminRefreshTokens> findByToken(String Token);
 }

@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useContext } from "react";
 import logo from "../../assets/logo.png";
 import "../css-files/SysAdminLogin.css";
 import { useState } from "react";
-import { apiClient } from "../../API/apiClient";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { SystemAdminAuthContext } from "../../context/SystemAdminAuthContext";
+import { apiClient } from "../../API/apiClient";
 
 const SysAdminLogin = () => {
   const [otp, setOtp] = useState("");
@@ -12,8 +13,8 @@ const SysAdminLogin = () => {
   const [btntxt1, setBtntxt1] = useState("Send OTP");
   const [btntxt2, setBtntxt2] = useState("Verify");
   const [isdisable, setIsdisable] = useState(false);
+  const { login } = useContext(SystemAdminAuthContext);
   const navigate = useNavigate();
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsdisable(true);
@@ -23,9 +24,10 @@ const SysAdminLogin = () => {
         otp,
         refId: sessionStorage.getItem("refid"),
       });
-      toast.success("OTP Successfully Verified.");
-      localStorage.setItem("systemAdminRefreshToken",response.data.refreshToken);
-      console.log(response);
+      if (response.status == 200) {
+        toast.success("OTP Successfully Verified.");
+        login(response.data);
+      }
       navigate("/system-admin-panel");
     } catch (error) {
       console.error(error);
