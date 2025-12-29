@@ -31,8 +31,14 @@ public class JwtService {
 				SYSTEM_ADMIN_TOKEN_EXPIRY);
 	}
 
-	private String generateToken(String subject, Map<String, Object> claims, long expiryMillis) {
+	public String generateUserToken(String email) {
+		return generateToken(
+				email,
+				Map.of("role", "USER"),
+				USER_TOKEN_EXPIRY);
+	}
 
+	private String generateToken(String subject, Map<String, Object> claims, long expiryMillis) {
 		return Jwts.builder()
 				.setClaims(claims)
 				.setSubject(subject)

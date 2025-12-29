@@ -5,7 +5,7 @@ export const SystemAdminAuthContext = createContext(null);
 
 export const SystemAdminAuthProvider = ({ children }) => {
   const [accessToken, setAccessToken] = useState(null);
-  const [loading, setLoading] = useState(true); 
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const storedRefreshToken = localStorage.getItem("systemAdminRefreshToken");
@@ -52,6 +52,7 @@ export const SystemAdminAuthProvider = ({ children }) => {
     localStorage.removeItem("systemAdminRefreshToken");
     localStorage.removeItem("accessToken");
     setAccessToken(null);
+
   };
 
   return (

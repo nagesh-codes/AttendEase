@@ -4,7 +4,6 @@ import Dashboard from "./Dashboard";
 import Profile from "./Profile";
 import logo from "../../assets/logo.png";
 import Classes from "./Classes";
-import { getCookie } from "../../other_func/getCookies";
 import { useNavigate } from "react-router-dom";
 
 const Home = () => {
@@ -26,12 +25,6 @@ const Home = () => {
         return <Profile />;
     }
   };
-
-  useEffect(() => {
-    if (!getCookie("email")) {
-      navigate("/login");
-    }
-  }, []);
 
   return (
     <div className="appShell">

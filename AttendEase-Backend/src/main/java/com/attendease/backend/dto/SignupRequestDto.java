@@ -1,6 +1,6 @@
 package com.attendease.backend.dto;
 
-public class TeacherSignupRequestDto {
+public class SignupRequestDto {
 
 	private String name;
 	private String username;

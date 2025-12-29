@@ -5,7 +5,8 @@ import java.util.Collections;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.attendease.backend.dto.TeacherSignupRequestDto;
+import com.attendease.backend.dto.LoginRequestDTO;
+import com.attendease.backend.dto.SignupRequestDto;
 import com.attendease.backend.repository.UserRepository;
 import com.attendease.backend.service.UserService;
 
@@ -23,9 +24,19 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<?> signupTeacher(@RequestBody TeacherSignupRequestDto dto) {
+    public ResponseEntity<?> signupTeacher(@RequestBody SignupRequestDto dto) {
         userService.registerTeacher(dto);
         return ResponseEntity.ok("Signup request submitted for approval");
+    }
+    
+    @PostMapping("/login")
+    public ResponseEntity<?> Login(@RequestBody LoginRequestDTO dto){
+    	boolean isValid = userService.verifyUser(dto);
+    	if(isValid) {
+    		return ResponseEntity.ok("user verified");
+    	}else {
+    		return ResponseEntity.status(403).body("NOT VERIFIED");
+    	}
     }
     
     @PostMapping("/checkUsername")

@@ -237,8 +237,8 @@ const Signup = () => {
             </div>
           </div>
         </div>
-        <div className="btn-field">
-          <button type="submit" disabled={isdisable}>
+        <div className="btn-field" >
+          <button type="submit" disabled={isdisable} style={{cursor:isdisable ? 'not-allowed' : 'pointer'}}>
             {btntxt}
           </button>
         </div>

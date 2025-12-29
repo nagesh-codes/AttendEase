@@ -9,6 +9,7 @@ import SystemAdmin from "./components/pages/SystemAdmin";
 import SysAdminLogin from "./components/pages/SysAdminLogin";
 import ApplicationList from "./components/pages/Test";
 import { SystemAdminAuthProvider } from "./context/SystemAdminAuthContext";
+import RequireSystemAdmin from "./components/pages/RequireSystemAdmin";
 
 function App() {
   return (
@@ -32,8 +33,15 @@ function App() {
           <Route path={"/signup"} element={<Signup />} />
           <Route path={"/login"} element={<Login />} />
           <Route path={"/apply-college"} element={<ApplyCollege />} />
-          <Route path={"/SysAdminLogin"} element={<SysAdminLogin />} />
-          <Route path={"/system-admin-panel"} element={<SystemAdmin />} />
+          <Route
+            path={"/system-admin-panel"}
+            element={
+              <RequireSystemAdmin>
+                <SystemAdmin />
+              </RequireSystemAdmin>
+            }
+          />
+          <Route path={"/system-admin-login"} element={<SysAdminLogin />} />
           <Route path={"*"} element={<ApplicationList />} />
         </Routes>
       </SystemAdminAuthProvider>

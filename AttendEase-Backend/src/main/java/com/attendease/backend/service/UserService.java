@@ -2,13 +2,15 @@ package com.attendease.backend.service;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import com.attendease.backend.dto.TeacherSignupRequestDto;
+import com.attendease.backend.dto.LoginRequestDTO;
+import com.attendease.backend.dto.SignupRequestDto;
 import com.attendease.backend.entity.College;
 import com.attendease.backend.entity.Role;
 import com.attendease.backend.entity.User;
 import com.attendease.backend.entity.UserStatus;
 import com.attendease.backend.repository.*;
+
+import jakarta.transaction.Transactional;
 
 @Service
 public class UserService {
@@ -24,8 +26,9 @@ public class UserService {
         this.collegeRepository = collegeRepository;
         this.passwordEncoder = passwordEncoder;
     }
-
-    public void registerTeacher(TeacherSignupRequestDto dto) {
+    
+    @Transactional
+    public void registerTeacher(SignupRequestDto dto) {
 
         // 1️⃣ Fetch college entity
         // College college = collegeRepository.findById(dto.getCollegeId())
@@ -37,18 +40,21 @@ public class UserService {
         teacher.setName(dto.getName());
         teacher.setUsername(dto.getUsername());
         teacher.setEmail(dto.getEmail());
-
         teacher.setPasswordHash(passwordEncoder.encode(dto.getPassword()));
-
         teacher.setRole(Role.TEACHER);
         if (college == null) {
             teacher.setAccountStatus(UserStatus.ACTIVE);
         } else {
             teacher.setAccountStatus(UserStatus.PENDING);
         }
-
         teacher.setCollege(college);
-
         userRepository.save(teacher);
+    }
+    
+    @Transactional
+    public boolean verifyUser(LoginRequestDTO dto) {
+    	User userEntity = userRepository.findByUsername(dto.getUsername())
+    			.orElse(null);
+    	return passwordEncoder.matches(dto.getPassword(), userEntity.getPasswordHash());
     }
 }
