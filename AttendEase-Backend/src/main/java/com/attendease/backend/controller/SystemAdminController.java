@@ -1,7 +1,6 @@
 package com.attendease.backend.controller;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -29,14 +28,14 @@ public class SystemAdminController {
 	private SystemAdminService systemAdminService;
 
 	public SystemAdminController(CollegeApplicationService collegeApplicationService,
-			SystemAdminOtpService systemAdminOtpService,CollegeService collegeService,SystemAdminService systemAdminService) {
+			SystemAdminOtpService systemAdminOtpService, CollegeService collegeService,
+			SystemAdminService systemAdminService) {
 		this.collegeApplicationService = collegeApplicationService;
 		this.systemAdminOtpService = systemAdminOtpService;
 		this.collegeService = collegeService;
 		this.systemAdminService = systemAdminService;
 	}
-	
-	
+
 	@GetMapping("/pendingCollegeApplications")
 	public List<CollegeApplicationResponseDTO> getAllPendingApplications() {
 		return collegeApplicationService.getAllPendingCollegeApplication();
@@ -47,7 +46,7 @@ public class SystemAdminController {
 		String refId = systemAdminOtpService.generateAndSendOtp();
 		return ResponseEntity.ok(Map.of("message", "Email Sent", "refId", refId));
 	}
-	
+
 	@PostMapping("/verify-otp")
 	public SystemAdminTokenResponseDTO verifyOtp(@RequestBody SystemAdminRequestOtpDTO dto) {
 		return systemAdminOtpService.verifyOtp(dto);
@@ -68,15 +67,15 @@ public class SystemAdminController {
 	public List<UsersInfoResponseDTO> getAllUers() {
 		return collegeService.getAllUsers();
 	}
-	
+
 	@PostMapping("/refresh-token")
 	public ResponseEntity<?> refreshToken(@RequestBody SystemAdminTokenRequestDTO request) {
-	    try {
-	        SystemAdminTokenResponseDTO response = systemAdminService.refreshToken(request);
-	        return ResponseEntity.ok(response);
-	    } catch (RuntimeException e) {
-	        return ResponseEntity.status(403).body(e.getMessage());
-	    }
+		try {
+			SystemAdminTokenResponseDTO response = systemAdminService.refreshToken(request);
+			return ResponseEntity.ok(response);
+		} catch (RuntimeException e) {
+			return ResponseEntity.status(403).body(e.getMessage());
+		}
 	}
-	
+
 }

@@ -55,7 +55,6 @@ public class JwtService {
 			extractClaims(Token);
 			return true;
 		} catch (JwtException | IllegalArgumentException e) {
-			// TODO: handle exception
 			e.printStackTrace();
 			return false;
 		}
