@@ -30,10 +30,6 @@ public class UserService {
     @Transactional
     public void registerTeacher(SignupRequestDto dto) {
 
-        // 1️⃣ Fetch college entity
-        // College college = collegeRepository.findById(dto.getCollegeId())
-        // .orElseThrow(() -> new RuntimeException("College not found"));
-
         College college = collegeRepository.findById(dto.getCollegeId()).orElse(null);
 
         User teacher = new User();

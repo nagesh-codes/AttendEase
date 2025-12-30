@@ -19,15 +19,9 @@ public class SystemAdmin {
 
 	@Column(name = "created_at", nullable = false)
 	private LocalDateTime createdAt = LocalDateTime.now();
-
-	@Column(name = "expires_at", nullable = false)
-	private LocalDateTime expires_at;
-
-	@Column(name = "used")
-	private boolean used;
-
-	@Column(name = "OTP")
-	private String otp;
+	
+	@Column(name = "email", nullable = false)
+	private String email;
 
 	public Long getId() {
 		return id;
@@ -45,28 +39,14 @@ public class SystemAdmin {
 		this.createdAt = createdAt;
 	}
 
-	public LocalDateTime getExpires_at() {
-		return expires_at;
+	public String getEmail() {
+		return email;
 	}
 
-	public void setExpires_at(LocalDateTime expires_at) {
-		this.expires_at = expires_at;
+	public void setEmail(String email) {
+		this.email = email;
 	}
-
-	public boolean isUsed() {
-		return used;
-	}
-
-	public void setUsed(boolean used) {
-		this.used = used;
-	}
-
-	public String getOtp() {
-		return otp;
-	}
-
-	public void setOtp(String otp) {
-		this.otp = otp;
-	}
+	
+	
 
 }

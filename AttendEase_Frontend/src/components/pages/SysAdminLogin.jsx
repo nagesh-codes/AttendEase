@@ -1,57 +1,54 @@
-import React, { useContext } from "react";
+import React from "react";
 import logo from "../../assets/logo.png";
 import "../css-files/SysAdminLogin.css";
 import { useState } from "react";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import { SystemAdminAuthContext } from "../../context/SystemAdminAuthContext";
 import { apiClient } from "../../API/apiClient";
 
 const SysAdminLogin = () => {
-  const [otp, setOtp] = useState("");
-  const [otpsent, setOtpsent] = useState(false);
-  const [btntxt1, setBtntxt1] = useState("Send OTP");
-  const [btntxt2, setBtntxt2] = useState("Verify");
+  const [email, setEmail] = useState("");
   const [isdisable, setIsdisable] = useState(false);
-  const { login } = useContext(SystemAdminAuthContext);
   const navigate = useNavigate();
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsdisable(true);
-    setBtntxt2("Verifying...");
+    const toastid = toast.loading("Sending OTP");
     try {
-      const response = await apiClient.post("/api/system-admin/verify-otp", {
-        otp,
-        refId: sessionStorage.getItem("refid"),
+      const response = await apiClient.post("/api/system-admin/send-otp", {
+        email,
       });
       if (response.status == 200) {
-        toast.success("OTP Successfully Verified.");
-        login(response.data);
+        sessionStorage.setItem("refid", response.data.refId);
+        toast.update(toastid, {
+          render: "OTP Sent",
+          autoClose: 4000,
+          type: "success",
+          isLoading: false,
+        });
+        sessionStorage.setItem("otpsent", true);
+        navigate("/system-admin-login/verify");
+      } else {
+        toast.update(toastid, {
+          render: "Failed to Send OTP",
+          autoClose: 4000,
+          type: "error",
+          isLoading: false,
+        });
+        sessionStorage.removeItem("otpsent");
       }
-      navigate("/system-admin-panel");
     } catch (error) {
       console.error(error);
-      toast.error("Incorrect OTP");
+      toast.update(toastid, {
+        render: "Failed to Send OTP",
+        autoClose: 4000,
+        type: "error",
+        isLoading: false,
+      });
+      sessionStorage.removeItem("otpsent");
     }
     setIsdisable(false);
-    setBtntxt2("Verify");
-  };
-
-  const sendOTP = async () => {
-    setIsdisable(true);
-    setBtntxt1("Sending OTP...");
-    try {
-      const response = await apiClient.post("/api/system-admin/send-otp");
-      sessionStorage.setItem("refid", response.data.refId);
-      toast.success("OTP Successfully Sent");
-      setOtpsent(true);
-    } catch (error) {
-      console.error(error);
-      toast.error("Failed to Send OTP");
-      setOtpsent(false);
-    }
-    setIsdisable(false);
-    setBtntxt1("Semd OTP");
   };
 
   return (
@@ -62,26 +59,18 @@ const SysAdminLogin = () => {
           AttendEase
         </div>
         <div className="title">System Admin Login</div>
-        <div className={`input-field ${otpsent ? "hide" : ""}`}>
-          <button type="button" onClick={sendOTP} disabled={isdisable}>
-            {btntxt1}
-          </button>
-        </div>
-        <div className={`rem-box ${otpsent ? "" : "hide"}`}>
-          <label htmlFor="otp">Enter Your OTP</label>
+        <div className={`input-field`}>
+          <label htmlFor="email">Enter The Email.</label>
           <input
-            type="text"
-            value={otp}
-            onInput={(e) => setOtp(e.target.value)}
+            type="email"
             required
-            id="otp"
-            minLength="6"
-            maxLength="6"
+            value={email}
+            onInput={(e) => setEmail(e.target.value)}
           />
         </div>
-        <div className={`btn-field ${otpsent ? "" : "hide"}`}>
+        <div className={`input-field`}>
           <button type="submit" disabled={isdisable}>
-            {btntxt2}
+            {"Send OTP"}
           </button>
         </div>
       </form>

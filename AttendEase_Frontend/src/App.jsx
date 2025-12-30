@@ -10,6 +10,7 @@ import SysAdminLogin from "./components/pages/SysAdminLogin";
 import ApplicationList from "./components/pages/Test";
 import { SystemAdminAuthProvider } from "./context/SystemAdminAuthContext";
 import RequireSystemAdmin from "./components/pages/RequireSystemAdmin";
+import SysAdminVerifyOtp from "./components/pages/SysAdminVerifyOtp";
 
 function App() {
   return (
@@ -42,6 +43,7 @@ function App() {
             }
           />
           <Route path={"/system-admin-login"} element={<SysAdminLogin />} />
+          <Route path={"/system-admin-login/verify"} element={<SysAdminVerifyOtp />} />
           <Route path={"*"} element={<ApplicationList />} />
         </Routes>
       </SystemAdminAuthProvider>

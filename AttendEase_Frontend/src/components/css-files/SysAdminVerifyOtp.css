@@ -1,0 +1,106 @@
+.sys-verify {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #f4f4f9;
+}
+
+.sys-verify .wrapper {
+  background: white;
+  padding: 2rem 3rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 450px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.sys-verify .logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #333;
+}
+
+.sys-verify .logo img {
+  height: 40px;
+  width: auto;
+}
+
+.sys-verify .title {
+  font-size: 1.25rem;
+  color: #555;
+  margin-bottom: 0.5rem;
+}
+
+.sys-verify .otp-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.sys-verify .otp-label {
+  font-size: 0.9rem;
+  color: #666;
+  text-align: left;
+  margin-left: 2px;
+}
+
+.sys-verify .otp-inputs {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.sys-verify .otp-box {
+  width: 45px;
+  height: 50px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  text-align: center;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #333;
+  transition: all 0.2s ease;
+  background-color: #fff;
+}
+
+.sys-verify .otp-box:focus {
+  border-color: #4a90e2;
+  box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.2);
+  outline: none;
+}
+
+.sys-verify .btn-field {
+  width: 100%;
+  margin-top: 1rem;
+}
+
+.sys-verify .btn-field button {
+  width: 100%;
+  padding: 12px;
+  background-color: #4a90e2;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.sys-verify .btn-field button:hover {
+  background-color: #357abd;
+}
+
+.sys-verify .btn-field button:disabled {
+  background-color: #a0c4e8;
+  cursor: not-allowed;
+}

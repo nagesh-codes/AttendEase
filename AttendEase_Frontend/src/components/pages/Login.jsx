@@ -25,7 +25,7 @@ const Login = () => {
         username,
         password,
       });
-      console.log(response)
+      console.log(response);
       if (response.status === 200) {
         toast.update(toastid, {
           render: "Successfully Login!",

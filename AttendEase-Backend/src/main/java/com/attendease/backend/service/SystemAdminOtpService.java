@@ -10,19 +10,19 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.attendease.backend.dto.SystemAdminOtpRequestDTO;
 import com.attendease.backend.dto.SystemAdminRequestOtpDTO;
 import com.attendease.backend.dto.SystemAdminTokenResponseDTO;
 import com.attendease.backend.entity.SystemAdminOtp;
 import com.attendease.backend.entity.SystemAdminRefreshTokens;
 import com.attendease.backend.repository.SystemAdminOtpRepository;
 import com.attendease.backend.repository.SystemAdminRefreshTokenRepository;
+import com.attendease.backend.repository.SystemAdminRepository;
 import com.attendease.backend.util.HashUtil;
 import com.attendease.backend.util.TemplateLoader;
 
 @Service
 public class SystemAdminOtpService {
-	@Value("${SystemAdminEmail}")
-	private String adminEmail;
 
 	@Autowired
 	public static final SecureRandom secureRandom = new SecureRandom();
@@ -32,6 +32,7 @@ public class SystemAdminOtpService {
 	private final JwtService jwtService;
 	private final HashUtil hashUtil;
 	private final TemplateLoader templateLoader;
+	private final SystemAdminRepository systemAdminRepository;
 
 	private final PasswordEncoder passwordEncoder;
 
@@ -42,7 +43,7 @@ public class SystemAdminOtpService {
 
 	public SystemAdminOtpService(EmailService emailService, SystemAdminOtpRepository systemAdminOtpRepository,
 			SystemAdminRefreshTokenRepository systemAdminRefreshTokenRepository, PasswordEncoder passwordEncoder,
-			JwtService jwtService, HashUtil hashUtil,TemplateLoader templateLoader) {
+			JwtService jwtService, HashUtil hashUtil,TemplateLoader templateLoader,SystemAdminRepository systemAdminRepository) {
 		this.emailService = emailService;
 		this.systemAdminOtpRepository = systemAdminOtpRepository;
 		this.passwordEncoder = passwordEncoder;
@@ -50,10 +51,14 @@ public class SystemAdminOtpService {
 		this.hashUtil = hashUtil;
 		this.systemAdminRefreshTokenRepository = systemAdminRefreshTokenRepository;
 		this.templateLoader = templateLoader;
+		this.systemAdminRepository = systemAdminRepository;
 	}
 
 	@Transactional
-	public String generateAndSendOtp() {
+	public String generateAndSendOtp(SystemAdminOtpRequestDTO dto) {
+		
+		systemAdminRepository.findByEmail(dto.getEmail())
+				.orElseThrow(() -> new RuntimeException("Email is not valid"));
 
 		String otp = generateOtp();
 		String refId = UUID.randomUUID().toString().substring(0, 8);
@@ -65,15 +70,13 @@ public class SystemAdminOtpService {
 		otpEntity.setRefId(refId);
 		otpEntity.setOtp(hashedOtp);
 		otpEntity.setUsed(false);
-
 		otpEntity.setExpiresAt(LocalDateTime.now().plusMinutes(5));
-
-		systemAdminOtpRepository.saveAndFlush(otpEntity);
 
 		String text = templateLoader.loadTemplate("OTP_email");
 		text = text.replace("{{OTP}}", otp);
-
-		emailService.sendEmail(adminEmail, "Your AttendEase System Admin Login OTP.", text);
+		emailService.sendEmail(dto.getEmail(), "Your AttendEase System Admin Login OTP.", text);
+		
+		systemAdminOtpRepository.saveAndFlush(otpEntity);
 
 		return refId;
 	}
@@ -87,6 +90,7 @@ public class SystemAdminOtpService {
 		if (otpEntity.getExpiresAt().isBefore(LocalDateTime.now()) || otpEntity.getUsed()) {
 			throw new RuntimeException("OTP EXPIRED");
 		}
+		
 		if (passwordEncoder.matches(dto.getOtp(), otpEntity.getOtp())) {
 			otpEntity.setUsed(true);
 			systemAdminOtpRepository.save(otpEntity);

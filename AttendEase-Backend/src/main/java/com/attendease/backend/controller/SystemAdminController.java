@@ -1,5 +1,6 @@
 package com.attendease.backend.controller;
 
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -42,9 +43,13 @@ public class SystemAdminController {
 	}
 
 	@PostMapping("/send-otp")
-	public ResponseEntity<?> createOTP() {
-		String refId = systemAdminOtpService.generateAndSendOtp();
-		return ResponseEntity.ok(Map.of("message", "Email Sent", "refId", refId));
+	public ResponseEntity<?> createOTP(@RequestBody SystemAdminOtpRequestDTO dto) {
+		try {
+			String refId = systemAdminOtpService.generateAndSendOtp(dto);
+			return ResponseEntity.ok(Map.of("message", "Email Sent", "refId", refId));
+		} catch(Exception e) {
+			return ResponseEntity.status(404).body("Email not found");
+		}
 	}
 
 	@PostMapping("/verify-otp")
