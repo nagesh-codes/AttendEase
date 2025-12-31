@@ -31,7 +31,7 @@ const SysAdminLogin = () => {
         navigate("/system-admin-login/verify");
       } else {
         toast.update(toastid, {
-          render: "Failed to Send OTP",
+          render: "This is not a system admin email.",
           autoClose: 4000,
           type: "error",
           isLoading: false,
@@ -41,7 +41,7 @@ const SysAdminLogin = () => {
     } catch (error) {
       console.error(error);
       toast.update(toastid, {
-        render: "Failed to Send OTP",
+        render: "This is not a system admin email.",
         autoClose: 4000,
         type: "error",
         isLoading: false,

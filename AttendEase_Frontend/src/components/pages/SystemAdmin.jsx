@@ -1,5 +1,6 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import "../css-files/SystemAdmin.css";
+import logo from "../../assets/logo.png";
 import { apiClient } from "../../API/apiClient";
 import { toast } from "react-toastify";
 import { SystemAdminAuthContext } from "../../context/SystemAdminAuthContext";
@@ -76,7 +77,7 @@ const CollegeApplications = () => {
     <div className="college-application">
       <div className="wrapper">
         <div className="header">College Applications</div>
-        <div className="application-list">
+        <div className="list">
           {ClgAppn.length > 0 ? (
             ClgAppn.map((data, key) => {
               return (
@@ -156,7 +157,7 @@ const CollegesContent = () => {
     <div className="colleges">
       <div className="wrapper">
         <div className="header">Colleges</div>
-        <div className="college-list">
+        <div className="college-list list">
           {clg.length > 0 ? (
             clg.map((data, key) => {
               return (
@@ -212,7 +213,7 @@ const UsersContent = () => {
     <div className="users">
       <div className="wrapper">
         <div className="header">Users</div>
-        <div className="user-list">
+        <div className="list">
           {clg.length > 0 ? (
             clg.map((data, key) => {
               return (
@@ -258,10 +259,25 @@ const UsersContent = () => {
 
 const SystemAdmin = () => {
   const { logout } = useContext(SystemAdminAuthContext);
+  const sidebarRef = useRef(null);
   const [activeSection, setActiveSection] = useState(
     sessionStorage.getItem("current_tab") || "Users"
   );
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (!isMobileSidebarOpen) return;
+      if (sidebarRef.current && !sidebarRef.current.contains(e.target)) {
+        setIsMobileSidebarOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isMobileSidebarOpen]);
 
   const handleMenuClick = (sectionName) => {
     setActiveSection(sectionName);
@@ -297,8 +313,14 @@ const SystemAdmin = () => {
     <div className="system-admin-wrapper">
       {/* Sidebar - Dynamic class added if open on mobile */}
       <aside
+        ref={sidebarRef}
         className={`sa-sidebar ${isMobileSidebarOpen ? "mobile-open" : ""}`}
       >
+        <div className={`app-name`}>
+          <img src={logo} alt="" height="50" />
+          <span>AttendEase</span>
+        </div>
+
         <div
           className={`sa-menu-item ${
             activeSection === "Users" ? "active" : ""
