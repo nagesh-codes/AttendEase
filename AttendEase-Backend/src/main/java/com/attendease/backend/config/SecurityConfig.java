@@ -32,7 +32,6 @@ public class SecurityConfig {
                         .requestMatchers("/api/college-application/**").permitAll()
                         .requestMatchers("/api/system-admin/send-otp").permitAll()
                         .requestMatchers("/api/system-admin/verify-otp").permitAll()
-                        .requestMatchers("/api/system-admin/refresh-token").permitAll()
                         .requestMatchers("/api/system-admin/**").hasRole("SYSTEM_ADMIN")
                         .anyRequest().authenticated())
                 .httpBasic(basic -> basic.disable())
