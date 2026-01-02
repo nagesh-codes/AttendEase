@@ -14,6 +14,7 @@ import com.attendease.backend.service.CollegeApplicationService;
 import com.attendease.backend.service.CollegeService;
 import com.attendease.backend.service.SystemAdminOtpService;
 import com.attendease.backend.service.SystemAdminService;
+import com.attendease.backend.service.UserService;
 
 import java.util.List;
 import java.util.Map;
@@ -26,14 +27,16 @@ public class SystemAdminController {
 	private SystemAdminOtpService systemAdminOtpService;
 	private CollegeService collegeService;
 	private SystemAdminService systemAdminService;
+	private UserService userService;
 
 	public SystemAdminController(CollegeApplicationService collegeApplicationService,
 			SystemAdminOtpService systemAdminOtpService, CollegeService collegeService,
-			SystemAdminService systemAdminService) {
+			SystemAdminService systemAdminService,UserService userService) {
 		this.collegeApplicationService = collegeApplicationService;
 		this.systemAdminOtpService = systemAdminOtpService;
 		this.collegeService = collegeService;
 		this.systemAdminService = systemAdminService;
+		this.userService = userService;
 	}
 
 	@GetMapping("/pendingCollegeApplications")
@@ -69,7 +72,7 @@ public class SystemAdminController {
 
 	@GetMapping("/getUsersInfoList")
 	public List<UsersInfoResponseDTO> getAllUers() {
-		return collegeService.getAllUsers();
+		return userService.getAllUsers();
 	}
 
 	@PostMapping("/refresh-token")

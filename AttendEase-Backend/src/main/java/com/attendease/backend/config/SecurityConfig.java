@@ -30,6 +30,7 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/colleges/**").permitAll()
                         .requestMatchers("/api/college-application/**").permitAll()
+                        .requestMatchers("/api/college-admin/**").permitAll()
                         .requestMatchers("/api/system-admin/send-otp").permitAll()
                         .requestMatchers("/api/system-admin/verify-otp").permitAll()
                         .requestMatchers("/api/system-admin/**").hasRole("SYSTEM_ADMIN")

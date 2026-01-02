@@ -10,7 +10,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 
 @Entity
-@Table(name = "")
+@Table(name = "system_admin_otp")
 public class SystemAdminOtp {
 
 	@Id

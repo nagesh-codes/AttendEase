@@ -98,7 +98,7 @@ const Login = () => {
             Don't Have Any Account? <Link to={"/signup"}>Signup</Link>
           </span>
           <span>
-            <Link to={"/SysAdminLogin"}>
+            <Link to={"/system-admin-login"}>
               Are You AttendEase System Admin ? Login
             </Link>
           </span>

@@ -15,7 +15,7 @@ const optionsWithTime = {
 };
 
 const Teachers = () => {
-  return <div>this is taechers tab</div>;
+  return <div>this is teachers tab</div>;
 };
 
 const Classes = () => {
@@ -27,7 +27,35 @@ const Setting = () => {
 };
 
 const TeacherRequest = () => {
-  return <div>this is pending teachers list</div>;
+  const [PendingTeachers, setPendinTeachers] = useState([]);
+
+  const getPendingTeachers = async () => {
+    toast.success("api called");
+    try {
+      const response = await apiClient.get(
+        "/api/college-admin/pending-teachers",
+        {
+          username: "mycollege",
+          id: 16,
+        }
+      );
+      if (response.status == 200) {
+        setPendinTeachers(response.data);
+        console.log(response);
+      } else {
+        toast.error("error");
+      }
+    } catch (error) {
+      console.error(error.message);
+      toast.error("internal server error");
+    }
+  };
+
+  useEffect(() => {
+    getPendingTeachers();
+  }, []);
+
+  return <div></div>;
 };
 
 const CollegeAdmin = () => {
