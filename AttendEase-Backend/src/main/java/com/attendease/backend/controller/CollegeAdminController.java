@@ -25,11 +25,6 @@ public class CollegeAdminController{
 	
 	@GetMapping("/pending-teachers")
 	public List<PendingTeachersResponseDTO> pendingTeachers(@ModelAttribute PendingTeachersRequestDTO dto){
-		System.out.println("inside the method");
-//		try {			
 			return userService.pendingTeachers(dto);
-//		}catch(Exception e) {
-//			return List<PendingTeachersResponseDTO>;
-//		}
 	}
 }

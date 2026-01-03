@@ -12,6 +12,8 @@ public class PendingTeachersResponseDTO{
 		this.username = username;
 		this.createdAt = createdAt;
 	}
+	
+	public PendingTeachersResponseDTO() {};
 
 	public String getUsername() {
 		return username;

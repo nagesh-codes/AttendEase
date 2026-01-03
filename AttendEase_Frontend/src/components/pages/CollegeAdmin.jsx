@@ -30,18 +30,15 @@ const TeacherRequest = () => {
   const [PendingTeachers, setPendinTeachers] = useState([]);
 
   const getPendingTeachers = async () => {
-    toast.success("api called");
     try {
       const response = await apiClient.get(
         "/api/college-admin/pending-teachers",
         {
-          username: "mycollege",
-          id: 16,
+          params: { username: "mycollege", id: 16 },
         }
       );
       if (response.status == 200) {
         setPendinTeachers(response.data);
-        console.log(response);
       } else {
         toast.error("error");
       }

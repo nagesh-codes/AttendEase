@@ -1,6 +1,7 @@
 package com.attendease.backend.service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -70,9 +71,15 @@ public class UserService {
     
     @Transactional 
     public List<PendingTeachersResponseDTO> pendingTeachers(PendingTeachersRequestDTO dto){
-    	return userRepository.findByaccountStatusAndCollege_Id(UserStatus.PENDING, dto.getId())
-    			.stream()
-    			.map((c)->new PendingTeachersResponseDTO(c.getName(), c.getUsername(), c.getCreatedAt()))
-    			.toList();
+    	List<User> users =  userRepository.findByStatusAndCollegeId(UserStatus.PENDING,dto.getId());
+    	
+    	return users.stream()
+    			.map(user -> {
+    				PendingTeachersResponseDTO teacher_dto = new PendingTeachersResponseDTO();
+    				teacher_dto.setUsername(user.getUsername());
+    				teacher_dto.setName(user.getName());
+    				teacher_dto.setCreatedAt(user.getCreatedAt());
+    				return teacher_dto;
+    			}).collect(Collectors.toList());
     }
 }
