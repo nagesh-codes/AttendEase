@@ -22,10 +22,6 @@ const Classes = () => {
   return <div>this is classes tab</div>;
 };
 
-const Setting = () => {
-  return <div>this is setting tab</div>;
-};
-
 const TeacherRequest = () => {
   const [PendingTeachers, setPendinTeachers] = useState([]);
 
@@ -34,7 +30,7 @@ const TeacherRequest = () => {
       const response = await apiClient.get(
         "/api/college-admin/pending-teachers",
         {
-          params: { username: "mycollege", id: 16 },
+          params: { username: "mycollege", collegeId: 16 },
         }
       );
       if (response.status == 200) {
@@ -52,7 +48,93 @@ const TeacherRequest = () => {
     getPendingTeachers();
   }, []);
 
-  return <div></div>;
+  const updateTeacherRequest = async (id, status) => {
+    const toastId = toast.loading("Making Changes");
+    try {
+      const response = await apiClient.patch(
+        "/api/college-admin/update-teacher-appn",
+        {
+          id,
+          status,
+          collegeId:16
+        }
+      );
+      if (response.status == 200) {
+        toast.update(toastId, {
+          render: id,
+          isLoading: false,
+          type: "success",
+          autoClose: 3000,
+        });
+      } else {
+        toast.update(toastId, {
+          render: "Cannot Make Changes At This Time",
+          isLoading: false,
+          type: "error",
+          autoClose: 4000,
+        });
+      }
+    } catch (error) {
+      toast.update(toastId, {
+        render: "Cannot Make Changes At This Time",
+        isLoading: false,
+        type: "error",
+        autoClose: 4000,
+      });
+    }
+  };
+
+  return (
+    <div className="pending-teachers list">
+      {PendingTeachers.length > 0 ? (
+        PendingTeachers.map((data, key) => {
+          return (
+            <div className="appn" key={key}>
+              <div className="ClgName field">
+                <span>Name:</span>
+                {data.name}
+              </div>
+              <div className="username field">
+                <span>Username:</span>
+                {data.username}
+              </div>
+              <div className="App-time field">
+                <span>Submission Date:</span>
+                {new Date(data.createdAt).toLocaleString(
+                  "en-US",
+                  optionsWithTime
+                )}
+              </div>
+              <div className="btn-field">
+                <button
+                  type="button"
+                  onClick={() => {
+                    updateTeacherRequest(data.id, "ACTIVE");
+                  }}
+                >
+                  Approve
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    updateTeacherRequest(data.id, "REJECTED");
+                  }}
+                >
+                  Reject
+                </button>
+              </div>
+            </div>
+          );
+        })
+      ) : (
+        <div className="loading"> Loading Applications </div>
+      )}
+    </div>
+  );
+};
+
+const Setting = () => {
+  return <div>this is setting tab</div>;
 };
 
 const CollegeAdmin = () => {
@@ -112,7 +194,6 @@ const CollegeAdmin = () => {
 
   return (
     <div className="layout">
-      {/* Sidebar - Dynamic class added if open on mobile */}
       <aside
         ref={sidebarRef}
         className={`sa-sidebar ${isMobileSidebarOpen ? "mobile-open" : ""}`}
@@ -253,10 +334,8 @@ const CollegeAdmin = () => {
               <line x1="3" y1="18" x2="21" y2="18"></line>
             </svg>
           </div>
-          {/* <div className="sa-profile-icon"></div> */}
         </header>
 
-        {/* Render the dynamic content based on active state */}
         {renderContent()}
       </main>
     </div>

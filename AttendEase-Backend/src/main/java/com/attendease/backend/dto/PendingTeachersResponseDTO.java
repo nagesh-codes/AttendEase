@@ -3,6 +3,7 @@ package com.attendease.backend.dto;
 import java.time.LocalDateTime;
 
 public class PendingTeachersResponseDTO{
+	private Long id;
 	private String username;
 	private String name;
 	private LocalDateTime createdAt;
@@ -14,6 +15,16 @@ public class PendingTeachersResponseDTO{
 	}
 	
 	public PendingTeachersResponseDTO() {};
+	
+	
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
 
 	public String getUsername() {
 		return username;

@@ -3,6 +3,7 @@ package com.attendease.backend.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import jakarta.mail.internet.MimeMessage;
@@ -12,7 +13,8 @@ public class EmailService {
 
 	@Autowired
 	private JavaMailSender mailSender;
-
+	
+	@Async
 	public void sendEmail(String toEmail, String subject, String body) {
 		try {
 			System.out.println(toEmail);

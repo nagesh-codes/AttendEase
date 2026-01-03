@@ -74,62 +74,58 @@ const CollegeApplications = () => {
   };
 
   return (
-    <div className="college-application">
-      <div className="wrapper">
-        <div className="header">College Applications</div>
-        <div className="list">
-          {ClgAppn.length > 0 ? (
-            ClgAppn.map((data, key) => {
-              return (
-                <div className="appn" key={key}>
-                  <div className="ClgName">
-                    <span>Applicant:</span>
-                    {data.collegeName}
-                  </div>
-                  <div className="AuthName">
-                    <span>contact person:</span>
-                    {data.authorityName} ( {data.authorityRole} )
-                  </div>
-                  <div className="Email">
-                    <span>Email:</span>
-                    {data.officialEmail}
-                  </div>
-                  <div className="App-time">
-                    <span>Submission Date:</span>
-                    {new Date(data.createdAt).toLocaleString(
-                      "en-US",
-                      optionsWithTime
-                    )}
-                  </div>
-                  <div className="btn-field">
-                    <button
-                      type="button"
-                      onClick={() => {
-                        updateCollegeStatus(data.id, "APPROVED");
-                      }}
-                    >
-                      Approve
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        updateCollegeStatus(data.id, "REJECTED");
-                      }}
-                    >
-                      Reject
-                    </button>
-                  </div>
-                </div>
-              );
-            })
-          ) : (
-            <div className="loading"> Loading Applications </div>
-          )}
-        </div>
-      </div>
+    <div className="list">
+      {ClgAppn.length > 0 ? (
+        ClgAppn.map((data, key) => {
+          return (
+            <div className="appn" key={key}>
+              <div className="ClgName">
+                <span>Applicant:</span>
+                {data.collegeName}
+              </div>
+              <div className="AuthName">
+                <span>contact person:</span>
+                {data.authorityName} ( {data.authorityRole} )
+              </div>
+              <div className="Email">
+                <span>Email:</span>
+                {data.officialEmail}
+              </div>
+              <div className="App-time">
+                <span>Submission Date:</span>
+                {new Date(data.createdAt).toLocaleString(
+                  "en-US",
+                  optionsWithTime
+                )}
+              </div>
+              <div className="btn-field">
+                <button
+                  type="button"
+                  onClick={() => {
+                    updateCollegeStatus(data.id, "APPROVED");
+                  }}
+                >
+                  Approve
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    updateCollegeStatus(data.id, "REJECTED");
+                  }}
+                >
+                  Reject
+                </button>
+              </div>
+            </div>
+          );
+        })
+      ) : (
+        <div className="loading"> Loading Applications </div>
+      )}
     </div>
   );
 };
+
 const CollegesContent = () => {
   const [clg, setClg] = useState([]);
 
@@ -154,41 +150,36 @@ const CollegesContent = () => {
   }, []);
 
   return (
-    <div className="colleges">
-      <div className="wrapper">
-        <div className="header">Colleges</div>
-        <div className="college-list list">
-          {clg.length > 0 ? (
-            clg.map((data, key) => {
-              return (
-                <div className="appn" key={key}>
-                  <div className="ClgName">
-                    <span>College Name:</span>
-                    {data.name}
-                  </div>
-                  <div className="AuthName">
-                    <span>Created By:</span>
-                    {data.createdBy ? data.createdBy : "N/A"}
-                  </div>
-                  <div className="Email">
-                    <span>Email:</span>
-                    {data.email ? data.email : "N/A"}
-                  </div>
-                  <div className="App-time">
-                    <span>Creation Date:</span>
-                    {new Date(data.createdAt).toLocaleString(
-                      "en-US",
-                      optionsWithTime
-                    )}
-                  </div>
-                </div>
-              );
-            })
-          ) : (
-            <div className="loading"> Loading Applications </div>
-          )}
-        </div>
-      </div>
+    <div className="college-list list">
+      {clg.length > 0 ? (
+        clg.map((data, key) => {
+          return (
+            <div className="appn" key={key}>
+              <div className="ClgName">
+                <span>College Name:</span>
+                {data.name}
+              </div>
+              <div className="AuthName">
+                <span>Created By:</span>
+                {data.createdBy ? data.createdBy : "N/A"}
+              </div>
+              <div className="Email">
+                <span>Email:</span>
+                {data.email ? data.email : "N/A"}
+              </div>
+              <div className="App-time">
+                <span>Creation Date:</span>
+                {new Date(data.createdAt).toLocaleString(
+                  "en-US",
+                  optionsWithTime
+                )}
+              </div>
+            </div>
+          );
+        })
+      ) : (
+        <div className="loading"> Loading Applications </div>
+      )}
     </div>
   );
 };
@@ -210,49 +201,44 @@ const UsersContent = () => {
     getUsersInfo();
   }, []);
   return (
-    <div className="users">
-      <div className="wrapper">
-        <div className="header">Users</div>
-        <div className="list">
-          {clg.length > 0 ? (
-            clg.map((data, key) => {
-              return (
-                <div className="appn" key={key}>
-                  <div className="field">
-                    <span>Name:</span>
-                    {data.name}
-                  </div>
-                  <div className="field">
-                    <span>username:</span>
-                    {data.username ? data.username : "N/A"}
-                  </div>
-                  <div className="field">
-                    <span>Email:</span>
-                    {data.email ? data.email : "N/A"}
-                  </div>
-                  <div className="field">
-                    <span>Role:</span>
-                    {data.role ? data.role : "N/A"}
-                  </div>
-                  <div className="field">
-                    <span>College:</span>
-                    {data.college?.name ? data.college?.name : "N/A"}
-                  </div>
-                  <div className="App-time">
-                    <span>Created At:</span>
-                    {new Date(data.createdAt).toLocaleString(
-                      "en-US",
-                      optionsWithTime
-                    )}
-                  </div>
-                </div>
-              );
-            })
-          ) : (
-            <div className="loading"> Loading Applications </div>
-          )}
-        </div>
-      </div>
+    <div className="list">
+      {clg.length > 0 ? (
+        clg.map((data, key) => {
+          return (
+            <div className="appn" key={key}>
+              <div className="field">
+                <span>Name:</span>
+                {data.name}
+              </div>
+              <div className="field">
+                <span>username:</span>
+                {data.username ? data.username : "N/A"}
+              </div>
+              <div className="field">
+                <span>Email:</span>
+                {data.email ? data.email : "N/A"}
+              </div>
+              <div className="field">
+                <span>Role:</span>
+                {data.role ? data.role : "N/A"}
+              </div>
+              <div className="field">
+                <span>College:</span>
+                {data.college?.name ? data.college?.name : "N/A"}
+              </div>
+              <div className="App-time">
+                <span>Created At:</span>
+                {new Date(data.createdAt).toLocaleString(
+                  "en-US",
+                  optionsWithTime
+                )}
+              </div>
+            </div>
+          );
+        })
+      ) : (
+        <div className="loading"> Loading Applications </div>
+      )}
     </div>
   );
 };

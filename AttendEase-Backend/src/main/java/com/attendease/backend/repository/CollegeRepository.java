@@ -13,4 +13,5 @@ public interface CollegeRepository extends JpaRepository<College, Long> {
     List<College> findByStatus(CollegeStatus status);
 
     Optional<String> findByid(Long id);
+    Optional<College> findById(Long id);
 }
