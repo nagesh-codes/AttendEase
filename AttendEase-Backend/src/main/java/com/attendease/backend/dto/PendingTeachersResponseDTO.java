@@ -6,6 +6,7 @@ public class PendingTeachersResponseDTO{
 	private Long id;
 	private String username;
 	private String name;
+	private String email;
 	private LocalDateTime createdAt;
 	
 	public PendingTeachersResponseDTO(String name,String username,LocalDateTime createdAt) {
@@ -14,9 +15,7 @@ public class PendingTeachersResponseDTO{
 		this.createdAt = createdAt;
 	}
 	
-	public PendingTeachersResponseDTO() {};
-	
-	
+	public PendingTeachersResponseDTO() {}
 
 	public Long getId() {
 		return id;
@@ -42,13 +41,21 @@ public class PendingTeachersResponseDTO{
 		this.name = name;
 	}
 
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
 	public LocalDateTime getCreatedAt() {
 		return createdAt;
 	}
 
 	public void setCreatedAt(LocalDateTime createdAt) {
 		this.createdAt = createdAt;
-	}
+	};
 	
 	
 }

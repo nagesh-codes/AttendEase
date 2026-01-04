@@ -98,6 +98,10 @@ const TeacherRequest = () => {
                 <span>Username:</span>
                 {data.username}
               </div>
+              <div className="email field">
+                <span>Email:</span>
+                {data.email}
+              </div>
               <div className="App-time field">
                 <span>Submission Date:</span>
                 {new Date(data.createdAt).toLocaleString(

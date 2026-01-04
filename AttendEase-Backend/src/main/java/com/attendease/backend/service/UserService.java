@@ -87,6 +87,7 @@ public class UserService {
     				teacher_dto.setName(user.getName());
     				teacher_dto.setCreatedAt(user.getCreatedAt());
     				teacher_dto.setId(user.getId());
+    				teacher_dto.setEmail(user.getEmail());
     				return teacher_dto;
     			}).collect(Collectors.toList());
     }
@@ -99,10 +100,18 @@ public class UserService {
     		user.setAccountStatus(dto.getStatus());
     		College clg = collegeRepository.findById(dto.getCollegeId()).orElse(null);
     		String collegeName = clg == null ? "College" : clg.getName();
-    		String text = templateLoader.loadTemplate("teacher_request_approved");
+    		String text = "";
+    		String subject = "";
+    		if(dto.getStatus() == UserStatus.ACTIVE) {    			
+    			text = templateLoader.loadTemplate("teacher_request_approved");
+    			subject = "AttendEase: Your Teacher Application has been Approved";
+    		}else {
+    			text = templateLoader.loadTemplate("teacher_request_rejected");
+    			subject = "AttendEase: Your Teacher Application has been Rejected";
+    		}
     		text = text.replace( "{{name}}", user.getName());
     		text = text.replace("{{collegeName}}", collegeName);
-    		emailService.sendEmail(user.getEmail(), "AttendEase: Your Teacher Application has been Approved", text);
+    		emailService.sendEmail(user.getEmail(), subject, text);
     	}catch(Exception e) {
     		new RuntimeException(e.getMessage());
     	}
