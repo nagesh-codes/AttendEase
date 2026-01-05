@@ -4,9 +4,9 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-//@RestController
-//@RequestMapping("/api/teacher")
-//@CrossOrigin(origins = "${FRONTEND_URL}")
-//public class TeacherController{
-//	
-//}
+// @RestController
+// @RequestMapping("/api/teacher")
+// @CrossOrigin(origins = "${FRONTEND_URL}")
+// public class TeacherController{
+//
+// }

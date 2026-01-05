@@ -2,6 +2,8 @@ package com.attendease.backend.service;
 
 import com.attendease.backend.dto.CollegeInfoResponseDTO;
 import com.attendease.backend.dto.CollegeListResponseDTO;
+import com.attendease.backend.dto.GetCollegeInfoResponseDTO;
+import com.attendease.backend.entity.College;
 import com.attendease.backend.entity.CollegeStatus;
 import com.attendease.backend.repository.CollegeRepository;
 
@@ -30,5 +32,13 @@ public class CollegeService {
 				.stream()
 				.map(c -> new CollegeInfoResponseDTO(c.getName(), c.getCreatedBy(), c.getCreatedAt(), c.getEmail()))
 				.toList();
+	}
+
+	public GetCollegeInfoResponseDTO getCollegeInfo(Long collegeId) {
+		College clg = collegeRepository.findById(collegeId)
+				.orElseThrow(() -> new RuntimeException("Colleg Not Found"));
+		GetCollegeInfoResponseDTO dto = new GetCollegeInfoResponseDTO(clg.getName(), clg.getAddess(), clg.getPhone(),
+				clg.getEmail());
+		return dto;
 	}
 }

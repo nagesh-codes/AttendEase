@@ -36,6 +36,11 @@
   font-weight: bolder;
 }
 
+.ApplyCollege .row-field{
+  display: flex;
+  gap: 20px;
+}
+
 .ApplyCollege .input-field {
   display: flex;
   flex-direction: column;

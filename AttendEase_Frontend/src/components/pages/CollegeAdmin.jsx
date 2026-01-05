@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import "../css-files/SystemAdmin.css";
+import "../css-files/CollegeAdmin.css";
 import "../css-files/layout.css";
 import logo from "../../assets/logo.png";
 import { apiClient } from "../../API/apiClient";
@@ -56,7 +57,7 @@ const TeacherRequest = () => {
         {
           id,
           status,
-          collegeId:16
+          collegeId: 16,
         }
       );
       if (response.status == 200) {
@@ -138,7 +139,282 @@ const TeacherRequest = () => {
 };
 
 const Setting = () => {
-  return <div>this is setting tab</div>;
+  // --- State: General Profile ---
+  const [collegeDetails, setCollegeDetails] = useState({
+    name: "Getting Details",
+    address: "Getting Details",
+    email: "Getting Details",
+    phone: "Getting Details",
+  });
+
+  // --- State: Academic (Classes & Subjects) ---
+  // Structure: { name: "Class Name", subjects: ["Sub1", "Sub2"] }
+  const [streams, setStreams] = useState([
+    { name: "FY BCA", subjects: ["C Programming", "Web Basics", "Maths"] },
+    { name: "SY BCA", subjects: ["Core Java", "Data Structures", "DBMS"] },
+    { name: "TY BCA", subjects: ["Advanced Java", "ReactJS", "Project"] },
+  ]);
+
+  const [newClassName, setNewClassName] = useState("");
+
+  // Temporary state to hold the input for "New Subject" for EACH class
+  // key = index of class, value = text input
+  const [subjectInputs, setSubjectInputs] = useState({});
+
+  // --- Handlers: Profile ---
+  const handleProfileChange = (e) => {
+    setCollegeDetails({ ...collegeDetails, [e.target.name]: e.target.value });
+  };
+
+  // --- Handlers: Classes ---
+  const handleAddClass = () => {
+    if (newClassName.trim() !== "") {
+      setStreams([...streams, { name: newClassName, subjects: [] }]);
+      setNewClassName("");
+    }
+  };
+
+  const handleDeleteClass = (index) => {
+    if (
+      window.confirm(
+        "Are you sure? This will delete the class and ALL its subjects."
+      )
+    ) {
+      const updated = streams.filter((_, i) => i !== index);
+      setStreams(updated);
+    }
+  };
+
+  // --- Handlers: Subjects ---
+  const handleSubjectInputChange = (classIndex, value) => {
+    setSubjectInputs({ ...subjectInputs, [classIndex]: value });
+  };
+
+  const handleAddSubject = (classIndex) => {
+    const subjectName = subjectInputs[classIndex];
+    if (subjectName && subjectName.trim() !== "") {
+      const updatedStreams = [...streams];
+      updatedStreams[classIndex].subjects.push(subjectName);
+      setStreams(updatedStreams);
+
+      // Clear input
+      setSubjectInputs({ ...subjectInputs, [classIndex]: "" });
+    }
+  };
+
+  const handleDeleteSubject = (classIndex, subjectIndex) => {
+    const updatedStreams = [...streams];
+    updatedStreams[classIndex].subjects = updatedStreams[
+      classIndex
+    ].subjects.filter((_, i) => i !== subjectIndex);
+    setStreams(updatedStreams);
+  };
+
+  const getAllCollegeData = async () => {
+    try {
+      const response = await apiClient.get(
+        "/api/college-admin/get-college-info",
+        {
+          params: { collegeId: 16 },
+        }
+      );
+      if(response.status == 200){
+        setCollegeDetails(response.data)
+      }
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
+
+  useEffect(() => {
+    getAllCollegeData()
+  });
+
+  return (
+    <div className="setting-page-container">
+      <div className="page-header-box">
+        <h2>College Settings</h2>
+        <p>
+          Manage your college profile, academic streams, and account security.
+        </p>
+      </div>
+
+      {/* --- SECTION 1: COLLEGE IDENTITY --- */}
+      <section className="setting-section">
+        <div className="section-header-row">
+          <h3>College Identity</h3>
+          <p>
+            This information will appear on generated reports and student
+            portals.
+          </p>
+        </div>
+
+        <div className="form-grid">
+          <div className="input-group full-width">
+            <label>College Name</label>
+            <input
+              type="text"
+              name="name"
+              value={collegeDetails.name}
+              onChange={handleProfileChange}
+            />
+          </div>
+
+          <div className="input-group full-width">
+            <label>Address</label>
+            <textarea
+              name="address"
+              rows="3"
+              value={collegeDetails.address}
+              onChange={handleProfileChange}
+            ></textarea>
+          </div>
+
+          <div className="input-group">
+            <label>Official Email</label>
+            <input
+              type="email"
+              name="email"
+              value={collegeDetails.email}
+              onChange={handleProfileChange}
+            />
+          </div>
+
+          <div className="input-group">
+            <label>Contact Phone</label>
+            <input
+              type="text"
+              name="phone"
+              value={collegeDetails.phone}
+              onChange={handleProfileChange}
+            />
+          </div>
+
+        </div>
+        <div className="action-row">
+          <button className="btn-primary">Save Profile Changes</button>
+        </div>
+      </section>
+
+      {/* --- SECTION 2: ACADEMIC MANAGEMENT (UPDATED) --- */}
+      <section className="setting-section">
+        <div className="section-header-row">
+          <h3>Class & Subject Management</h3>
+          <p>Create classes and assign specific subjects to them.</p>
+        </div>
+
+        {/* 1. Create New Class */}
+        <div className="add-class-wrapper">
+          <div className="add-class-box">
+            <input
+              type="text"
+              placeholder="Create New Class (e.g. MSc Computer Science)"
+              value={newClassName}
+              onChange={(e) => setNewClassName(e.target.value)}
+            />
+            <button className="btn-add" onClick={handleAddClass}>
+              + Create Class
+            </button>
+          </div>
+        </div>
+
+        {/* 2. List of Classes with Subjects */}
+        <div className="streams-container">
+          {streams.map((stream, classIndex) => (
+            <div key={classIndex} className="stream-card">
+              {/* Card Header: Class Name */}
+              <div className="stream-header">
+                <h4 className="stream-title">{stream.name}</h4>
+                <button
+                  className="btn-icon-delete"
+                  onClick={() => handleDeleteClass(classIndex)}
+                  title="Delete Class"
+                >
+                  Delete Class
+                </button>
+              </div>
+
+              {/* Card Body: Subjects List */}
+              <div className="stream-body">
+                <p className="sub-label">Subjects:</p>
+
+                {stream.subjects.length === 0 ? (
+                  <p className="no-data">No subjects added yet.</p>
+                ) : (
+                  <div className="subject-chips">
+                    {stream.subjects.map((sub, subIndex) => (
+                      <div key={subIndex} className="subject-chip">
+                        {sub}
+                        <span
+                          className="remove-chip"
+                          onClick={() =>
+                            handleDeleteSubject(classIndex, subIndex)
+                          }
+                        >
+                          ×
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                {/* Add Subject Input */}
+                <div className="add-subject-row">
+                  <input
+                    type="text"
+                    placeholder="Add Subject..."
+                    className="small-input"
+                    value={subjectInputs[classIndex] || ""}
+                    onChange={(e) =>
+                      handleSubjectInputChange(classIndex, e.target.value)
+                    }
+                  />
+                  <button
+                    className="btn-small-add"
+                    onClick={() => handleAddSubject(classIndex)}
+                  >
+                    Add
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* --- SECTION 3: SECURITY --- */}
+      <section className="setting-section danger-border">
+        <div className="section-header-row">
+          <h3>Account Security</h3>
+          <p>Update your administrative login credentials.</p>
+        </div>
+
+        <div className="form-grid">
+          <div className="input-group full-width">
+            <label>Current Password</label>
+            <input type="password" placeholder="********" />
+          </div>
+          <div className="input-group">
+            <label>New Password</label>
+            <input type="password" placeholder="Enter new password" />
+          </div>
+          <div className="input-group">
+            <label>Confirm Password</label>
+            <input type="password" placeholder="Confirm new password" />
+          </div>
+        </div>
+        <div className="action-row">
+          <button className="btn-secondary">Update Password</button>
+        </div>
+      </section>
+
+      <style>{`
+        /* Page Container */
+        
+
+      `}</style>
+    </div>
+  );
 };
 
 const CollegeAdmin = () => {

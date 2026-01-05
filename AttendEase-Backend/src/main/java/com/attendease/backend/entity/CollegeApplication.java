@@ -31,6 +31,28 @@ public class CollegeApplication {
 	@Column(name = "Official_email", nullable = false)
 	private String officialEmail;
 
+	@Column(name = "address")
+	private String Addess;
+
+	@Column(name = "Phone")
+	private String Phone;
+
+	public String getAddess() {
+		return Addess;
+	}
+
+	public void setAddess(String addess) {
+		Addess = addess;
+	}
+
+	public String getPhone() {
+		return Phone;
+	}
+
+	public void setPhone(String phone) {
+		Phone = phone;
+	}
+
 	@Column(name = "status", nullable = false)
 	@Enumerated(EnumType.STRING)
 	private CollegeApplicationStatus status;

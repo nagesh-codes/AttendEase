@@ -33,8 +33,8 @@ public class CollegeApplicationService {
 	private UserRepository userRepository;
 
 	public CollegeApplicationService(CollegeApplicationRepository collegeApplicationRepository,
-			EmailService emailService,CollegeRepository collegeRepository,TemplateLoader templateLoader,
-			PasswordEncoder passwordEncoder,UserRepository userRepository) {
+			EmailService emailService, CollegeRepository collegeRepository, TemplateLoader templateLoader,
+			PasswordEncoder passwordEncoder, UserRepository userRepository) {
 		this.collegeApplicationRespository = collegeApplicationRepository;
 		this.emailService = emailService;
 		this.collegeRepository = collegeRepository;
@@ -46,12 +46,14 @@ public class CollegeApplicationService {
 	@Transactional
 	public void addCollegeApllication(CollegeApplicationRequestDTO dto) {
 		CollegeApplication clgApp = new CollegeApplication();
-		
+
 		clgApp.setCollegeName(dto.getCollegeName());
 		clgApp.setAuthorityName(dto.getAuthorityName());
 		clgApp.setAuthorityRole(dto.getAuthorityRole());
 		clgApp.setOfficialEmail(dto.getOfficialEmail());
 		clgApp.setStatus(CollegeApplicationStatus.PENDING);
+		clgApp.setAddess(dto.getAddress());
+		clgApp.setPhone(dto.getPhone());
 
 		collegeApplicationRespository.saveAndFlush(clgApp);
 
@@ -67,23 +69,23 @@ public class CollegeApplicationService {
 						c.getAuthorityRole(), c.getOfficialEmail(), c.getCreatedAt()))
 				.toList();
 	}
-	
+
 	@Transactional
 	public void updateCollegeStatus(CollegeApplicationStatusRequestDTO dto) {
 		CollegeApplication clgAppnEntity = collegeApplicationRespository.findById(dto.getId())
 				.orElseThrow(() -> new RuntimeException("college not found"));
 		clgAppnEntity.setStatus(dto.getStatus());
 		clgAppnEntity.setReviewedAt(LocalDateTime.now());
-		
-		if(dto.getStatus() == CollegeApplicationStatus.APPROVED) {
+
+		if (dto.getStatus() == CollegeApplicationStatus.APPROVED) {
 			College clgEntity = new College();
 			clgEntity.setName(clgAppnEntity.getCollegeName());
 			clgEntity.setEmail(clgAppnEntity.getOfficialEmail());
 			clgEntity.setCreatedBy(clgAppnEntity.getAuthorityName());
 			clgEntity.setStatus(CollegeStatus.ACTIVE);
-			
+
 			collegeRepository.save(clgEntity);
-			
+
 			User userEntity = new User();
 			userEntity.setName(clgAppnEntity.getAuthorityName());
 			userEntity.setAccountStatus(UserStatus.ACTIVE);
@@ -94,17 +96,18 @@ public class CollegeApplicationService {
 			userEntity.setCollege(clgEntity);
 			String hashedPassword = passwordEncoder.encode(clgAppnEntity.getOfficialEmail());
 			userEntity.setPasswordHash(hashedPassword);
-			
+
 			userRepository.save(userEntity);
-			
+
 			String text = templateLoader.loadTemplate("college_application_approval_email");
 			text = text.replace("{{USERNAME}}", username);
 			text = text.replace("{{PASSWORD}}", clgAppnEntity.getOfficialEmail());
 			text = text.replace("{{LOGIN_LINK}}", "${FRONTEND_URL}/Login");
 			text = text.replace("{{COLLEGE_NAME}}", clgAppnEntity.getCollegeName());
-			emailService.sendEmail(clgAppnEntity.getOfficialEmail(), "AttendEase - Application Approved & Login Credentials", text);
+			emailService.sendEmail(clgAppnEntity.getOfficialEmail(),
+					"AttendEase - Application Approved & Login Credentials", text);
 		}
-		
+
 		collegeApplicationRespository.save(clgAppnEntity);
 	}
 }

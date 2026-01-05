@@ -111,6 +111,11 @@
   transition: all 0.3s ease-in-out;
 }
 
+.list .appn:hover {
+  scale: 1.02;
+  box-shadow: 2px 2px 5px, inset -2px -2px 5px;
+}
+
 .list .field {
   display: flex;
   flex-direction: column;

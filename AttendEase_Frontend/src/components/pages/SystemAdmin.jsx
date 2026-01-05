@@ -155,19 +155,19 @@ const CollegesContent = () => {
         clg.map((data, key) => {
           return (
             <div className="appn" key={key}>
-              <div className="ClgName">
+              <div className="ClgName field">
                 <span>College Name:</span>
                 {data.name}
               </div>
-              <div className="AuthName">
+              <div className="AuthName field">
                 <span>Created By:</span>
                 {data.createdBy ? data.createdBy : "N/A"}
               </div>
-              <div className="Email">
+              <div className="Email field">
                 <span>Email:</span>
                 {data.email ? data.email : "N/A"}
               </div>
-              <div className="App-time">
+              <div className="App-time field">
                 <span>Creation Date:</span>
                 {new Date(data.createdAt).toLocaleString(
                   "en-US",

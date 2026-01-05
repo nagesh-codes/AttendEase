@@ -28,6 +28,28 @@ public class College {
 	@Column(name = "Email")
 	private String email;
 
+	@Column(name = "Phone")
+	private String Phone;
+
+	@Column(name = "Address")
+	private String Addess;
+
+	public String getPhone() {
+		return Phone;
+	}
+
+	public void setPhone(String phone) {
+		Phone = phone;
+	}
+
+	public String getAddess() {
+		return Addess;
+	}
+
+	public void setAddess(String addess) {
+		Addess = addess;
+	}
+
 	public long getId() {
 		return id;
 	}

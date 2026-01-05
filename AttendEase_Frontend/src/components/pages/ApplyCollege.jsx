@@ -9,6 +9,8 @@ const ApplyCollege = () => {
   const [clgName, setClgName] = useState("");
   const [authorityName, setAuthorityName] = useState("");
   const [email, setEmail] = useState("");
+  const [address, setAddress] = useState("");
+  const [phone, setPhone] = useState("");
   const [role, setRole] = useState("");
   const [disable, setDisable] = useState(false);
   const [btntxt, setBtntxt] = useState("Submit");
@@ -20,12 +22,6 @@ const ApplyCollege = () => {
     const toastid = toast.loading("Submitting Your Application...");
     e.preventDefault();
     setDisable(true);
-    console.log({
-      collegeName: clgName,
-      AuthorityName: authorityName,
-      AuthorityRole: role,
-      email,
-    });
     setBtntxt("Submitting");
     try {
       const response = await apiClient.post(
@@ -35,6 +31,8 @@ const ApplyCollege = () => {
           authorityName,
           authorityRole: role,
           officialEmail: email,
+          address,
+          phone
         }
       );
       if (response) {
@@ -118,56 +116,84 @@ const ApplyCollege = () => {
           AttendEase
         </div>
         <div className="title">Apply to Add Your College.</div>
-        <div className="input-field">
-          <label htmlFor="name">Enter Your College Name.</label>
-          <input
-            type="text"
-            value={clgName}
-            onInput={(e) => setClgName(e.target.value)}
-            required
-            id="name"
-          />
+        <div className="row-field">
+          <div className="input-field">
+            <label htmlFor="name">Enter Your College Name.</label>
+            <input
+              type="text"
+              value={clgName}
+              onInput={(e) => setClgName(e.target.value)}
+              required
+              id="name"
+            />
+          </div>
+          <div className="input-field">
+            <label htmlFor="password">Authority Name</label>
+            <input
+              type="text"
+              value={authorityName}
+              onInput={(e) => setAuthorityName(e.target.value)}
+              required
+            />
+          </div>
         </div>
-        <div className="input-field">
-          <label htmlFor="password">Authority Name</label>
-          <input
-            type="text"
-            value={authorityName}
-            onInput={(e) => setAuthorityName(e.target.value)}
-            required
-          />
+        <div className="row-field">
+          <div className="input-field">
+            <label htmlFor="email">Enter The Official College Email.</label>
+            <input
+              type="email"
+              value={email}
+              onInput={(e) => setEmail(e.target.value)}
+              required
+              id="email"
+            />
+            <p
+              style={{
+                color: isChecking ? "blue" : "red",
+              }}
+            >
+              {emailError}
+            </p>
+          </div>
+          <div className="input-field">
+            <label htmlFor="role">Authority Role</label>
+            <select
+              id="role"
+              value={role}
+              onInput={(e) => setRole(e.target.value)}
+              required
+            >
+              <option value="">-- Select The Role --</option>
+              <option value="Principle">Principle</option>
+              <option value="HOD">HOD</option>
+              <option value="Vice Principle">Vice Principle</option>
+              <option value="Administrator">Administrator</option>
+            </select>
+          </div>
         </div>
-        <div className="input-field">
-          <label htmlFor="role">Authority Role</label>
-          <select
-            id="role"
-            value={role}
-            onInput={(e) => setRole(e.target.value)}
-            required
-          >
-            <option value="">-- Select The Role --</option>
-            <option value="Principle">Principle</option>
-            <option value="HOD">HOD</option>
-            <option value="Vice Principle">Vice Principle</option>
-            <option value="Administrator">Administrator</option>
-          </select>
-        </div>
-        <div className="input-field">
-          <label htmlFor="email">Enter The Official College Email.</label>
-          <input
-            type="email"
-            value={email}
-            onInput={(e) => setEmail(e.target.value)}
-            required
-            id="email"
-          />
-          <p
-            style={{
-              color: isChecking ? "blue" : "red",
-            }}
-          >
-            {emailError}
-          </p>
+        <div className="row-field">
+          <div className="input-field">
+            <label htmlFor="address">Enter The College Address.</label>
+            <input
+              type="text"
+              value={address}
+              onInput={(e) => setAddress(e.target.value)}
+              required
+              id="address"
+            />
+          </div>
+          <div className="input-field">
+            <label htmlFor="phone">Enter The College Phone No.</label>
+            <input
+              type="number"
+              value={phone}
+              onInput={(e) => setPhone(e.target.value)}
+              required
+              id="phone"
+              minLength="10"
+              maxLength="10"
+            />
+          </div>
         </div>
         <div className="btn-field">
           <button type="submit" disabled={disable}>
