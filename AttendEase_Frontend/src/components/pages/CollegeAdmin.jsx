@@ -139,16 +139,13 @@ const TeacherRequest = () => {
 };
 
 const Setting = () => {
-  // --- State: General Profile ---
   const [collegeDetails, setCollegeDetails] = useState({
-    name: "Getting Details",
-    address: "Getting Details",
-    email: "Getting Details",
-    phone: "Getting Details",
+    name: "Getting Details...",
+    address: "Getting Details...",
+    email: "Getting Details...",
+    phone: "Getting Details...",
   });
 
-  // --- State: Academic (Classes & Subjects) ---
-  // Structure: { name: "Class Name", subjects: ["Sub1", "Sub2"] }
   const [streams, setStreams] = useState([
     { name: "FY BCA", subjects: ["C Programming", "Web Basics", "Maths"] },
     { name: "SY BCA", subjects: ["Core Java", "Data Structures", "DBMS"] },
@@ -157,20 +154,23 @@ const Setting = () => {
 
   const [newClassName, setNewClassName] = useState("");
 
-  // Temporary state to hold the input for "New Subject" for EACH class
-  // key = index of class, value = text input
   const [subjectInputs, setSubjectInputs] = useState({});
 
-  // --- Handlers: Profile ---
   const handleProfileChange = (e) => {
     setCollegeDetails({ ...collegeDetails, [e.target.name]: e.target.value });
   };
 
-  // --- Handlers: Classes ---
-  const handleAddClass = () => {
-    if (newClassName.trim() !== "") {
-      setStreams([...streams, { name: newClassName, subjects: [] }]);
-      setNewClassName("");
+  const handleAddClass = async () => {
+    try {
+      const response = await apiClient.post("/api/college-admin/add-class", {
+        collegeId: 16,
+        className: newClassName.trim(),
+      });
+      if (response.status == 200) {
+        toast.success("class added to the databse");
+      }
+    } catch (error) {
+      toast.error(error.message);
     }
   };
 
@@ -185,7 +185,6 @@ const Setting = () => {
     }
   };
 
-  // --- Handlers: Subjects ---
   const handleSubjectInputChange = (classIndex, value) => {
     setSubjectInputs({ ...subjectInputs, [classIndex]: value });
   };
@@ -197,7 +196,6 @@ const Setting = () => {
       updatedStreams[classIndex].subjects.push(subjectName);
       setStreams(updatedStreams);
 
-      // Clear input
       setSubjectInputs({ ...subjectInputs, [classIndex]: "" });
     }
   };
@@ -218,8 +216,17 @@ const Setting = () => {
           params: { collegeId: 16 },
         }
       );
-      if(response.status == 200){
-        setCollegeDetails(response.data)
+      if (response.status == 200) {
+        setCollegeDetails(response.data);
+      }
+      const response2 = await apiClient.get(
+        "/api/college-admin/get-college-class",
+        {
+          params: { collegeId: 16 },
+        }
+      );
+      console.log(response2);
+      if(response2.status == 200){
       }
     } catch (error) {
       toast.error(error.message);
@@ -227,8 +234,8 @@ const Setting = () => {
   };
 
   useEffect(() => {
-    getAllCollegeData()
-  });
+    getAllCollegeData();
+  }, []);
 
   return (
     <div className="setting-page-container">
@@ -239,7 +246,6 @@ const Setting = () => {
         </p>
       </div>
 
-      {/* --- SECTION 1: COLLEGE IDENTITY --- */}
       <section className="setting-section">
         <div className="section-header-row">
           <h3>College Identity</h3>
@@ -289,21 +295,18 @@ const Setting = () => {
               onChange={handleProfileChange}
             />
           </div>
-
         </div>
         <div className="action-row">
           <button className="btn-primary">Save Profile Changes</button>
         </div>
       </section>
 
-      {/* --- SECTION 2: ACADEMIC MANAGEMENT (UPDATED) --- */}
       <section className="setting-section">
         <div className="section-header-row">
           <h3>Class & Subject Management</h3>
           <p>Create classes and assign specific subjects to them.</p>
         </div>
 
-        {/* 1. Create New Class */}
         <div className="add-class-wrapper">
           <div className="add-class-box">
             <input
@@ -318,11 +321,9 @@ const Setting = () => {
           </div>
         </div>
 
-        {/* 2. List of Classes with Subjects */}
         <div className="streams-container">
           {streams.map((stream, classIndex) => (
             <div key={classIndex} className="stream-card">
-              {/* Card Header: Class Name */}
               <div className="stream-header">
                 <h4 className="stream-title">{stream.name}</h4>
                 <button
@@ -334,7 +335,6 @@ const Setting = () => {
                 </button>
               </div>
 
-              {/* Card Body: Subjects List */}
               <div className="stream-body">
                 <p className="sub-label">Subjects:</p>
 
@@ -358,7 +358,6 @@ const Setting = () => {
                   </div>
                 )}
 
-                {/* Add Subject Input */}
                 <div className="add-subject-row">
                   <input
                     type="text"
@@ -382,7 +381,6 @@ const Setting = () => {
         </div>
       </section>
 
-      {/* --- SECTION 3: SECURITY --- */}
       <section className="setting-section danger-border">
         <div className="section-header-row">
           <h3>Account Security</h3>
@@ -407,12 +405,6 @@ const Setting = () => {
           <button className="btn-secondary">Update Password</button>
         </div>
       </section>
-
-      <style>{`
-        /* Page Container */
-        
-
-      `}</style>
     </div>
   );
 };

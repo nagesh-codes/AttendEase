@@ -14,9 +14,9 @@ public class ClassEntity {
 	@Column(nullable = false)
 	private String name;
 
-	@ManyToOne
-	@JoinColumn(name = "owner_id", nullable = false)
-	private User owner;
+//	@ManyToOne
+//	@JoinColumn(name = "owner_id", nullable = true)
+//	private User owner;
 
 	@ManyToOne
 	@JoinColumn(name = "college_id", nullable = false)
@@ -41,13 +41,13 @@ public class ClassEntity {
 		this.name = name;
 	}
 
-	public User getOwner() {
-		return owner;
-	}
-
-	public void setOwner(User owner) {
-		this.owner = owner;
-	}
+//	public User getOwner() {
+//		return owner;
+//	}
+//
+//	public void setOwner(User owner) {
+//		this.owner = owner;
+//	}
 
 	public College getCollege() {
 		return college;
@@ -64,7 +64,5 @@ public class ClassEntity {
 	public void setCreatedAt(LocalDateTime createdAt) {
 		this.createdAt = createdAt;
 	}
-
-	// getters and setters
 
 }
