@@ -68,7 +68,19 @@ public class CollegeAdminController {
 	}
 	
 	@GetMapping("/get-college-class")
-	public Map<String,List<String>> getCollegeClass(@RequestParam Long collegeId){
+	public List<Map<String, Object>> getCollegeClass(@RequestParam Long collegeId){
 		return classService.getCollegeClass(collegeId);
+	}
+	
+	@PatchMapping("/delete-class")
+	public ResponseEntity<?> deleteClass(@RequestParam Long classId){
+		try {
+			classService.deleteClass(classId);
+			return ResponseEntity.ok("Class Deleted");
+		} catch (Exception e) {
+			// TODO: handle exception
+			return ResponseEntity.status(404).body("Class Not Found");
+		}
+		
 	}
 }

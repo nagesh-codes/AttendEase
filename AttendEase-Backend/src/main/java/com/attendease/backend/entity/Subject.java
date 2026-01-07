@@ -22,6 +22,17 @@ public class Subject {
 	@ManyToOne
 	@JoinColumn(name = "teacher_id")
 	private User teacher;
+	
+	@Column(name = "isDeleted")
+	private boolean isDeleted = false;
+
+	public boolean isDeleted() {
+		return isDeleted;
+	}
+
+	public void setDeleted(boolean isDeleted) {
+		this.isDeleted = isDeleted;
+	}
 
 	public Long getId() {
 		return id;

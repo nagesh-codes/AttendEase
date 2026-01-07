@@ -139,6 +139,9 @@ const TeacherRequest = () => {
 };
 
 const Setting = () => {
+  const [collegeId, setCollegeId] = useState(
+    localStorage.getItem("collegeId") | 0
+  );
   const [collegeDetails, setCollegeDetails] = useState({
     name: "Getting Details...",
     address: "Getting Details...",
@@ -161,9 +164,10 @@ const Setting = () => {
   };
 
   const handleAddClass = async () => {
+    if (newClassName.trim() == "") return;
     try {
       const response = await apiClient.post("/api/college-admin/add-class", {
-        collegeId: 16,
+        collegeId,
         className: newClassName.trim(),
       });
       if (response.status == 200) {
@@ -174,14 +178,42 @@ const Setting = () => {
     }
   };
 
-  const handleDeleteClass = (index) => {
+  const handleDeleteClass = (index, id) => {
     if (
       window.confirm(
         "Are you sure? This will delete the class and ALL its subjects."
       )
     ) {
-      const updated = streams.filter((_, i) => i !== index);
-      setStreams(updated);
+      const toastid = toast.loading("Deleting Your Class");
+      try {
+        const response = apiClient.patch("/api/college-admin/delete-class", {
+          params: { classId: id },
+        });
+        if (response.status == 200) {
+          toast.update(toastid, {
+            render: "Class and Its Successfully Deleted",
+            isLoading: false,
+            type: "success",
+            autoClose: 4000,
+          });
+          const updated = streams.filter((_, i) => i !== index);
+          setStreams(updated);
+        } else {
+          toast.update(toastid, {
+            render: "We Cant Delete Your Class, Right now!",
+            isLoading: false,
+            type: "error",
+            autoClose: 4000,
+          });
+        }
+      } catch (error) {
+        toast.update(toastid, {
+          render: "We Cant Delete Your Class, Right now!",
+          isLoading: false,
+          type: "error",
+          autoClose: 4000,
+        });
+      }
     }
   };
 
@@ -210,23 +242,34 @@ const Setting = () => {
 
   const getAllCollegeData = async () => {
     try {
-      const response = await apiClient.get(
+      const collegeInfoPromise = apiClient.get(
         "/api/college-admin/get-college-info",
         {
           params: { collegeId: 16 },
         }
       );
-      if (response.status == 200) {
-        setCollegeDetails(response.data);
-      }
-      const response2 = await apiClient.get(
+      const streamInfoPromise = apiClient.get(
         "/api/college-admin/get-college-class",
         {
           params: { collegeId: 16 },
         }
       );
-      console.log(response2);
-      if(response2.status == 200){
+      const [collegeInfoResult, streamInfoResult] = await Promise.allSettled([
+        collegeInfoPromise,
+        streamInfoPromise,
+      ]);
+
+      if (collegeInfoResult.status == "fulfilled") {
+        setCollegeDetails(collegeInfoResult.value.data);
+      } else {
+        toast.error("we cant get the college details at this time");
+      }
+
+      if (streamInfoResult.status == "fulfilled") {
+        console.log(streamInfoResult.value.data);
+        setStreams(streamInfoResult.value.data);
+      } else {
+        toast.error("we cant get the stream at this time");
       }
     } catch (error) {
       toast.error(error.message);
@@ -328,7 +371,7 @@ const Setting = () => {
                 <h4 className="stream-title">{stream.name}</h4>
                 <button
                   className="btn-icon-delete"
-                  onClick={() => handleDeleteClass(classIndex)}
+                  onClick={() => handleDeleteClass(classIndex, stream.id)}
                   title="Delete Class"
                 >
                   Delete Class
