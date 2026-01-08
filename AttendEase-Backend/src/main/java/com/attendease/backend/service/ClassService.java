@@ -35,13 +35,16 @@ public class ClassService{
 	@Transactional
 	public void addClass(ClassRequestDTO dto) {
 		try {
-			System.out.println("entered "+dto.getClassName());
-			ClassEntity clsEntity = new ClassEntity();
-			clsEntity.setCollege(collegeRepository.findById(dto.getCollegeId()).orElse(null));
-			clsEntity.setName(dto.getClassName());
-//			clsEntity.setOwner();
+			ClassEntity clsEntity;
+			clsEntity = classRepository.findByCollegeIdAndName(dto.getCollegeId(), dto.getClassName()).orElse(null);
+			if(clsEntity == null) {				
+				clsEntity = new ClassEntity();
+				clsEntity.setCollege(collegeRepository.findById(dto.getCollegeId()).orElse(null));
+				clsEntity.setName(dto.getClassName());
+			}else {
+				clsEntity.setDeleted(false);
+			}
 			classRepository.save(clsEntity);
-			System.out.println("data saved");
 		} catch (Exception e) {
 			// TODO: handle exception
 			e.printStackTrace();
@@ -51,7 +54,7 @@ public class ClassService{
 	
 	public List<Map<String, Object>> getCollegeClass(Long collegeId) {
 	    List<Map<String, Object>> responseList = new ArrayList<>();
-	    List<ClassEntity> classes = classRepository.findByCollegeId(collegeId);
+	    List<ClassEntity> classes = classRepository.findByCollegeIdAndIsDeletedFalse(collegeId);
 	    for (ClassEntity ce : classes) {
 	        Map<String, Object> classMap = new HashMap<>();
 	        classMap.put("name", ce.getName());

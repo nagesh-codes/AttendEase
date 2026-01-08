@@ -158,6 +158,7 @@ const Setting = () => {
   const [newClassName, setNewClassName] = useState("");
 
   const [subjectInputs, setSubjectInputs] = useState({});
+  const [newSubjectName, setNewSubjectName] = useState("");
 
   const handleProfileChange = (e) => {
     setCollegeDetails({ ...collegeDetails, [e.target.name]: e.target.value });
@@ -165,20 +166,38 @@ const Setting = () => {
 
   const handleAddClass = async () => {
     if (newClassName.trim() == "") return;
+    const toastid = toast.loading("Adding Your Class");
     try {
       const response = await apiClient.post("/api/college-admin/add-class", {
         collegeId,
         className: newClassName.trim(),
       });
       if (response.status == 200) {
-        toast.success("class added to the databse");
+        toast.update(toastid, {
+          render: `Class ${newClassName} is Added.`,
+          autoClose: 4000,
+          isLoading: false,
+          type: "success",
+        });
+      } else {
+        toast.update(toastid, {
+          render: `Class ${newClassName} Not Added.`,
+          autoClose: 4000,
+          isLoading: false,
+          type: "error",
+        });
       }
     } catch (error) {
-      toast.error(error.message);
+      toast.update(toastid, {
+        render: `Class ${newClassName} Not Added.`,
+        autoClose: 4000,
+        isLoading: false,
+        type: "error",
+      });
     }
   };
 
-  const handleDeleteClass = (index, id) => {
+  const handleDeleteClass = async (index, id) => {
     if (
       window.confirm(
         "Are you sure? This will delete the class and ALL its subjects."
@@ -186,12 +205,16 @@ const Setting = () => {
     ) {
       const toastid = toast.loading("Deleting Your Class");
       try {
-        const response = apiClient.patch("/api/college-admin/delete-class", {
-          params: { classId: id },
-        });
+        const response = await apiClient.delete(
+          "/api/college-admin/delete-class",
+          {
+            params: { classId: id },
+          }
+        );
+        console.log(response);
         if (response.status == 200) {
           toast.update(toastid, {
-            render: "Class and Its Successfully Deleted",
+            render: "Class and Its Subject Successfully Deleted",
             isLoading: false,
             type: "success",
             autoClose: 4000,
@@ -217,27 +240,98 @@ const Setting = () => {
     }
   };
 
-  const handleSubjectInputChange = (classIndex, value) => {
+  const handleSubjectInputChange = async (classIndex, value) => {
     setSubjectInputs({ ...subjectInputs, [classIndex]: value });
   };
 
-  const handleAddSubject = (classIndex) => {
+  const handleAddSubject = async (classIndex, id, subject_Name) => {
+    const updatedStreams = [...streams];
     const subjectName = subjectInputs[classIndex];
     if (subjectName && subjectName.trim() !== "") {
-      const updatedStreams = [...streams];
-      updatedStreams[classIndex].subjects.push(subjectName);
-      setStreams(updatedStreams);
+      const toastid = toast.loading(`Adding the ${subjectName} subject.`);
+      try {
+        const response = await apiClient.post(
+          "/api/college-admin/add-subject",
+          {
+            classId: id,
+            subjectName,
+          }
+        );
+        if (response.status == 200) {
+          toast.update(toastid, {
+            render: `${subjectName} subject Added.`,
+            autoClose: 4000,
+            isLoading: false,
+            type: "success",
+          });
+          updatedStreams[classIndex].subjects.push(subjectName);
+          setStreams(updatedStreams);
 
-      setSubjectInputs({ ...subjectInputs, [classIndex]: "" });
+          setSubjectInputs({ ...subjectInputs, [classIndex]: "" });
+        } else {
+          toast.update(toastid, {
+            render: `${subjectName} subject Not Added.`,
+            autoClose: 4000,
+            isLoading: false,
+            type: "error",
+          });
+        }
+      } catch (error) {
+        toast.update(toastid, {
+          render: `${subject_Name} subject Not Added.`,
+          autoClose: 4000,
+          isLoading: false,
+          type: "error",
+        });
+      }
     }
   };
 
-  const handleDeleteSubject = (classIndex, subjectIndex) => {
+  const handleDeleteSubject = async (
+    classIndex,
+    subjectIndex,
+    id,
+    subjectName
+  ) => {
     const updatedStreams = [...streams];
-    updatedStreams[classIndex].subjects = updatedStreams[
-      classIndex
-    ].subjects.filter((_, i) => i !== subjectIndex);
-    setStreams(updatedStreams);
+    const toastid = toast.loading(`Deleting the ${subjectName} subject.`);
+    try {
+      const response = await apiClient.delete(
+        "/api/college-admin/delete-subject",
+        {
+          params: {
+            classId: id,
+            subjectName,
+          },
+        }
+      );
+      if (response.status == 200) {
+        toast.update(toastid, {
+          render: `${subjectName} subject Deleted`,
+          autoClose: 4000,
+          isLoading: false,
+          type: "success",
+        });
+        updatedStreams[classIndex].subjects = updatedStreams[
+          classIndex
+        ].subjects.filter((_, i) => i !== subjectIndex);
+        setStreams(updatedStreams);
+      } else {
+        toast.update(toastid, {
+          render: `${subjectName} subject Not Deleted.`,
+          autoClose: 4000,
+          isLoading: false,
+          type: "error",
+        });
+      }
+    } catch (error) {
+      toast.update(toastid, {
+        render: `${subject_Name} subject Not Deleted.`,
+        autoClose: 4000,
+        isLoading: false,
+        type: "error",
+      });
+    }
   };
 
   const getAllCollegeData = async () => {
@@ -266,7 +360,6 @@ const Setting = () => {
       }
 
       if (streamInfoResult.status == "fulfilled") {
-        console.log(streamInfoResult.value.data);
         setStreams(streamInfoResult.value.data);
       } else {
         toast.error("we cant get the stream at this time");
@@ -391,7 +484,12 @@ const Setting = () => {
                         <span
                           className="remove-chip"
                           onClick={() =>
-                            handleDeleteSubject(classIndex, subIndex)
+                            handleDeleteSubject(
+                              classIndex,
+                              subIndex,
+                              stream.id,
+                              sub
+                            )
                           }
                         >
                           ×
@@ -407,13 +505,16 @@ const Setting = () => {
                     placeholder="Add Subject..."
                     className="small-input"
                     value={subjectInputs[classIndex] || ""}
-                    onChange={(e) =>
-                      handleSubjectInputChange(classIndex, e.target.value)
-                    }
+                    onChange={(e) => {
+                      handleSubjectInputChange(classIndex, e.target.value);
+                      setNewSubjectName(e.target.value);
+                    }}
                   />
                   <button
                     className="btn-small-add"
-                    onClick={() => handleAddSubject(classIndex)}
+                    onClick={() =>
+                      handleAddSubject(classIndex, stream.id, newSubjectName)
+                    }
                   >
                     Add
                   </button>

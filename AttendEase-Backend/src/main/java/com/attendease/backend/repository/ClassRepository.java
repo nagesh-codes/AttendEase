@@ -4,12 +4,17 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import com.attendease.backend.entity.ClassEntity;
 
 @Repository
 public interface ClassRepository extends JpaRepository<ClassEntity, Long>{
-	List<ClassEntity> findByCollegeId(Long collegeId);
+//	List<ClassEntity> findByCollegeId(Long collegeId);
+	List<ClassEntity> findByCollegeIdAndIsDeletedFalse(Long collegeId);
 	Optional<ClassEntity> findById(Long classId);
+	
+//	@Query("SELECT c FROM Classes WHERE c.College.id = :collegeId AND c.name = :className");
+	Optional<ClassEntity> findByCollegeIdAndName(Long classId,String name);
 }
