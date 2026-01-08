@@ -6,9 +6,9 @@ import java.util.stream.Collectors;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.attendease.backend.dto.LoginRequestDTO;
-import com.attendease.backend.dto.PendingTeachersRequestDTO;
 import com.attendease.backend.dto.PendingTeachersResponseDTO;
 import com.attendease.backend.dto.SignupRequestDto;
+import com.attendease.backend.dto.TeacherResponseDTO;
 import com.attendease.backend.dto.UpdateTeacherStatusRequestDTO;
 import com.attendease.backend.dto.UsersInfoResponseDTO;
 import com.attendease.backend.entity.College;
@@ -77,8 +77,8 @@ public class UserService {
     }
     
     @Transactional 
-    public List<PendingTeachersResponseDTO> pendingTeachers(PendingTeachersRequestDTO dto){
-    	List<User> users =  userRepository.findByStatusAndCollegeId(UserStatus.PENDING,dto.getCollegeId());
+    public List<PendingTeachersResponseDTO> pendingTeachers(Long collegeId){
+    	List<User> users =  userRepository.findByStatusAndCollegeId(UserStatus.PENDING,collegeId);
     	
     	return users.stream()
     			.map(user -> {
@@ -115,5 +115,20 @@ public class UserService {
     	}catch(Exception e) {
     		new RuntimeException(e.getMessage());
     	}
+    }
+    
+    public List<TeacherResponseDTO> getTeachers(Long collegeId){
+    	List<User> users= userRepository.findByStatusAndCollegeId(UserStatus.ACTIVE, collegeId);
+    	
+    	return users.stream()
+    			.map(user -> {
+    				TeacherResponseDTO teacher_dto = new TeacherResponseDTO();
+    				teacher_dto.setUsername(user.getUsername());
+    				teacher_dto.setName(user.getName());
+    				teacher_dto.setCreatedAt(user.getCreatedAt());
+    				teacher_dto.setId(user.getId());
+    				teacher_dto.setEmail(user.getEmail());
+    				return teacher_dto;
+    			}).collect(Collectors.toList());
     }
 }

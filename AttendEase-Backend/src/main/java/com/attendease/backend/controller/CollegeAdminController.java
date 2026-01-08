@@ -42,9 +42,15 @@ public class CollegeAdminController {
 	}
 
 	@GetMapping("/pending-teachers")
-	public List<PendingTeachersResponseDTO> pendingTeachers(@ModelAttribute PendingTeachersRequestDTO dto) {
-		return userService.pendingTeachers(dto);
+	public List<PendingTeachersResponseDTO> pendingTeachers(@RequestParam Long collegeId) {
+		return userService.pendingTeachers(collegeId);
 	}
+	
+	@GetMapping("/get-teachers")
+	public List<TeacherResponseDTO> getTeacher(@RequestParam Long collegeId){
+		return userService.getTeachers(collegeId);
+	}
+	
 
 	@PatchMapping("/update-teacher-appn")
 	public ResponseEntity<?> updateTeacherAppn(@RequestBody UpdateTeacherStatusRequestDTO dto) {

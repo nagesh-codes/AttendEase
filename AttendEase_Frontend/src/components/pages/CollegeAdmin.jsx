@@ -16,7 +16,61 @@ const optionsWithTime = {
 };
 
 const Teachers = () => {
-  return <div>this is teachers tab</div>;
+  const [teachers, setTeachers] = useState([]);
+  const [collegeId, setCollegeId] = useState(
+    localStorage.getItem("collegeId") | 0
+  );
+
+  const getAllTeachers = async () => {
+    try {
+      const response = await apiClient.get("/api/college-admin/get-teachers", {
+        params: { collegeId },
+      });
+      if (response.status == 200) {
+        setTeachers(response.data);
+      }
+    } catch (error) {
+      toast.error("internal server error");
+    }
+  };
+
+  useEffect(() => {
+    getAllTeachers();
+  }, []);
+
+  return (
+    <div className="teachers list">
+      {teachers.length > 0 ? (
+        teachers.map((data, key) => {
+          return (
+            <div className="appn" key={key}>
+              <div className="ClgName field">
+                <span>Name:</span>
+                {data.name}
+              </div>
+              <div className="username field">
+                <span>Username:</span>
+                {data.username}
+              </div>
+              <div className="email field">
+                <span>Email:</span>
+                {data.email}
+              </div>
+              <div className="App-time field">
+                <span>Submission Date:</span>
+                {new Date(data.createdAt).toLocaleString(
+                  "en-US",
+                  optionsWithTime
+                )}
+              </div>
+            </div>
+          );
+        })
+      ) : (
+        <div className="loading"> Loading Applications </div>
+      )}
+    </div>
+  );
 };
 
 const Classes = () => {
@@ -150,9 +204,7 @@ const Setting = () => {
   });
 
   const [streams, setStreams] = useState([
-    { name: "FY BCA", subjects: ["C Programming", "Web Basics", "Maths"] },
-    { name: "SY BCA", subjects: ["Core Java", "Data Structures", "DBMS"] },
-    { name: "TY BCA", subjects: ["Advanced Java", "ReactJS", "Project"] },
+    { name: "Class Name", subjects: ["Subject 1", "Subject 2"] },
   ]);
 
   const [newClassName, setNewClassName] = useState("");
@@ -293,44 +345,46 @@ const Setting = () => {
     id,
     subjectName
   ) => {
-    const updatedStreams = [...streams];
-    const toastid = toast.loading(`Deleting the ${subjectName} subject.`);
-    try {
-      const response = await apiClient.delete(
-        "/api/college-admin/delete-subject",
-        {
-          params: {
-            classId: id,
-            subjectName,
-          },
+    if (window.confirm("Are you sure? This will delete the subjects.")) {
+      const updatedStreams = [...streams];
+      const toastid = toast.loading(`Deleting the ${subjectName} subject.`);
+      try {
+        const response = await apiClient.delete(
+          "/api/college-admin/delete-subject",
+          {
+            params: {
+              classId: id,
+              subjectName,
+            },
+          }
+        );
+        if (response.status == 200) {
+          toast.update(toastid, {
+            render: `${subjectName} subject Deleted`,
+            autoClose: 4000,
+            isLoading: false,
+            type: "success",
+          });
+          updatedStreams[classIndex].subjects = updatedStreams[
+            classIndex
+          ].subjects.filter((_, i) => i !== subjectIndex);
+          setStreams(updatedStreams);
+        } else {
+          toast.update(toastid, {
+            render: `${subjectName} subject Not Deleted.`,
+            autoClose: 4000,
+            isLoading: false,
+            type: "error",
+          });
         }
-      );
-      if (response.status == 200) {
+      } catch (error) {
         toast.update(toastid, {
-          render: `${subjectName} subject Deleted`,
-          autoClose: 4000,
-          isLoading: false,
-          type: "success",
-        });
-        updatedStreams[classIndex].subjects = updatedStreams[
-          classIndex
-        ].subjects.filter((_, i) => i !== subjectIndex);
-        setStreams(updatedStreams);
-      } else {
-        toast.update(toastid, {
-          render: `${subjectName} subject Not Deleted.`,
+          render: `${subject_Name} subject Not Deleted.`,
           autoClose: 4000,
           isLoading: false,
           type: "error",
         });
       }
-    } catch (error) {
-      toast.update(toastid, {
-        render: `${subject_Name} subject Not Deleted.`,
-        autoClose: 4000,
-        isLoading: false,
-        type: "error",
-      });
     }
   };
 
