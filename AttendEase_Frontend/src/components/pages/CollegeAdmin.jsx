@@ -74,7 +74,201 @@ const Teachers = () => {
 };
 
 const Classes = () => {
-  return <div>this is classes tab</div>;
+  const [streams, setStreams] = useState([
+    { id: 1, name: "FY BCA", subjects: ["C Programming", "Web Basics", "Maths"] },
+    { id: 2, name: "SY BCA", subjects: ["Core Java", "Data Structures", "DBMS"] },
+    { id: 3, name: "TY BCA", subjects: ["Advanced Java", "ReactJS", "Project"] },
+  ]);
+
+  const [expandedId, setExpandedId] = useState(null);
+
+  const toggleExpand = (id) => {
+    setExpandedId(expandedId === id ? null : id);
+  };
+
+  return (
+    <div className="classes-view-container">
+      
+      <div className="view-header">
+        <div className="header-icon-box">📚</div>
+        <div>
+            <h3>Academic Classes</h3>
+            <p>View all active streams and their curriculum</p>
+        </div>
+      </div>
+
+      <div className="class-grid">
+        {streams.map((stream, index) => (
+          <div 
+            key={stream.id} 
+            className={`modern-card ${expandedId === stream.id ? "active" : ""}`}
+            onClick={() => toggleExpand(stream.id)}
+            style={{ animationDelay: `${index * 0.1}s` }} // Staggered animation
+          >
+            <div className="card-accent-bar"></div>
+            <div className="card-content">
+              <div className="card-top">
+                <div className="class-info">
+                  <h4 className="class-title">{stream.name}</h4>
+                  <span className="subject-count-badge">
+                    {stream.subjects.length} Subjects
+                  </span>
+                </div>
+                <div className={`arrow-circle ${expandedId === stream.id ? "rotated" : ""}`}>
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                  </svg>
+                </div>
+              </div>
+              <div className={`card-body ${expandedId === stream.id ? "show" : ""}`}>
+                <div className="divider"></div>
+                
+                {stream.subjects.length > 0 ? (
+                  <div className="subject-pills-container">
+                    {stream.subjects.map((sub, idx) => (
+                      <div key={idx} className="modern-pill">
+                        <span className="dot">•</span> {sub}
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="empty-state">No subjects assigned yet.</p>
+                )}
+              </div>
+
+            </div>
+          </div>
+        ))}
+      </div>
+      <style>{`
+        .classes-view-container {
+          padding: 30px;
+          background: #f4f7f6; /* Very light cool gray */
+          min-height: 100%;
+          font-family: 'Inter', 'Segoe UI', sans-serif;
+        }
+
+        /* Header Styling */
+        .view-header {
+          display: flex;
+          align-items: center;
+          gap: 15px;
+          margin-bottom: 30px;
+        }
+        .header-icon-box {
+          width: 50px; height: 50px;
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          color: white;
+          font-size: 24px;
+          display: flex; align-items: center; justify-content: center;
+          border-radius: 12px;
+          box-shadow: 0 4px 10px rgba(118, 75, 162, 0.3);
+        }
+        .view-header h3 { margin: 0; color: #2d3748; font-size: 24px; font-weight: 700; }
+        .view-header p { margin: 4px 0 0 0; color: #718096; font-size: 14px; }
+
+        /* Card List */
+        .class-grid { display: flex; flex-direction: column; gap: 16px; }
+
+        .modern-card {
+          background: white;
+          border-radius: 12px;
+          position: relative;
+          overflow: hidden;
+          cursor: pointer;
+          transition: transform 0.2s ease, box-shadow 0.2s ease;
+          box-shadow: 0 2px 5px rgba(0,0,0,0.04);
+          animation: fadeUp 0.5s ease backwards;
+        }
+
+        .modern-card:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+        }
+
+        /* Color Bar on Left */
+        .card-accent-bar {
+          position: absolute; left: 0; top: 0; bottom: 0;
+          width: 5px;
+          background: linear-gradient(to bottom, #4facfe 0%, #00f2fe 100%);
+        }
+        .modern-card.active .card-accent-bar {
+          background: linear-gradient(to bottom, #43e97b 0%, #38f9d7 100%);
+        }
+
+        /* Content Area */
+        .card-content { padding: 20px 24px 20px 30px; }
+
+        .card-top {
+          display: flex; justify-content: space-between; align-items: center;
+        }
+
+        .class-title { margin: 0; font-size: 18px; color: #2d3748; font-weight: 600; }
+        
+        .subject-count-badge {
+          background: #edf2f7; color: #718096;
+          font-size: 12px; padding: 4px 10px; border-radius: 20px;
+          margin-left: 12px; font-weight: 500;
+        }
+
+        /* Arrow Animation */
+        .arrow-circle {
+          width: 32px; height: 32px;
+          background: #f7fafc;
+          border-radius: 50%;
+          display: flex; align-items: center; justify-content: center;
+          color: #a0aec0;
+          transition: all 0.3s ease;
+        }
+        .modern-card:hover .arrow-circle { background: #e2e8f0; color: #4a5568; }
+        .arrow-circle.rotated { transform: rotate(180deg); background: #ebf8ff; color: #3182ce; }
+
+        /* Body & Subjects */
+        .card-body {
+          max-height: 0;
+          overflow: hidden;
+          transition: max-height 0.4s ease-in-out, opacity 0.3s ease;
+          opacity: 0;
+        }
+        .card-body.show {
+          max-height: 500px; /* Big enough to fit contents */
+          opacity: 1;
+          margin-top: 15px;
+        }
+
+        .divider { height: 1px; background: #e2e8f0; margin-bottom: 15px; }
+
+        .subject-pills-container { display: flex; flex-wrap: wrap; gap: 10px; }
+
+        .modern-pill {
+          background: linear-gradient(135deg, #f6f9fc 0%, #f1f4f8 100%);
+          border: 1px solid #e2e8f0;
+          color: #4a5568;
+          padding: 8px 16px;
+          border-radius: 8px;
+          font-size: 14px;
+          font-weight: 500;
+          display: flex; align-items: center; gap: 8px;
+          transition: 0.2s;
+        }
+        
+        .modern-pill:hover {
+          background: white;
+          border-color: #bee3f8;
+          color: #3182ce;
+          box-shadow: 0 2px 6px rgba(49, 130, 206, 0.1);
+        }
+
+        .dot { color: #4299e1; font-weight: bold; font-size: 18px; line-height: 0; }
+        .empty-state { color: #a0aec0; font-style: italic; font-size: 14px; }
+
+        @keyframes fadeUp {
+          from { opacity: 0; transform: translateY(10px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+      `}</style>
+    </div>
+  );
 };
 
 const TeacherRequest = () => {

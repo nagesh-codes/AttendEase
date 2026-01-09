@@ -16,7 +16,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     boolean existsByEmail(String email);
     Optional<User> findById(Long id);
     
-    @Query("SELECT u FROM User u WHERE u.accountStatus = :status AND u.college.id = :collegeId")
+    @Query("SELECT u FROM User u WHERE u.accountStatus = :status AND u.college.id = :collegeId AND u.role = 'TEACHER'")
     List<User> findByStatusAndCollegeId(
         @Param("status") UserStatus status, 
         @Param("collegeId") Long collegeId
