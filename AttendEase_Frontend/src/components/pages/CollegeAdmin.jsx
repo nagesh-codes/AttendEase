@@ -75,9 +75,21 @@ const Teachers = () => {
 
 const Classes = () => {
   const [streams, setStreams] = useState([
-    { id: 1, name: "FY BCA", subjects: ["C Programming", "Web Basics", "Maths"] },
-    { id: 2, name: "SY BCA", subjects: ["Core Java", "Data Structures", "DBMS"] },
-    { id: 3, name: "TY BCA", subjects: ["Advanced Java", "ReactJS", "Project"] },
+    {
+      id: 1,
+      name: "FY BCA",
+      subjects: ["C Programming", "Web Basics", "Maths"],
+    },
+    {
+      id: 2,
+      name: "SY BCA",
+      subjects: ["Core Java", "Data Structures", "DBMS"],
+    },
+    {
+      id: 3,
+      name: "TY BCA",
+      subjects: ["Advanced Java", "ReactJS", "Project"],
+    },
   ]);
 
   const [expandedId, setExpandedId] = useState(null);
@@ -88,20 +100,21 @@ const Classes = () => {
 
   return (
     <div className="classes-view-container">
-      
       <div className="view-header">
         <div className="header-icon-box">📚</div>
         <div>
-            <h3>Academic Classes</h3>
-            <p>View all active streams and their curriculum</p>
+          <h3>Academic Classes</h3>
+          <p>View all active streams and their curriculum</p>
         </div>
       </div>
 
       <div className="class-grid">
         {streams.map((stream, index) => (
-          <div 
-            key={stream.id} 
-            className={`modern-card ${expandedId === stream.id ? "active" : ""}`}
+          <div
+            key={stream.id}
+            className={`modern-card ${
+              expandedId === stream.id ? "active" : ""
+            }`}
             onClick={() => toggleExpand(stream.id)}
             style={{ animationDelay: `${index * 0.1}s` }} // Staggered animation
           >
@@ -114,15 +127,32 @@ const Classes = () => {
                     {stream.subjects.length} Subjects
                   </span>
                 </div>
-                <div className={`arrow-circle ${expandedId === stream.id ? "rotated" : ""}`}>
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                <div
+                  className={`arrow-circle ${
+                    expandedId === stream.id ? "rotated" : ""
+                  }`}
+                >
+                  <svg
+                    width="12"
+                    height="12"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="3"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
                     <polyline points="6 9 12 15 18 9"></polyline>
                   </svg>
                 </div>
               </div>
-              <div className={`card-body ${expandedId === stream.id ? "show" : ""}`}>
+              <div
+                className={`card-body ${
+                  expandedId === stream.id ? "show" : ""
+                }`}
+              >
                 <div className="divider"></div>
-                
+
                 {stream.subjects.length > 0 ? (
                   <div className="subject-pills-container">
                     {stream.subjects.map((sub, idx) => (
@@ -135,7 +165,6 @@ const Classes = () => {
                   <p className="empty-state">No subjects assigned yet.</p>
                 )}
               </div>
-
             </div>
           </div>
         ))}
@@ -411,7 +440,15 @@ const Setting = () => {
   };
 
   const handleAddClass = async () => {
-    if (newClassName.trim() == "") return;
+    const updatedStreams = [...streams];
+    if (
+      updatedStreams.some((cls) => cls.name == newClassName.trim()) &&
+      newClassName.trim() != ""
+    ) {
+      toast.error("This Class Is Already Existed");
+      return;
+    }
+    // if ( && ) return;
     const toastid = toast.loading("Adding Your Class");
     try {
       const response = await apiClient.post("/api/college-admin/add-class", {
@@ -493,6 +530,13 @@ const Setting = () => {
   const handleAddSubject = async (classIndex, id, subject_Name) => {
     const updatedStreams = [...streams];
     const subjectName = subjectInputs[classIndex];
+
+    if (
+      updatedStreams[classIndex].subjects.some((s) => s == subjectName.trim())
+    ) {
+      toast.error("This Subject is Already Existed.");
+      return;
+    }
     if (subjectName && subjectName.trim() !== "") {
       const toastid = toast.loading(`Adding the ${subjectName} subject.`);
       try {
@@ -500,7 +544,7 @@ const Setting = () => {
           "/api/college-admin/add-subject",
           {
             classId: id,
-            subjectName,
+            subjectName: subjectName.trim(),
           }
         );
         if (response.status == 200) {
@@ -573,7 +617,7 @@ const Setting = () => {
         }
       } catch (error) {
         toast.update(toastid, {
-          render: `${subject_Name} subject Not Deleted.`,
+          render: `${subjectName} subject Not Deleted.`,
           autoClose: 4000,
           isLoading: false,
           type: "error",

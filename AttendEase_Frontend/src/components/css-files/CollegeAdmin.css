@@ -115,8 +115,6 @@ textarea:focus {
   font-weight: 600;
   cursor: pointer;
 }
-
-/* --- NEW ACADEMIC STYLES --- */
 .add-class-wrapper {
   margin-bottom: 30px;
 }
@@ -246,7 +244,6 @@ textarea:focus {
   cursor: pointer;
 }
 
-/* Danger Section special styling */
 .setting-section.danger-border {
   border-left: 5px solid #e74c3c;
 }

@@ -13,7 +13,6 @@ public class Subject {
 	private Long id;
 
 	private String name;
-	private String code;
 
 	@ManyToOne
 	@JoinColumn(name = "class_id", nullable = false)
@@ -48,14 +47,6 @@ public class Subject {
 
 	public void setName(String name) {
 		this.name = name;
-	}
-
-	public String getCode() {
-		return code;
-	}
-
-	public void setCode(String code) {
-		this.code = code;
 	}
 
 	public ClassEntity getClasses() {
