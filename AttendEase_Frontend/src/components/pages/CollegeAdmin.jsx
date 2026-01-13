@@ -448,7 +448,6 @@ const Setting = () => {
       toast.error("This Class Is Already Existed");
       return;
     }
-    // if ( && ) return;
     const toastid = toast.loading("Adding Your Class");
     try {
       const response = await apiClient.post("/api/college-admin/add-class", {
