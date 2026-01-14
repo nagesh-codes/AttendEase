@@ -50,7 +50,7 @@ const ApplicationList = ({ applications = [
           display: flex;
           align-items: center;
           color: #6b7280;
-          font-size: 12px;
+          font-size:   asdf12px;
           margin-top: 4px;
         }
         .college-info {

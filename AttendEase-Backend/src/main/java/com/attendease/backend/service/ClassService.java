@@ -59,7 +59,7 @@ public class ClassService{
 	        Map<String, Object> classMap = new HashMap<>();
 	        classMap.put("name", ce.getName());
 	        classMap.put("id", ce.getId());
-	        List<String> subjectNames = subjectRepository.findByClassId(ce.getId());
+	        List<String> subjectNames = subjectRepository.findByClassIdAndDeletedFalse(ce.getId());
 	        classMap.put("subjects", subjectNames);
 	        responseList.add(classMap);
 	    }
@@ -73,6 +73,17 @@ public class ClassService{
 		clsEnt.setDeleted(true);
 		for(Subject sb : subj) {
 			sb.setDeleted(true);
+		}
+	}
+	
+	public List<Map<String, Object>> getStreamData(Long clgId,Long teacherID){
+		List<Map<String, Object>> responseList = new ArrayList<>();
+		List<ClassEntity> classes = classRepository.findByCollegeIdAndIsDeletedFalse(clgId);
+		for(ClassEntity ce : classes) {
+			Map<String,Object> classMap = new HashMap<>();
+			classMap.put("id",ce.getId());
+			classMap.put("name",ce.getName());
+			List<String> subjectNames = subjectRepository.findByClassId
 		}
 	}
 }

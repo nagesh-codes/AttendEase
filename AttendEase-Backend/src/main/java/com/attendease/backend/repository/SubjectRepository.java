@@ -14,11 +14,13 @@ import com.attendease.backend.entity.Subject;
 public interface SubjectRepository extends JpaRepository<Subject, Long>{
 
 	@Query("SELECT s.name FROM Subject s WHERE s.classes.id = :classId AND s.isDeleted = false")
-	List<String> findByClassId(@Param("classId") Long classId);
+	List<String> findByClassIdAndDeletedFalse(@Param("classId") Long classId);
 	
 	@Query("SELECT s FROM Subject s WHERE s.classes.id = :classId")
 	List<Subject> findByClass_Id(@Param("classId") Long classId);
 	
 	@Query("SELECT s FROM Subject s WHERE s.classes.id = :classId AND s.name = :subjectName")
 	Optional<Subject> findByClassIdAndSubjectName(@Param("classId") Long classId,@Param("subjectName") String subjectName);
+	
+	@Query("SELECT s.name FROM Subject s WHERE s.classes.id = :classId AND s.isDeleted = false AND ")
 }

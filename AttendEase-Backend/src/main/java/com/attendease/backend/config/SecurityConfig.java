@@ -29,6 +29,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/api/auth/**").permitAll()
                         .requestMatchers("/api/colleges/**").permitAll()
+                        .requestMatchers("/api/teacher/**").permitAll()
                         .requestMatchers("/api/college-application/**").permitAll()
                         .requestMatchers("/api/college-admin/**").permitAll()
                         .requestMatchers("/api/system-admin/send-otp").permitAll()
