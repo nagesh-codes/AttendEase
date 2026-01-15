@@ -1,0 +1,144 @@
+.add-class-container {
+  width: 100%;
+  background: #fff;
+  padding: 40px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+  font-family: "Segoe UI", sans-serif;
+  box-sizing: border-box;
+}
+
+.form-header {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  margin-bottom: 30px;
+}
+.icon-wrapper {
+  width: 50px;
+  height: 50px;
+  background: #e0f2fe;
+  color: #0284c7;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+}
+.form-header h2 {
+  margin: 0;
+  color: #1e293b;
+  font-size: 22px;
+}
+.form-header p {
+  margin: 5px 0 0 0;
+  color: #64748b;
+  font-size: 14px;
+}
+
+.form-body {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.form-row {
+  display: flex;
+  gap: 20px;
+  width: 100%;
+}
+
+.form-group {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #334155;
+}
+
+select {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  font-size: 14px;
+  background: #f8fafc;
+  outline: none;
+  transition: 0.2s;
+}
+select:focus {
+  border-color: #0284c7;
+  background: #fff;
+}
+
+.file-upload-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.upload-box {
+  width: 100%;
+  border: 2px dashed #cbd5e1;
+  border-radius: 10px;
+  transition: all 0.2s ease;
+  background: #f8fafc;
+}
+.upload-box:hover {
+  border-color: #0284c7;
+  background: #f0f9ff;
+}
+.upload-box.has-file {
+  border-style: solid;
+  border-color: #22c55e;
+  background: #f0fdf4;
+}
+
+.upload-click-area {
+  padding: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  cursor: pointer;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.text-area {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.highlight {
+  color: #0284c7;
+  font-weight: 600;
+  text-decoration: underline;
+}
+.file-name {
+  font-weight: 600;
+  color: #1e293b;
+  font-size: 16px;
+}
+
+.btn-create {
+  width: 100%;
+  background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+  color: white;
+  padding: 16px;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  margin-top: 10px;
+}
+.btn-create:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);
+}

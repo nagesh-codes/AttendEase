@@ -22,5 +22,6 @@ public interface SubjectRepository extends JpaRepository<Subject, Long>{
 	@Query("SELECT s FROM Subject s WHERE s.classes.id = :classId AND s.name = :subjectName")
 	Optional<Subject> findByClassIdAndSubjectName(@Param("classId") Long classId,@Param("subjectName") String subjectName);
 	
-	@Query("SELECT s.name FROM Subject s WHERE s.classes.id = :classId AND s.isDeleted = false AND ")
+	@Query("SELECT s.name FROM Subject s WHERE s.classes.id = :classId AND s.isDeleted = false AND s.teacher.id is NULL")
+	List<String> findByCLassIdAndDeletedFalseAndTeacherIdNULL(@Param("classId") Long classID);
 }

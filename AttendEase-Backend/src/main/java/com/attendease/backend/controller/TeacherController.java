@@ -21,6 +21,7 @@ import com.attendease.backend.service.ClassService;
 	 
 	 @GetMapping("/get-stream-data")
 	 public List<Map<String, Object>> getStreamData(@RequestParam Long collegeId,@RequestParam Long teacherId){
+		 System.out.println(teacherId);
 		 return classService.getStreamData(collegeId,teacherId);
 	 }
  }

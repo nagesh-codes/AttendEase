@@ -6,9 +6,11 @@ import {
   FaFileCode,
   FaChalkboardTeacher,
 } from "react-icons/fa";
+import * as XLSX from "xlsx";
 import { SystemAdminAuthContext } from "../../context/SystemAdminAuthContext";
 import logo from "../../assets/logo.png";
 import "../css-files/layout.css";
+import "../css-files/TeacherPanel.css";
 import { apiClient } from "../../API/apiClient";
 import { toast } from "react-toastify";
 
@@ -25,43 +27,47 @@ const MySchedule = () => {
 };
 
 const AddNewClass = () => {
-  // --- Mock Data ---
-  const classData = [
-    {
-      id: 1,
-      name: "FY BCA",
-      subjects: ["C Programming", "Web Basics", "Maths"],
-    },
-    {
-      id: 2,
-      name: "SY BCA",
-      subjects: ["Core Java", "Data Structures", "DBMS"],
-    },
-    {
-      id: 3,
-      name: "TY BCA",
-      subjects: ["Advanced Java", "ReactJS", "Project"],
-    },
-  ];
-
-  // --- State ---
+  const [classData, setClassData] = useState([]);
   const [selectedClassId, setSelectedClassId] = useState("");
   const [availableSubjects, setAvailableSubjects] = useState([]);
   const [selectedSubject, setSelectedSubject] = useState("");
   const [file, setFile] = useState(null);
 
-  // --- Handlers ---
   const handleClassChange = (e) => {
     const classId = parseInt(e.target.value);
     setSelectedClassId(classId);
     setSelectedSubject("");
     const selectedClass = classData.find((c) => c.id === classId);
-    setAvailableSubjects(selectedClass ? selectedClass.subjects : []);
+    setAvailableSubjects(selectedClass ? selectedClass.subject : []);
   };
 
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
+    if (selectedFile) {
+      parseFile(selectedFile);
+    }
     if (selectedFile) setFile(selectedFile);
+  };
+  
+  const parseFile = (file_) => {
+    toast.success("file")
+    const fileName = file_.name.toLowerCase();
+    if (fileName.endsWith(".xlsx") || fileName.endsWith(".xls")) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const data = new Uint8Array(e.target.result);
+        const workbook = XLSX.read(data, { type: "array" });
+
+        const sheetName = workbook.SheetNames[0];
+        const sheet = workbook.Sheets[sheetName];
+
+        const parsedData = XLSX.utils.sheet_to_json(sheet);
+        console.log(parsedData);
+      };
+      reader.readAsArrayBuffer(file_);
+    }else{
+      toast.error("unsupported file")
+    }
   };
 
   const handleSubmit = (e) => {
@@ -86,21 +92,23 @@ const AddNewClass = () => {
     return <FaFileExcel size={40} color="#2ecc71" />;
   };
 
-  const getStreanData = async () => {
+  const getStreamData = async () => {
     try {
       const response = await apiClient.get("/api/teacher/get-stream-data", {
         params: { teacherId: 7, collegeId: 16 },
       });
-      console.log(response);
-      toast.success("data arrived");
+      setClassData(response.data);
     } catch (error) {
-      toast.error(error.message);
+      toast.error("We Cant Get the Steans Right now, Try Later!");
     }
   };
 
+  useEffect(() => {
+    getStreamData();
+  }, []);
+
   return (
     <div className="add-class-container">
-      {/* Header */}
       <div className="form-header">
         <div className="icon-wrapper">
           <FaChalkboardTeacher />
@@ -112,7 +120,6 @@ const AddNewClass = () => {
       </div>
 
       <form onSubmit={handleSubmit} className="form-body">
-        {/* Row 1: Dropdowns - They will now stretch to fill width */}
         <div className="form-row">
           <div className="form-group">
             <label>Select Class Stream</label>
@@ -152,7 +159,6 @@ const AddNewClass = () => {
           </div>
         </div>
 
-        {/* Row 2: File Upload */}
         <div className="file-upload-section">
           <label className="upload-label">
             Upload Student List (JSON / CSV / Excel)
@@ -185,110 +191,10 @@ const AddNewClass = () => {
           </div>
         </div>
 
-        {/* Submit Button */}
         <button type="submit" className="btn-create">
           Create Class & Import
         </button>
       </form>
-
-      {/* --- CSS STYLES --- */}
-      <style>{`
-        .add-class-container {
-          width: 100%; /* Full Width */
-          background: #fff;
-          padding: 40px;
-          border-radius: 12px;
-          box-shadow: 0 4px 20px rgba(0,0,0,0.05);
-          font-family: 'Segoe UI', sans-serif;
-          box-sizing: border-box; /* Ensures padding doesn't overflow width */
-        }
-
-        /* Header */
-        .form-header { display: flex; gap: 15px; align-items: center; margin-bottom: 30px; }
-        .icon-wrapper {
-            width: 50px; height: 50px; background: #e0f2fe; color: #0284c7;
-            border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px;
-        }
-        .form-header h2 { margin: 0; color: #1e293b; font-size: 22px; }
-        .form-header p { margin: 5px 0 0 0; color: #64748b; font-size: 14px; }
-
-        /* Form Layout */
-        .form-body { display: flex; flex-direction: column; gap: 25px; }
-        
-        .form-row { 
-            display: flex; 
-            gap: 20px; 
-            width: 100%; /* Stretch row */
-        }
-        
-        /* Ensure Inputs take equal space */
-        .form-group { 
-            flex: 1; /* Both dropdowns take 50% space */
-            display: flex; 
-            flex-direction: column; 
-            gap: 8px; 
-        }
-        
-        label { font-size: 14px; font-weight: 600; color: #334155; }
-
-        select {
-          width: 100%; /* Fill the group */
-          padding: 12px;
-          border: 1px solid #cbd5e1;
-          border-radius: 8px;
-          font-size: 14px;
-          background: #f8fafc;
-          outline: none;
-          transition: 0.2s;
-        }
-        select:focus { border-color: #0284c7; background: #fff; }
-
-        /* File Upload */
-        .file-upload-section { display: flex; flex-direction: column; gap: 10px; }
-        .upload-box {
-          width: 100%;
-          border: 2px dashed #cbd5e1;
-          border-radius: 10px;
-          transition: all 0.2s ease;
-          background: #f8fafc;
-        }
-        .upload-box:hover { border-color: #0284c7; background: #f0f9ff; }
-        .upload-box.has-file { border-style: solid; border-color: #22c55e; background: #f0fdf4; }
-
-        .upload-click-area {
-          padding: 40px; /* Bigger click area */
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 20px;
-          cursor: pointer;
-          width: 100%;
-          box-sizing: border-box;
-        }
-
-        .text-area { display: flex; flex-direction: column; gap: 4px; }
-        .highlight { color: #0284c7; font-weight: 600; text-decoration: underline; }
-        .file-name { font-weight: 600; color: #1e293b; font-size: 16px; }
-
-        /* Button */
-        .btn-create {
-          width: 100%; /* Full width button */
-          background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
-          color: white;
-          padding: 16px;
-          border: none;
-          border-radius: 8px;
-          font-size: 16px;
-          font-weight: 600;
-          cursor: pointer;
-          transition: transform 0.2s, box-shadow 0.2s;
-          margin-top: 10px;
-        }
-        .btn-create:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 4px 12px rgba(2, 132, 199, 0.3);
-        }
-      `}</style>
     </div>
   );
 };

@@ -81,9 +81,15 @@ public class ClassService{
 		List<ClassEntity> classes = classRepository.findByCollegeIdAndIsDeletedFalse(clgId);
 		for(ClassEntity ce : classes) {
 			Map<String,Object> classMap = new HashMap<>();
-			classMap.put("id",ce.getId());
-			classMap.put("name",ce.getName());
-			List<String> subjectNames = subjectRepository.findByClassId
+			List<String> subjectNames = subjectRepository.findByCLassIdAndDeletedFalseAndTeacherIdNULL(ce.getId());
+			System.out.println(subjectNames.size());
+			if(subjectNames.size() != 0) {
+				classMap.put("id",ce.getId());
+				classMap.put("name",ce.getName());
+				classMap.put("subject",subjectNames);
+				responseList.add(classMap);
+			}
 		}
+		return responseList;
 	}
 }
