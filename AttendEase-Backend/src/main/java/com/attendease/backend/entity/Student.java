@@ -23,6 +23,17 @@ public class Student {
 
 	@Column(name = "created_at")
 	private LocalDateTime createdAt = LocalDateTime.now();
+	
+	@Column(name = "mobile_number")
+	private Long mobileNumber;
+
+	public Long getMobileNumber() {
+		return mobileNumber;
+	}
+
+	public void setMobileNumber(Long mobileNumber) {
+		this.mobileNumber = mobileNumber;
+	}
 
 	public Long getId() {
 		return id;

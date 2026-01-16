@@ -6,6 +6,7 @@ import {
   FaFileCode,
   FaChalkboardTeacher,
 } from "react-icons/fa";
+import Papa from "papaparse";
 import * as XLSX from "xlsx";
 import { SystemAdminAuthContext } from "../../context/SystemAdminAuthContext";
 import logo from "../../assets/logo.png";
@@ -32,6 +33,7 @@ const AddNewClass = () => {
   const [availableSubjects, setAvailableSubjects] = useState([]);
   const [selectedSubject, setSelectedSubject] = useState("");
   const [file, setFile] = useState(null);
+  const [fileData, setFileData] = useState([]);
 
   const handleClassChange = (e) => {
     const classId = parseInt(e.target.value);
@@ -48,25 +50,39 @@ const AddNewClass = () => {
     }
     if (selectedFile) setFile(selectedFile);
   };
-  
+
   const parseFile = (file_) => {
-    toast.success("file")
+    toast.success("file");
     const fileName = file_.name.toLowerCase();
+    const reader = new FileReader();
+    let parsedData;
     if (fileName.endsWith(".xlsx") || fileName.endsWith(".xls")) {
-      const reader = new FileReader();
       reader.onload = (e) => {
-        const data = new Uint8Array(e.target.result);
-        const workbook = XLSX.read(data, { type: "array" });
+        try {
+          const data = new Uint8Array(e.target.result);
+          const workbook = XLSX.read(data, { type: "array" });
 
-        const sheetName = workbook.SheetNames[0];
-        const sheet = workbook.Sheets[sheetName];
+          const sheetName = workbook.SheetNames[0];
+          const sheet = workbook.Sheets[sheetName];
 
-        const parsedData = XLSX.utils.sheet_to_json(sheet);
-        console.log(parsedData);
+          // parsedData = XLSX.utils.sheet_to_json(sheet);
+          setFileData(XLSX.utils.sheet_to_json(sheet));
+        } catch (e) {
+          toast.error(
+            "We cant extract the data, please Re-Upload the file or Upload another file"
+          );
+        }
       };
       reader.readAsArrayBuffer(file_);
-    }else{
-      toast.error("unsupported file")
+    } else if (fileName.endsWith(".csv")) {
+      Papa.parse(file_, {
+        header: true,
+        skipEmptyLines: true,
+        complete: (results) => {
+          // parsedData = results.data;
+          setFileData(results.data);
+        },
+      });
     }
   };
 
@@ -79,7 +95,7 @@ const AddNewClass = () => {
     console.log("Submitting:", {
       classId: selectedClassId,
       subject: selectedSubject,
-      file: file.name,
+      studentData:fileData
     });
   };
 
@@ -87,8 +103,6 @@ const AddNewClass = () => {
     if (!file) return <FaCloudUploadAlt size={40} color="#cbd5e0" />;
     if (file.name.endsWith(".csv"))
       return <FaFileCsv size={40} color="#27ae60" />;
-    if (file.name.endsWith(".json"))
-      return <FaFileCode size={40} color="#f1c40f" />;
     return <FaFileExcel size={40} color="#2ecc71" />;
   };
 
@@ -161,14 +175,14 @@ const AddNewClass = () => {
 
         <div className="file-upload-section">
           <label className="upload-label">
-            Upload Student List (JSON / CSV / Excel)
+            Upload Student List (CSV / Excel)
           </label>
 
           <div className={`upload-box ${file ? "has-file" : ""}`}>
             <input
               type="file"
               id="studentFile"
-              accept=".json, .csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+              accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
               onChange={handleFileChange}
               hidden
             />
@@ -183,9 +197,7 @@ const AddNewClass = () => {
                     upload
                   </span>
                 )}
-                <span className="support-text">
-                  Supports: .json, .csv, .xlsx
-                </span>
+                <span className="support-text">Supports: .csv, .xlsx</span>
               </div>
             </label>
           </div>
