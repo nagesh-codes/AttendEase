@@ -1,13 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
-import {
-  FaCloudUploadAlt,
-  FaFileCsv,
-  FaFileExcel,
-  FaFileCode,
-  FaChalkboardTeacher,
-} from "react-icons/fa";
-import Papa from "papaparse";
-import * as XLSX from "xlsx";
+import { FaChalkboardTeacher } from "react-icons/fa";
 import { SystemAdminAuthContext } from "../../context/SystemAdminAuthContext";
 import logo from "../../assets/logo.png";
 import "../css-files/layout.css";
@@ -32,8 +24,6 @@ const AddNewClass = () => {
   const [selectedClassId, setSelectedClassId] = useState("");
   const [availableSubjects, setAvailableSubjects] = useState([]);
   const [selectedSubject, setSelectedSubject] = useState("");
-  const [file, setFile] = useState(null);
-  const [fileData, setFileData] = useState([]);
 
   const handleClassChange = (e) => {
     const classId = parseInt(e.target.value);
@@ -43,67 +33,16 @@ const AddNewClass = () => {
     setAvailableSubjects(selectedClass ? selectedClass.subject : []);
   };
 
-  const handleFileChange = (e) => {
-    const selectedFile = e.target.files[0];
-    if (selectedFile) {
-      parseFile(selectedFile);
-    }
-    if (selectedFile) setFile(selectedFile);
-  };
-
-  const parseFile = (file_) => {
-    toast.success("file");
-    const fileName = file_.name.toLowerCase();
-    const reader = new FileReader();
-    let parsedData;
-    if (fileName.endsWith(".xlsx") || fileName.endsWith(".xls")) {
-      reader.onload = (e) => {
-        try {
-          const data = new Uint8Array(e.target.result);
-          const workbook = XLSX.read(data, { type: "array" });
-
-          const sheetName = workbook.SheetNames[0];
-          const sheet = workbook.Sheets[sheetName];
-
-          // parsedData = XLSX.utils.sheet_to_json(sheet);
-          setFileData(XLSX.utils.sheet_to_json(sheet));
-        } catch (e) {
-          toast.error(
-            "We cant extract the data, please Re-Upload the file or Upload another file"
-          );
-        }
-      };
-      reader.readAsArrayBuffer(file_);
-    } else if (fileName.endsWith(".csv")) {
-      Papa.parse(file_, {
-        header: true,
-        skipEmptyLines: true,
-        complete: (results) => {
-          // parsedData = results.data;
-          setFileData(results.data);
-        },
-      });
-    }
-  };
-
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!selectedClassId || !selectedSubject || !file) {
-      alert("Please fill all fields and upload a file.");
+      alert("Please fill all fields");
       return;
     }
     console.log("Submitting:", {
       classId: selectedClassId,
       subject: selectedSubject,
-      studentData:fileData
     });
-  };
-
-  const getFileIcon = () => {
-    if (!file) return <FaCloudUploadAlt size={40} color="#cbd5e0" />;
-    if (file.name.endsWith(".csv"))
-      return <FaFileCsv size={40} color="#27ae60" />;
-    return <FaFileExcel size={40} color="#2ecc71" />;
   };
 
   const getStreamData = async () => {
@@ -170,36 +109,6 @@ const AddNewClass = () => {
                 </option>
               ))}
             </select>
-          </div>
-        </div>
-
-        <div className="file-upload-section">
-          <label className="upload-label">
-            Upload Student List (CSV / Excel)
-          </label>
-
-          <div className={`upload-box ${file ? "has-file" : ""}`}>
-            <input
-              type="file"
-              id="studentFile"
-              accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
-              onChange={handleFileChange}
-              hidden
-            />
-            <label htmlFor="studentFile" className="upload-click-area">
-              <div className="icon-area">{getFileIcon()}</div>
-              <div className="text-area">
-                {file ? (
-                  <span className="file-name">{file.name}</span>
-                ) : (
-                  <span>
-                    Drag & drop or <span className="highlight">browse</span> to
-                    upload
-                  </span>
-                )}
-                <span className="support-text">Supports: .csv, .xlsx</span>
-              </div>
-            </label>
           </div>
         </div>
 

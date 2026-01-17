@@ -6,6 +6,19 @@ import logo from "../../assets/logo.png";
 import { apiClient } from "../../API/apiClient";
 import { toast } from "react-toastify";
 import { SystemAdminAuthContext } from "../../context/SystemAdminAuthContext";
+import Papa from "papaparse"; // npm install papaparse
+import {
+  FaCloudUploadAlt,
+  FaFileCsv,
+  FaFileExcel,
+  FaFileCode,
+  FaTrash,
+  FaPlus,
+  FaChalkboardTeacher,
+  FaChevronDown,
+  FaChevronUp,
+  FaUserPlus,
+} from "react-icons/fa";
 
 const optionsWithTime = {
   year: "numeric",
@@ -416,256 +429,202 @@ const TeacherRequest = () => {
 };
 
 const Setting = () => {
-  const [collegeId, setCollegeId] = useState(
-    localStorage.getItem("collegeId") | 0
-  );
+  // --- 1. College Profile State ---
   const [collegeDetails, setCollegeDetails] = useState({
-    name: "Getting Details...",
-    address: "Getting Details...",
-    email: "Getting Details...",
-    phone: "Getting Details...",
+    name: "Sangola Mahavidyalaya",
+    address: "Kadlas Road, Sangola",
+    email: "admin@sangola.ac.in",
+    phone: "9876543210",
+    website: "www.sangolacollege.ac.in",
   });
 
+  // --- 2. Academic Data State ---
   const [streams, setStreams] = useState([
-    { name: "Class Name", subjects: ["Subject 1", "Subject 2"] },
+    { id: 1, name: "FY BCA", subjects: ["C Programming", "Maths"] },
+    { id: 2, name: "SY BCA", subjects: ["Java", "DBMS"] },
   ]);
 
+  // --- 3. New Class Creation State ---
   const [newClassName, setNewClassName] = useState("");
+  const [studentFile, setStudentFile] = useState(null);
+  const [parsedStudents, setParsedStudents] = useState([]);
 
-  const [subjectInputs, setSubjectInputs] = useState({});
-  const [newSubjectName, setNewSubjectName] = useState("");
+  // --- 4. Accordion & Subject State ---
+  const [expandedClassId, setExpandedClassId] = useState(null);
+  const [newSubjectInput, setNewSubjectInput] = useState("");
 
+  // --- 5. Late Admission Form State ---
+  const [singleStudent, setSingleStudent] = useState({
+    name: "",
+    rollNo: "",
+    email: "",
+    phone: "",
+  });
+
+  // ==============================
+  //        HANDLERS
+  // ==============================
+
+  // --- Profile Handler ---
   const handleProfileChange = (e) => {
     setCollegeDetails({ ...collegeDetails, [e.target.name]: e.target.value });
   };
 
-  const handleAddClass = async () => {
-    const updatedStreams = [...streams];
-    if (
-      updatedStreams.some((cls) => cls.name == newClassName.trim()) &&
-      newClassName.trim() != ""
-    ) {
-      toast.error("This Class Is Already Existed");
-      return;
+  // --- File Parsing (Excel/CSV/JSON) ---
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setStudentFile(file);
+
+    const fileName = file.name.toLowerCase();
+
+    // Excel Logic
+    if (fileName.endsWith(".xlsx") || fileName.endsWith(".xls")) {
+      const reader = new FileReader();
+      reader.onload = (evt) => {
+        const bstr = evt.target.result;
+        const wb = XLSX.read(bstr, { type: "binary" });
+        const wsname = wb.SheetNames[0];
+        const ws = wb.Sheets[wsname];
+        const data = XLSX.utils.sheet_to_json(ws);
+        setParsedStudents(data);
+      };
+      reader.readAsBinaryString(file);
     }
-    const toastid = toast.loading("Adding Your Class");
-    try {
-      const response = await apiClient.post("/api/college-admin/add-class", {
-        collegeId,
-        className: newClassName.trim(),
+    // CSV Logic
+    else if (fileName.endsWith(".csv")) {
+      Papa.parse(file, {
+        header: true,
+        skipEmptyLines: true,
+        complete: (results) => setParsedStudents(results.data),
       });
-      if (response.status == 200) {
-        toast.update(toastid, {
-          render: `Class ${newClassName} is Added.`,
-          autoClose: 4000,
-          isLoading: false,
-          type: "success",
-        });
-      } else {
-        toast.update(toastid, {
-          render: `Class ${newClassName} Not Added.`,
-          autoClose: 4000,
-          isLoading: false,
-          type: "error",
-        });
-      }
-    } catch (error) {
-      toast.update(toastid, {
-        render: `Class ${newClassName} Not Added.`,
-        autoClose: 4000,
-        isLoading: false,
-        type: "error",
-      });
+    }
+    // JSON Logic
+    else if (fileName.endsWith(".json")) {
+      const reader = new FileReader();
+      reader.onload = (evt) => setParsedStudents(JSON.parse(evt.target.result));
+      reader.readAsText(file);
     }
   };
 
-  const handleDeleteClass = async (index, id) => {
+  // --- Create Class Handler ---
+  const handleCreateClass = async () => {
+    if (!newClassName.trim()) {
+      toast.error("Please enter a class name.");
+      return;
+    }
+    if (!studentFile || parsedStudents.length === 0) {
+      toast.error("Please upload a valid student list file.");
+      return;
+    }
+
+    // Backend API Call Placeholder
+    /*
+    try {
+      await apiClient.post('/api/college-admin/add-class', {
+         name: newClassName,
+         students: parsedStudents
+      });
+      toast.success("Class created successfully!");
+    } catch(err) { toast.error("Failed"); }
+    */
+
+    // UI Update Simulation
+    const newClass = {
+      id: Date.now(),
+      name: newClassName,
+      subjects: [],
+    };
+    setStreams([...streams, newClass]);
+
+    // Reset Form
+    setNewClassName("");
+    setStudentFile(null);
+    setParsedStudents([]);
+    toast.success(
+      `Class "${newClassName}" created with ${parsedStudents.length} students!`
+    );
+  };
+
+  // --- Accordion Handlers ---
+  const toggleExpand = (id) => {
+    setExpandedClassId(expandedClassId === id ? null : id);
+    setNewSubjectInput("");
+    setSingleStudent({ name: "", rollNo: "", email: "", phone: "" }); // Clear student form
+  };
+
+  const handleDeleteClass = (id) => {
     if (
       window.confirm(
-        "Are you sure? This will delete the class and ALL its subjects."
+        "Are you sure? This will delete the class and all students."
       )
     ) {
-      const toastid = toast.loading("Deleting Your Class");
-      try {
-        const response = await apiClient.delete(
-          "/api/college-admin/delete-class",
-          {
-            params: { classId: id },
-          }
-        );
-        console.log(response);
-        if (response.status == 200) {
-          toast.update(toastid, {
-            render: "Class and Its Subject Successfully Deleted",
-            isLoading: false,
-            type: "success",
-            autoClose: 4000,
-          });
-          const updated = streams.filter((_, i) => i !== index);
-          setStreams(updated);
-        } else {
-          toast.update(toastid, {
-            render: "We Cant Delete Your Class, Right now!",
-            isLoading: false,
-            type: "error",
-            autoClose: 4000,
-          });
-        }
-      } catch (error) {
-        toast.update(toastid, {
-          render: "We Cant Delete Your Class, Right now!",
-          isLoading: false,
-          type: "error",
-          autoClose: 4000,
-        });
-      }
+      setStreams(streams.filter((s) => s.id !== id));
+      toast.info("Class deleted.");
     }
   };
 
-  const handleSubjectInputChange = async (classIndex, value) => {
-    setSubjectInputs({ ...subjectInputs, [classIndex]: value });
+  // --- Subject Handlers ---
+  const handleAddSubject = (classId) => {
+    if (!newSubjectInput.trim()) return;
+    const updatedStreams = streams.map((s) => {
+      if (s.id === classId) {
+        return { ...s, subjects: [...s.subjects, newSubjectInput] };
+      }
+      return s;
+    });
+    setStreams(updatedStreams);
+    setNewSubjectInput("");
+    toast.success("Subject added");
   };
 
-  const handleAddSubject = async (classIndex, id, subject_Name) => {
-    const updatedStreams = [...streams];
-    const subjectName = subjectInputs[classIndex];
+  const handleDeleteSubject = (classId, subIndex) => {
+    const updatedStreams = streams.map((s) => {
+      if (s.id === classId) {
+        const newSubjects = s.subjects.filter((_, idx) => idx !== subIndex);
+        return { ...s, subjects: newSubjects };
+      }
+      return s;
+    });
+    setStreams(updatedStreams);
+  };
 
-    if (
-      updatedStreams[classIndex].subjects.some((s) => s == subjectName.trim())
-    ) {
-      toast.error("This Subject is Already Existed.");
+  // --- Late Admission (Single Student) Handler ---
+  const handleAddSingleStudent = (classId) => {
+    const { name, rollNo, email, phone } = singleStudent;
+
+    // Validation
+    if (!name || !rollNo || !phone) {
+      toast.warn("Name, Roll No, and Phone are required!");
       return;
     }
-    if (subjectName && subjectName.trim() !== "") {
-      const toastid = toast.loading(`Adding the ${subjectName} subject.`);
-      try {
-        const response = await apiClient.post(
-          "/api/college-admin/add-subject",
-          {
-            classId: id,
-            subjectName: subjectName.trim(),
-          }
-        );
-        if (response.status == 200) {
-          toast.update(toastid, {
-            render: `${subjectName} subject Added.`,
-            autoClose: 4000,
-            isLoading: false,
-            type: "success",
-          });
-          updatedStreams[classIndex].subjects.push(subjectName);
-          setStreams(updatedStreams);
 
-          setSubjectInputs({ ...subjectInputs, [classIndex]: "" });
-        } else {
-          toast.update(toastid, {
-            render: `${subjectName} subject Not Added.`,
-            autoClose: 4000,
-            isLoading: false,
-            type: "error",
-          });
-        }
-      } catch (error) {
-        toast.update(toastid, {
-          render: `${subject_Name} subject Not Added.`,
-          autoClose: 4000,
-          isLoading: false,
-          type: "error",
-        });
-      }
-    }
+    console.log(`Adding to Class ID ${classId}:`, singleStudent);
+
+    // Backend API Call Placeholder
+    /*
+    await apiClient.post('/api/student/add-single', { classId, ...singleStudent });
+    */
+
+    toast.success(`Student ${name} (Roll: ${rollNo}) added successfully!`);
+
+    // Reset Form
+    setSingleStudent({ name: "", rollNo: "", email: "", phone: "" });
   };
 
-  const handleDeleteSubject = async (
-    classIndex,
-    subjectIndex,
-    id,
-    subjectName
-  ) => {
-    if (window.confirm("Are you sure? This will delete the subjects.")) {
-      const updatedStreams = [...streams];
-      const toastid = toast.loading(`Deleting the ${subjectName} subject.`);
-      try {
-        const response = await apiClient.delete(
-          "/api/college-admin/delete-subject",
-          {
-            params: {
-              classId: id,
-              subjectName,
-            },
-          }
-        );
-        if (response.status == 200) {
-          toast.update(toastid, {
-            render: `${subjectName} subject Deleted`,
-            autoClose: 4000,
-            isLoading: false,
-            type: "success",
-          });
-          updatedStreams[classIndex].subjects = updatedStreams[
-            classIndex
-          ].subjects.filter((_, i) => i !== subjectIndex);
-          setStreams(updatedStreams);
-        } else {
-          toast.update(toastid, {
-            render: `${subjectName} subject Not Deleted.`,
-            autoClose: 4000,
-            isLoading: false,
-            type: "error",
-          });
-        }
-      } catch (error) {
-        toast.update(toastid, {
-          render: `${subjectName} subject Not Deleted.`,
-          autoClose: 4000,
-          isLoading: false,
-          type: "error",
-        });
-      }
-    }
+  // Helper for File Icon
+  const getFileIcon = () => {
+    if (!studentFile) return <FaCloudUploadAlt className="upload-icon-large" />;
+    if (studentFile.name.endsWith(".csv"))
+      return <FaFileCsv className="file-icon csv" />;
+    if (studentFile.name.endsWith(".json"))
+      return <FaFileCode className="file-icon json" />;
+    return <FaFileExcel className="file-icon xls" />;
   };
-
-  const getAllCollegeData = async () => {
-    try {
-      const collegeInfoPromise = apiClient.get(
-        "/api/college-admin/get-college-info",
-        {
-          params: { collegeId: 16 },
-        }
-      );
-      const streamInfoPromise = apiClient.get(
-        "/api/college-admin/get-college-class",
-        {
-          params: { collegeId: 16 },
-        }
-      );
-      const [collegeInfoResult, streamInfoResult] = await Promise.allSettled([
-        collegeInfoPromise,
-        streamInfoPromise,
-      ]);
-
-      if (collegeInfoResult.status == "fulfilled") {
-        setCollegeDetails(collegeInfoResult.value.data);
-      } else {
-        toast.error("we cant get the college details at this time");
-      }
-
-      if (streamInfoResult.status == "fulfilled") {
-        setStreams(streamInfoResult.value.data);
-      } else {
-        toast.error("we cant get the stream at this time");
-      }
-    } catch (error) {
-      toast.error(error.message);
-    }
-  };
-
-  useEffect(() => {
-    getAllCollegeData();
-  }, []);
 
   return (
     <div className="setting-page-container">
+      {/* Header */}
       <div className="page-header-box">
         <h2>College Settings</h2>
         <p>
@@ -673,13 +632,11 @@ const Setting = () => {
         </p>
       </div>
 
+      {/* --- SECTION 1: COLLEGE IDENTITY --- */}
       <section className="setting-section">
         <div className="section-header-row">
           <h3>College Identity</h3>
-          <p>
-            This information will appear on generated reports and student
-            portals.
-          </p>
+          <p>This information will appear on generated reports.</p>
         </div>
 
         <div className="form-grid">
@@ -692,17 +649,15 @@ const Setting = () => {
               onChange={handleProfileChange}
             />
           </div>
-
           <div className="input-group full-width">
             <label>Address</label>
             <textarea
               name="address"
-              rows="3"
+              rows="2"
               value={collegeDetails.address}
               onChange={handleProfileChange}
             ></textarea>
           </div>
-
           <div className="input-group">
             <label>Official Email</label>
             <input
@@ -712,7 +667,6 @@ const Setting = () => {
               onChange={handleProfileChange}
             />
           </div>
-
           <div className="input-group">
             <label>Contact Phone</label>
             <input
@@ -728,102 +682,239 @@ const Setting = () => {
         </div>
       </section>
 
+      {/* --- SECTION 2: CLASS & STUDENT MANAGEMENT --- */}
       <section className="setting-section">
         <div className="section-header-row">
-          <h3>Class & Subject Management</h3>
-          <p>Create classes and assign specific subjects to them.</p>
+          <h3>Class & Student Management</h3>
+          <p>Create classes, bulk upload students, or add late admissions.</p>
         </div>
 
-        <div className="add-class-wrapper">
-          <div className="add-class-box">
-            <input
-              type="text"
-              placeholder="Create New Class (e.g. MSc Computer Science)"
-              value={newClassName}
-              onChange={(e) => setNewClassName(e.target.value)}
-            />
-            <button className="btn-add" onClick={handleAddClass}>
-              + Create Class
-            </button>
-          </div>
-        </div>
+        {/* A. Create Class Panel */}
+        <div className="create-class-panel">
+          <h4 className="panel-title">
+            <FaChalkboardTeacher /> Initialize New Class
+          </h4>
 
-        <div className="streams-container">
-          {streams.map((stream, classIndex) => (
-            <div key={classIndex} className="stream-card">
-              <div className="stream-header">
-                <h4 className="stream-title">{stream.name}</h4>
-                <button
-                  className="btn-icon-delete"
-                  onClick={() => handleDeleteClass(classIndex, stream.id)}
-                  title="Delete Class"
-                >
-                  Delete Class
-                </button>
-              </div>
+          <div className="form-grid">
+            <div className="input-group">
+              <label>Class Name</label>
+              <input
+                type="text"
+                placeholder="e.g. FY BCA 2024"
+                value={newClassName}
+                onChange={(e) => setNewClassName(e.target.value)}
+                className="main-input"
+              />
+            </div>
 
-              <div className="stream-body">
-                <p className="sub-label">Subjects:</p>
-
-                {stream.subjects.length === 0 ? (
-                  <p className="no-data">No subjects added yet.</p>
-                ) : (
-                  <div className="subject-chips">
-                    {stream.subjects.map((sub, subIndex) => (
-                      <div key={subIndex} className="subject-chip">
-                        {sub}
-                        <span
-                          className="remove-chip"
-                          onClick={() =>
-                            handleDeleteSubject(
-                              classIndex,
-                              subIndex,
-                              stream.id,
-                              sub
-                            )
-                          }
-                        >
-                          ×
-                        </span>
-                      </div>
-                    ))}
+            <div className="input-group">
+              <label>Bulk Student Upload (Excel/CSV)</label>
+              <div className={`file-drop-zone ${studentFile ? "active" : ""}`}>
+                <input
+                  type="file"
+                  id="fileUpload"
+                  accept=".csv, .xlsx, .xls, .json"
+                  onChange={handleFileChange}
+                  hidden
+                />
+                <label htmlFor="fileUpload" className="drop-zone-label">
+                  <span className="icon-area">{getFileIcon()}</span>
+                  <div className="text-area">
+                    {studentFile ? (
+                      <span className="filename">{studentFile.name}</span>
+                    ) : (
+                      <span>
+                        Click to upload <strong>.xlsx / .csv</strong>
+                      </span>
+                    )}
+                    <span className="support-text">
+                      {parsedStudents.length > 0
+                        ? `${parsedStudents.length} students ready to import`
+                        : "Required for class creation"}
+                    </span>
                   </div>
-                )}
+                </label>
+              </div>
+            </div>
+          </div>
 
-                <div className="add-subject-row">
-                  <input
-                    type="text"
-                    placeholder="Add Subject..."
-                    className="small-input"
-                    value={subjectInputs[classIndex] || ""}
-                    onChange={(e) => {
-                      handleSubjectInputChange(classIndex, e.target.value);
-                      setNewSubjectName(e.target.value);
-                    }}
-                  />
+          <button className="btn-create-main" onClick={handleCreateClass}>
+            <FaPlus /> Create Class & Import Students
+          </button>
+        </div>
+
+        <hr className="divider" />
+
+        {/* B. Active Classes Accordion */}
+        <div className="streams-header">
+          <h4>Active Classes</h4>
+        </div>
+
+        <div className="class-accordion-list">
+          {streams.map((stream) => (
+            <div
+              key={stream.id}
+              className={`accordion-card ${
+                expandedClassId === stream.id ? "expanded" : ""
+              }`}
+            >
+              {/* Header */}
+              <div
+                className="accordion-header"
+                onClick={() => toggleExpand(stream.id)}
+              >
+                <span className="stream-name">{stream.name}</span>
+
+                <div className="header-controls">
+                  <span className="badge">
+                    {stream.subjects.length} Subjects
+                  </span>
                   <button
-                    className="btn-small-add"
-                    onClick={() =>
-                      handleAddSubject(classIndex, stream.id, newSubjectName)
-                    }
+                    className="btn-icon-delete"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDeleteClass(stream.id);
+                    }}
+                    title="Delete Class"
                   >
-                    Add
+                    <FaTrash />
                   </button>
+                  <span className="arrow-icon">
+                    {expandedClassId === stream.id ? (
+                      <FaChevronUp />
+                    ) : (
+                      <FaChevronDown />
+                    )}
+                  </span>
                 </div>
               </div>
+
+              {/* Body */}
+              {expandedClassId === stream.id && (
+                <div className="accordion-body">
+                  {/* 1. Subjects Section */}
+                  <div className="body-section">
+                    <h5 className="sub-heading">Subjects</h5>
+                    <div className="subject-chips">
+                      {stream.subjects.length === 0 && (
+                        <span className="no-sub">No subjects yet.</span>
+                      )}
+                      {stream.subjects.map((sub, idx) => (
+                        <div key={idx} className="chip">
+                          {sub}
+                          <span
+                            className="x-btn"
+                            onClick={() => handleDeleteSubject(stream.id, idx)}
+                          >
+                            ×
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="add-sub-row">
+                      <input
+                        type="text"
+                        placeholder="Add Subject (e.g. Maths)..."
+                        value={newSubjectInput}
+                        onChange={(e) => setNewSubjectInput(e.target.value)}
+                        onKeyDown={(e) =>
+                          e.key === "Enter" && handleAddSubject(stream.id)
+                        }
+                      />
+                      <button onClick={() => handleAddSubject(stream.id)}>
+                        Add
+                      </button>
+                    </div>
+                  </div>
+
+                  <hr className="inner-divider" />
+
+                  {/* 2. Late Admission Form */}
+                  <div className="body-section">
+                    <h5 className="sub-heading">
+                      <FaUserPlus /> Late Admission (Add Single Student)
+                    </h5>
+
+                    <div className="add-student-grid">
+                      {/* Roll No */}
+                      <input
+                        type="text"
+                        placeholder="Roll No"
+                        value={singleStudent.rollNo}
+                        onChange={(e) =>
+                          setSingleStudent({
+                            ...singleStudent,
+                            rollNo: e.target.value,
+                          })
+                        }
+                        className="input-roll"
+                      />
+
+                      {/* Name */}
+                      <input
+                        type="text"
+                        placeholder="Student Name"
+                        value={singleStudent.name}
+                        onChange={(e) =>
+                          setSingleStudent({
+                            ...singleStudent,
+                            name: e.target.value,
+                          })
+                        }
+                        className="input-name"
+                      />
+
+                      {/* Phone (New Field) */}
+                      <input
+                        type="number"
+                        placeholder="Phone No"
+                        value={singleStudent.phone}
+                        onChange={(e) =>
+                          setSingleStudent({
+                            ...singleStudent,
+                            phone: e.target.value,
+                          })
+                        }
+                        className="input-phone"
+                      />
+
+                      {/* Email */}
+                      <input
+                        type="email"
+                        placeholder="Email (Optional)"
+                        value={singleStudent.email}
+                        onChange={(e) =>
+                          setSingleStudent({
+                            ...singleStudent,
+                            email: e.target.value,
+                          })
+                        }
+                        className="input-email"
+                      />
+
+                      <button
+                        className="btn-add-student"
+                        onClick={() => handleAddSingleStudent(stream.id)}
+                      >
+                        <FaPlus size={12} /> Add
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           ))}
         </div>
       </section>
 
+      {/* --- SECTION 3: SECURITY --- */}
       <section className="setting-section danger-border">
         <div className="section-header-row">
           <h3>Account Security</h3>
           <p>Update your administrative login credentials.</p>
         </div>
-
         <div className="form-grid">
-          <div className="input-group full-width">
+          <div className="input-group">
             <label>Current Password</label>
             <input type="password" placeholder="********" />
           </div>
@@ -840,6 +931,123 @@ const Setting = () => {
           <button className="btn-secondary">Update Password</button>
         </div>
       </section>
+
+      {/* ==============================
+          CSS STYLES
+      ============================== */}
+      <style>{`
+        .setting-page-container {
+          padding: 40px;
+          background-color: #f4f6f9;
+          min-height: 100vh;
+          font-family: 'Segoe UI', sans-serif;
+          box-sizing: border-box;
+        }
+
+        .page-header-box { margin-bottom: 30px; border-bottom: 1px solid #ddd; padding-bottom: 15px; }
+        .page-header-box h2 { font-size: 26px; color: #2c3e50; margin: 0 0 5px 0; }
+        .page-header-box p { color: #7f8c8d; font-size: 15px; margin: 0; }
+
+        /* General Section Card */
+        .setting-section {
+          background: #fff;
+          border-radius: 8px;
+          padding: 25px;
+          margin-bottom: 25px;
+          box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+          border: 1px solid #e0e0e0;
+        }
+        .section-header-row h3 { margin: 0; font-size: 18px; color: #34495e; }
+        .section-header-row p { margin: 4px 0 20px 0; color: #95a5a6; font-size: 13px; }
+
+        /* Form Inputs */
+        .form-grid { display: flex; flex-wrap: wrap; gap: 20px; }
+        .input-group { flex: 1 1 45%; display: flex; flex-direction: column; gap: 6px; }
+        .input-group.full-width { flex: 1 1 100%; }
+        
+        label { font-size: 13px; font-weight: 600; color: #555; }
+        input, textarea {
+          padding: 10px; border: 1px solid #ced4da; border-radius: 5px; font-size: 14px;
+          transition: border 0.2s;
+        }
+        input:focus, textarea:focus { border-color: #3498db; outline: none; }
+
+        /* Buttons */
+        .action-row { margin-top: 20px; text-align: right; }
+        .btn-primary { background: #1abc9c; color: white; border: none; padding: 10px 25px; border-radius: 5px; cursor: pointer; font-weight: 600; }
+        .btn-secondary { background: #34495e; color: white; border: none; padding: 10px 25px; border-radius: 5px; cursor: pointer; }
+
+        /* Create Class Panel */
+        .create-class-panel { background: #f8f9fa; padding: 20px; border-radius: 6px; border: 1px solid #e9ecef; }
+        .panel-title { margin-top: 0; margin-bottom: 15px; color: #34495e; font-size: 15px; display: flex; align-items: center; gap: 8px; }
+        .main-input { padding: 10px; border: 1px solid #ced4da; border-radius: 5px; }
+
+        .file-drop-zone { border: 2px dashed #ced4da; border-radius: 5px; background: #fff; transition: 0.2s; }
+        .file-drop-zone:hover { border-color: #3498db; background: #ebf5fb; }
+        .file-drop-zone.active { border-color: #27ae60; background: #eafaf1; }
+        .drop-zone-label { display: flex; align-items: center; gap: 12px; padding: 8px 15px; cursor: pointer; }
+        .upload-icon-large { font-size: 22px; color: #95a5a6; }
+        .file-icon { font-size: 22px; } .file-icon.csv { color: #27ae60; } .file-icon.xls { color: #2ecc71; } .file-icon.json { color: #f1c40f; }
+        .filename { font-weight: 600; font-size: 14px; color: #2c3e50; }
+        .support-text { font-size: 11px; color: #7f8c8d; }
+
+        .btn-create-main {
+          width: 100%; padding: 12px; background: #3498db; color: white; border: none; border-radius: 5px;
+          font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 15px;
+        }
+        .btn-create-main:hover { background: #2980b9; }
+
+        .divider { border: 0; border-top: 1px solid #eee; margin: 30px 0; }
+
+        /* Accordion */
+        .class-accordion-list { display: flex; flex-direction: column; gap: 10px; }
+        .accordion-card { border: 1px solid #e0e0e0; border-radius: 6px; background: white; transition: 0.3s; overflow: hidden; }
+        .accordion-card.expanded { border-color: #1abc9c; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+
+        .accordion-header {
+          background: #f8f9fa; padding: 12px 20px; cursor: pointer; display: flex; justify-content: space-between; align-items: center;
+        }
+        .accordion-header:hover { background: #f1f2f6; }
+        .stream-name { font-weight: 700; color: #2c3e50; font-size: 15px; }
+
+        .header-controls { display: flex; align-items: center; gap: 15px; }
+        .badge { font-size: 11px; background: #dfe6e9; padding: 3px 8px; border-radius: 10px; color: #636e72; font-weight: 600; }
+        .btn-icon-delete { background: none; border: 1px solid #e74c3c; color: #e74c3c; padding: 4px 8px; border-radius: 4px; cursor: pointer; font-size: 12px; }
+        .btn-icon-delete:hover { background: #e74c3c; color: white; }
+
+        /* Accordion Body */
+        .accordion-body { padding: 20px; border-top: 1px solid #eee; }
+        .sub-heading { margin: 0 0 10px 0; font-size: 13px; color: #7f8c8d; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 700; display: flex; align-items: center; gap: 6px; }
+
+        .subject-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+        .chip { background: #e0f2f1; color: #00695c; padding: 4px 10px; border-radius: 12px; font-size: 13px; display: flex; align-items: center; gap: 6px; }
+        .x-btn { cursor: pointer; font-weight: bold; opacity: 0.6; } .x-btn:hover { opacity: 1; color: #d32f2f; }
+        .no-sub { font-size: 13px; color: #aaa; font-style: italic; }
+
+        .add-sub-row { display: flex; gap: 8px; }
+        .add-sub-row input { flex: 1; padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 13px; }
+        .add-sub-row button { padding: 8px 15px; background: #34495e; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 13px; }
+
+        .inner-divider { border: 0; border-top: 1px dashed #ddd; margin: 20px 0; }
+
+        /* Late Admission Grid */
+        .add-student-grid { 
+          display: flex; gap: 10px; align-items: center; flex-wrap: wrap; 
+          background: #fdfdfd; padding: 15px; border: 1px solid #f0f0f0; border-radius: 6px;
+        }
+        .input-roll { width: 80px; }
+        .input-phone { width: 140px; }
+        .input-name { flex: 2; min-width: 150px; }
+        .input-email { flex: 2; min-width: 150px; }
+
+        .btn-add-student {
+          background-color: #27ae60; color: white; border: none; padding: 10px 18px; 
+          border-radius: 5px; cursor: pointer; font-weight: 600; display: flex; align-items: center; gap: 5px;
+        }
+        .btn-add-student:hover { background-color: #219150; }
+
+        .danger-border { border-left: 4px solid #e74c3c; }
+      `}</style>
     </div>
   );
 };
