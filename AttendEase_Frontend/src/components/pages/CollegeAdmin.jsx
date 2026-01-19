@@ -20,6 +20,8 @@ import {
   FaUserGraduate,
   FaTimes,
   FaSave,
+  FaPhone,
+  FaEnvelope,
 } from "react-icons/fa";
 
 const optionsWithTime = {
@@ -33,7 +35,7 @@ const optionsWithTime = {
 const Teachers = () => {
   const [teachers, setTeachers] = useState([]);
   const [collegeId, setCollegeId] = useState(
-    localStorage.getItem("collegeId") | 0
+    localStorage.getItem("collegeId") | 0,
   );
 
   const getAllTeachers = async () => {
@@ -75,7 +77,7 @@ const Teachers = () => {
                 <span>Submission Date:</span>
                 {new Date(data.createdAt).toLocaleString(
                   "en-US",
-                  optionsWithTime
+                  optionsWithTime,
                 )}
               </div>
             </div>
@@ -324,7 +326,7 @@ const TeacherRequest = () => {
         "/api/college-admin/pending-teachers",
         {
           params: { username: "mycollege", collegeId: 16 },
-        }
+        },
       );
       if (response.status == 200) {
         setPendinTeachers(response.data);
@@ -350,7 +352,7 @@ const TeacherRequest = () => {
           id,
           status,
           collegeId: 16,
-        }
+        },
       );
       if (response.status == 200) {
         toast.update(toastId, {
@@ -399,7 +401,7 @@ const TeacherRequest = () => {
                 <span>Submission Date:</span>
                 {new Date(data.createdAt).toLocaleString(
                   "en-US",
-                  optionsWithTime
+                  optionsWithTime,
                 )}
               </div>
               <div className="btn-field">
@@ -431,184 +433,323 @@ const TeacherRequest = () => {
 };
 
 const Setting = () => {
-  // --- State ---
+  // ==============================
+  // 1. STATE MANAGEMENT
+  // ==============================
+
+  // College Profile
   const [collegeDetails, setCollegeDetails] = useState({
-    name: "Sangola Mahavidyalaya",
-    address: "Kadlas Road, Sangola",
-    email: "admin@sangola.ac.in",
-    phone: "9876543210",
+    name: "Loading...",
+    address: "",
+    email: "",
+    phone: "",
+    website: "",
   });
 
-  // Added 'students' array to mock data for demonstration
-  const [streams, setStreams] = useState([
-    {
-      id: 1,
-      name: "FY BCA",
-      subjects: ["C Programming", "Maths"],
-      students: [
-        {
-          id: 101,
-          name: "Amit Sharma",
-          roll: "101",
-          email: "amit@gmail.com",
-          phone: "9988776655",
-        },
-        {
-          id: 102,
-          name: "Priya Patil",
-          roll: "102",
-          email: "priya@gmail.com",
-          phone: "8877665544",
-        },
-      ],
-    },
-    {
-      id: 2,
-      name: "SY BCA",
-      subjects: ["Java", "DBMS"],
-      students: [],
-    },
-  ]);
+  // Academic Data (Classes, Subjects, Students)
+  const [streams, setStreams] = useState([]); // This will hold your classes
 
+  // New Class Form
   const [newClassName, setNewClassName] = useState("");
   const [studentFile, setStudentFile] = useState(null);
   const [parsedStudents, setParsedStudents] = useState([]);
+
+  // Accordion & UI State
   const [expandedClassId, setExpandedClassId] = useState(null);
   const [newSubjectInput, setNewSubjectInput] = useState("");
 
-  // --- Modal State ---
+  // Modal State (Student Management)
   const [showStudentModal, setShowStudentModal] = useState(false);
-  const [selectedClass, setSelectedClass] = useState(null); // Stores the full class object
+  const [selectedClass, setSelectedClass] = useState(null);
   const [showAddStudentForm, setShowAddStudentForm] = useState(false);
-
-  // Single Student Form State
   const [newStudent, setNewStudent] = useState({
-    name: "",
     roll: "",
+    name: "",
     email: "",
     phone: "",
   });
 
   // ==============================
-  //        HANDLERS
+  // 2. INITIAL DATA FETCHING
+  // ==============================
+  useEffect(() => {
+    fetchInitialData();
+  }, []);
+
+  const fetchInitialData = async () => {
+    // try {
+    //   const [collegeRes, classRes] = await Promise.all([
+    //     apiClient.get('/api/college-admin/get-college-info'),
+    //     apiClient.get('/api/college-admin/get-classes')
+    //   ]);
+    //   setCollegeDetails(collegeRes.data);
+    //   setStreams(classRes.data);
+    // } catch (error) {
+    //   console.error("Error fetching data", error);
+
+    // --- MOCK DATA FOR UI TESTING (Remove when API is ready) ---
+    setCollegeDetails({
+      name: "Sangola Mahavidyalaya",
+      address: "Kadlas Road, Sangola",
+      email: "admin@sangola.ac.in",
+      phone: "9876543210",
+    });
+    setStreams([
+      {
+        id: 1,
+        name: "FY BCA",
+        subjects: ["C Programming", "Maths"],
+        students: [
+          // { id: 101, roll: "101", name: "Amit Sharma", phone: "9988776655", email: "amit@test.com" },
+          // { id: 102, roll: "102", name: "Priya Patil", phone: "8877665544", email: "priya@test.com" },
+        ],
+      },
+    ]);
+    // }
+  };
+
+  // ==============================
+  // 3. HANDLERS
   // ==============================
 
-  const handleCreateClass = () => {
-    if (!newClassName.trim() || !studentFile) {
-      toast.error("Please fill details and upload file");
-      return;
-    }
-    // Create class with the parsed students from file
-    const newClassObj = {
-      id: Date.now(),
-      name: newClassName,
-      subjects: [],
-      students: parsedStudents, // Assuming parsedStudents has correct structure
-    };
-    setStreams([...streams, newClassObj]);
-    setNewClassName("");
-    setStudentFile(null);
-    setParsedStudents([]);
-    toast.success("Class Created Successfully");
+  // --- Profile ---
+  const handleProfileChange = (e) => {
+    setCollegeDetails({ ...collegeDetails, [e.target.name]: e.target.value });
   };
 
-  // --- Modal Handlers ---
-  const openStudentModal = (cls) => {
-    setSelectedClass(cls);
-    setShowStudentModal(true);
-    setShowAddStudentForm(false); // Reset form visibility
-  };
-
-  const closeStudentModal = () => {
-    setShowStudentModal(false);
-    setSelectedClass(null);
-  };
-
-  const handleDeleteStudent = (studentId) => {
-    if (window.confirm("Delete this student?")) {
-      const updatedClass = {
-        ...selectedClass,
-        students: selectedClass.students.filter((s) => s.id !== studentId),
-      };
-
-      // Update local 'streams' state
-      const updatedStreams = streams.map((s) =>
-        s.id === updatedClass.id ? updatedClass : s
-      );
-      setStreams(updatedStreams);
-      setSelectedClass(updatedClass); // Update modal view
-      toast.success("Student deleted");
-    }
-  };
-
-  const handleAddStudentSubmit = () => {
-    if (!newStudent.name || !newStudent.roll) {
-      toast.warn("Name and Roll No are required");
-      return;
-    }
-
-    const newStudentObj = { ...newStudent, id: Date.now() };
-    const updatedClass = {
-      ...selectedClass,
-      students: [...selectedClass.students, newStudentObj],
-    };
-
-    const updatedStreams = streams.map((s) =>
-      s.id === updatedClass.id ? updatedClass : s
-    );
-    setStreams(updatedStreams);
-    setSelectedClass(updatedClass); // Update modal view
-
-    setNewStudent({ name: "", roll: "", email: "", phone: "" });
-    setShowAddStudentForm(false);
-    toast.success("Student Added!");
-  };
-
-  // --- Existing File/Subject Handlers ---
+  // --- File Parsing Logic ---
   const handleFileChange = (e) => {
     const file = e.target.files[0];
-    if (file) {
-      setStudentFile(file);
-      // ... (Keep existing Excel/CSV parsing logic here) ...
-      // For demo, just setting dummy data if parsing isn't connected
-      setParsedStudents([{ Name: "Demo Student", Roll: "001" }]);
+    if (!file) return;
+    setStudentFile(file);
+
+    const fileName = file.name.toLowerCase();
+
+    if (fileName.endsWith(".xlsx") || fileName.endsWith(".xls")) {
+      const reader = new FileReader();
+      reader.onload = (evt) => {
+        const bstr = evt.target.result;
+        const wb = XLSX.read(bstr, { type: "binary" });
+        const wsname = wb.SheetNames[0];
+        const ws = wb.Sheets[wsname];
+        const data = XLSX.utils.sheet_to_json(ws);
+        setParsedStudents(data);
+      };
+      reader.readAsBinaryString(file);
+    } else if (fileName.endsWith(".csv")) {
+      Papa.parse(file, {
+        header: true,
+        skipEmptyLines: true,
+        complete: (results) => setParsedStudents(results.data),
+      });
     }
   };
 
-  const handleAddSubject = (classId) => {
-    if (!newSubjectInput.trim()) return;
-    const updatedStreams = streams.map((s) =>
-      s.id === classId
-        ? { ...s, subjects: [...s.subjects, newSubjectInput] }
-        : s
-    );
-    setStreams(updatedStreams);
-    setNewSubjectInput("");
+  // --- Class Creation ---
+  const handleCreateClass = async () => {
+    if (!newClassName.trim()) {
+      toast.error("Class Name is required");
+      return;
+    }
+    if (!studentFile || parsedStudents.length === 0) {
+      toast.error("Student File is mandatory");
+      return;
+    }
+
+    const toastId = toast.loading("Creating Class...");
+
+    try {
+      // await apiClient.post('/api/college-admin/add-class', {
+      //   className: newClassName,
+      //   students: parsedStudents
+      // });
+
+      // Mock Success
+      const newClassObj = {
+        id: Date.now(),
+        name: newClassName,
+        subjects: [],
+        students: parsedStudents.map((s, i) => ({ ...s, id: Date.now() + i })), // Map file data to structure
+      };
+
+      setStreams([...streams, newClassObj]);
+      toast.update(toastId, {
+        render: "Class Created Successfully!",
+        type: "success",
+        isLoading: false,
+        autoClose: 3000,
+      });
+
+      // Reset
+      setNewClassName("");
+      setStudentFile(null);
+      setParsedStudents([]);
+    } catch (error) {
+      toast.update(toastId, {
+        render: "Failed to create class",
+        type: "error",
+        isLoading: false,
+        autoClose: 3000,
+      });
+    }
   };
 
-  const handleDeleteSubject = (classId, idx) => {
-    const updatedStreams = streams.map((s) =>
-      s.id === classId
-        ? { ...s, subjects: s.subjects.filter((_, i) => i !== idx) }
-        : s
-    );
-    setStreams(updatedStreams);
-  };
-
+  // --- Accordion & Subjects ---
   const toggleExpand = (id) =>
     setExpandedClassId(expandedClassId === id ? null : id);
 
+  const handleAddSubject = (classId) => {
+    if (!newSubjectInput.trim()) return;
+
+    // API Call would go here
+    const updatedStreams = streams.map((s) =>
+      s.id === classId
+        ? { ...s, subjects: [...s.subjects, newSubjectInput] }
+        : s,
+    );
+    setStreams(updatedStreams);
+    setNewSubjectInput("");
+    toast.success("Subject Added");
+  };
+
+  const handleDeleteSubject = (classId, idx) => {
+    if (!window.confirm("Delete subject?")) return;
+
+    const updatedStreams = streams.map((s) =>
+      s.id === classId
+        ? { ...s, subjects: s.subjects.filter((_, i) => i !== idx) }
+        : s,
+    );
+    setStreams(updatedStreams);
+  };
+
+  const handleDeleteClass = (id) => {
+    if (!window.confirm("Delete entire class and all students?")) return;
+
+    setStreams(streams.filter((s) => s.id !== id));
+    toast.info("Class Deleted");
+  };
+
+  // --- MODAL: Student Management ---
+  const openStudentModal = (cls) => {
+    setSelectedClass(cls); // Set the current class to view
+    setShowStudentModal(true);
+    setShowAddStudentForm(false);
+  };
+
+  const handleAddSingleStudent = () => {
+    const { roll, name, email, phone } = newStudent;
+    if (!roll || !name) {
+      toast.warn("Roll No and Name are required");
+      return;
+    }
+
+    // 1. Update the 'selectedClass' (Modal View)
+    const newStudentObj = { id: Date.now(), roll, name, email, phone };
+    const updatedClass = {
+      ...selectedClass,
+      students: [...(selectedClass.students || []), newStudentObj],
+    };
+    setSelectedClass(updatedClass);
+
+    // 2. Update the main 'streams' state (Global View)
+    const updatedStreams = streams.map((s) =>
+      s.id === updatedClass.id ? updatedClass : s,
+    );
+    setStreams(updatedStreams);
+
+    // 3. Reset Form
+    setNewStudent({ roll: "", name: "", email: "", phone: "" });
+    setShowAddStudentForm(false);
+    toast.success("Student Added Successfully");
+  };
+
+  const handleDeleteStudent = (studentId) => {
+    if (!window.confirm("Remove this student?")) return;
+
+    const updatedClass = {
+      ...selectedClass,
+      students: selectedClass.students.filter((s) => s.id !== studentId),
+    };
+
+    setSelectedClass(updatedClass);
+    setStreams(
+      streams.map((s) => (s.id === updatedClass.id ? updatedClass : s)),
+    );
+    toast.success("Student Removed");
+  };
+
+  const getFileIcon = () => {
+    if (!studentFile) return <FaCloudUploadAlt className="upload-icon-large" />;
+    if (studentFile.name.endsWith(".csv"))
+      return <FaFileCsv className="file-icon csv" />;
+    return <FaFileExcel className="file-icon xls" />;
+  };
+
+  // ==============================
+  // 4. RENDER UI
+  // ==============================
   return (
     <div className="setting-page-container">
+      {/* Header */}
       <div className="page-header-box">
         <h2>College Settings</h2>
-        <p>Manage college profile, classes, and student enrollment.</p>
+        <p>Manage college profile, academic streams, and student enrollment.</p>
       </div>
 
-      {/* 1. Create Class Section */}
+      {/* --- SECTION 1: COLLEGE IDENTITY --- */}
+      <section className="setting-section">
+        <div className="section-header-row">
+          <h3>College Identity</h3>
+        </div>
+        <div className="form-grid">
+          <div className="input-group full-width">
+            <label>College Name</label>
+            <input
+              type="text"
+              name="name"
+              value={collegeDetails.name}
+              onChange={handleProfileChange}
+            />
+          </div>
+          <div className="input-group full-width">
+            <label>Address</label>
+            <textarea
+              name="address"
+              rows="2"
+              value={collegeDetails.address}
+              onChange={handleProfileChange}
+            ></textarea>
+          </div>
+          <div className="input-group">
+            <label>Official Email</label>
+            <input
+              type="email"
+              name="email"
+              value={collegeDetails.email}
+              onChange={handleProfileChange}
+            />
+          </div>
+          <div className="input-group">
+            <label>Contact Phone</label>
+            <input
+              type="text"
+              name="phone"
+              value={collegeDetails.phone}
+              onChange={handleProfileChange}
+            />
+          </div>
+        </div>
+        <div className="action-row">
+          <button className="btn-primary">Save Changes</button>
+        </div>
+      </section>
+
+      {/* --- SECTION 2: CREATE NEW CLASS --- */}
       <section className="setting-section">
         <div className="section-header-row">
           <h3>Create New Class</h3>
+          <p>Initialize a class by uploading the student list (Excel/CSV).</p>
         </div>
         <div className="create-class-panel">
           <div className="form-grid">
@@ -616,38 +757,55 @@ const Setting = () => {
               <label>Class Name</label>
               <input
                 type="text"
-                placeholder="e.g. TY BCA"
+                placeholder="e.g. TY BCA 2026"
                 value={newClassName}
                 onChange={(e) => setNewClassName(e.target.value)}
               />
             </div>
             <div className="input-group">
-              <label>Student List (Excel/CSV)</label>
-              <input
-                type="file"
-                onChange={handleFileChange}
-                className="file-input-simple"
-              />
+              <label>Student List (Mandatory)</label>
+              <div className={`file-drop-zone ${studentFile ? "active" : ""}`}>
+                <input
+                  type="file"
+                  id="fileUpload"
+                  accept=".csv, .xlsx, .xls"
+                  onChange={handleFileChange}
+                  hidden
+                />
+                <label htmlFor="fileUpload" className="drop-zone-label">
+                  <span className="icon-area">{getFileIcon()}</span>
+                  <div className="text-area">
+                    {studentFile ? (
+                      <span className="filename">{studentFile.name}</span>
+                    ) : (
+                      <span>Upload .xlsx / .csv</span>
+                    )}
+                    <span className="support-text">
+                      {parsedStudents.length > 0
+                        ? `${parsedStudents.length} students ready`
+                        : "Required"}
+                    </span>
+                  </div>
+                </label>
+              </div>
             </div>
           </div>
           <button className="btn-create-main" onClick={handleCreateClass}>
-            <FaPlus /> Create Class
+            <FaPlus /> Create Class & Import
           </button>
         </div>
       </section>
 
-      {/* 2. Active Classes Accordion */}
+      {/* --- SECTION 3: ACTIVE CLASSES --- */}
       <section className="setting-section">
         <div className="section-header-row">
-          <h3>Active Classes</h3>
+          <h3>Active Classes & Subjects</h3>
         </div>
         <div className="class-accordion-list">
           {streams.map((stream) => (
             <div
               key={stream.id}
-              className={`accordion-card ${
-                expandedClassId === stream.id ? "expanded" : ""
-              }`}
+              className={`accordion-card ${expandedClassId === stream.id ? "expanded" : ""}`}
             >
               {/* Header */}
               <div
@@ -662,6 +820,15 @@ const Setting = () => {
                   <span className="badge-blue">
                     {stream.students?.length || 0} Students
                   </span>
+                  <button
+                    className="btn-icon-delete"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleDeleteClass(stream.id);
+                    }}
+                  >
+                    <FaTrash />
+                  </button>
                   <span className="arrow-icon">
                     {expandedClassId === stream.id ? (
                       <FaChevronUp />
@@ -675,7 +842,7 @@ const Setting = () => {
               {/* Body */}
               {expandedClassId === stream.id && (
                 <div className="accordion-body">
-                  {/* Subjects */}
+                  {/* Subjects Area */}
                   <div className="body-section">
                     <h5 className="sub-heading">Subjects</h5>
                     <div className="subject-chips">
@@ -719,37 +886,51 @@ const Setting = () => {
               )}
             </div>
           ))}
+          {streams.length === 0 && (
+            <p className="no-data-msg">No classes created yet.</p>
+          )}
         </div>
       </section>
 
-      {/* ================= MODAL ================= */}
+      {/* --- MODAL: STUDENT MANAGEMENT --- */}
       {showStudentModal && selectedClass && (
         <div className="modal-overlay">
           <div className="modal-content">
             <div className="modal-header">
-              <h3>Students in {selectedClass.name}</h3>
-              <button className="close-btn" onClick={closeStudentModal}>
+              <h3>
+                Students in{" "}
+                <span className="highlight-text">{selectedClass.name}</span>
+              </h3>
+              <button
+                className="close-btn"
+                onClick={() => setShowStudentModal(false)}
+              >
                 <FaTimes />
               </button>
             </div>
 
             <div className="modal-body">
-              {/* Top Bar */}
+              {/* Toolbar */}
               <div className="modal-top-actions">
                 <button
-                  className={`btn-toggle-add ${
-                    showAddStudentForm ? "active" : ""
-                  }`}
+                  className={`btn-toggle-add ${showAddStudentForm ? "active" : ""}`}
                   onClick={() => setShowAddStudentForm(!showAddStudentForm)}
                 >
-                  {showAddStudentForm ? "Cancel Adding" : "+ Add New Student"}
+                  {showAddStudentForm ? (
+                    "Cancel"
+                  ) : (
+                    <>
+                      <FaPlus /> Add New Student
+                    </>
+                  )}
                 </button>
                 <div className="student-count">
-                  Total: {selectedClass.students?.length || 0}
+                  Total Students:{" "}
+                  <strong>{selectedClass.students?.length || 0}</strong>
                 </div>
               </div>
 
-              {/* Add Student Form (Collapsible) */}
+              {/* Add Student Form */}
               {showAddStudentForm && (
                 <div className="add-student-form-row">
                   <input
@@ -759,16 +940,16 @@ const Setting = () => {
                     onChange={(e) =>
                       setNewStudent({ ...newStudent, roll: e.target.value })
                     }
-                    style={{ width: "80px" }}
+                    className="inp-small"
                   />
                   <input
                     type="text"
-                    placeholder="Name"
+                    placeholder="Full Name"
                     value={newStudent.name}
                     onChange={(e) =>
                       setNewStudent({ ...newStudent, name: e.target.value })
                     }
-                    style={{ flex: 2 }}
+                    className="inp-med"
                   />
                   <input
                     type="text"
@@ -777,7 +958,7 @@ const Setting = () => {
                     onChange={(e) =>
                       setNewStudent({ ...newStudent, phone: e.target.value })
                     }
-                    style={{ flex: 1 }}
+                    className="inp-med"
                   />
                   <input
                     type="email"
@@ -786,38 +967,45 @@ const Setting = () => {
                     onChange={(e) =>
                       setNewStudent({ ...newStudent, email: e.target.value })
                     }
-                    style={{ flex: 1.5 }}
+                    className="inp-large"
                   />
                   <button
                     className="btn-save-student"
-                    onClick={handleAddStudentSubmit}
+                    onClick={handleAddSingleStudent}
                   >
-                    <FaSave />
+                    <FaSave /> Save
                   </button>
                 </div>
               )}
 
-              {/* Student Table */}
+              {/* Data Table */}
               <div className="table-wrapper">
-                {selectedClass.students && selectedClass.students.length > 0 ? (
-                  <table className="student-table">
-                    <thead>
-                      <tr>
-                        <th>Roll</th>
-                        <th>Name</th>
-                        <th>Phone</th>
-                        <th>Email</th>
-                        <th style={{ textAlign: "center" }}>Action</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {selectedClass.students.map((std) => (
+                <table className="student-table">
+                  <thead>
+                    <tr>
+                      <th width="15%">Roll No</th>
+                      <th width="30%">Name</th>
+                      <th width="20%">
+                        <FaPhone size={10} /> Phone
+                      </th>
+                      <th width="25%">
+                        <FaEnvelope size={10} /> Email
+                      </th>
+                      <th width="10%" align="center">
+                        Action
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {selectedClass.students &&
+                    selectedClass.students.length > 0 ? (
+                      selectedClass.students.map((std) => (
                         <tr key={std.id}>
-                          <td>{std.roll}</td>
-                          <td>{std.name}</td>
+                          <td>{std.roll || std["Roll No"]}</td>
+                          <td>{std.name || std["Name"]}</td>
                           <td>{std.phone || "-"}</td>
                           <td>{std.email || "-"}</td>
-                          <td style={{ textAlign: "center" }}>
+                          <td align="center">
                             <button
                               className="btn-delete-row"
                               onClick={() => handleDeleteStudent(std.id)}
@@ -826,80 +1014,112 @@ const Setting = () => {
                             </button>
                           </td>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                ) : (
-                  <div className="no-data-msg">No students enrolled yet.</div>
-                )}
+                      ))
+                    ) : (
+                      <tr>
+                        <td colSpan="5" className="no-data-msg">
+                          No students found.
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
               </div>
             </div>
           </div>
         </div>
       )}
 
-      {/* Styles */}
+      {/* --- STYLES (Styled JSX) --- */}
       <style>{`
-        .setting-page-container { padding: 40px; background: #f4f6f9; min-height: 100vh; font-family: 'Segoe UI', sans-serif; }
-        .setting-section { background: #fff; padding: 25px; border-radius: 8px; margin-bottom: 25px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
-        .section-header-row h3 { margin: 0 0 15px 0; color: #34495e; }
+        .setting-page-container { padding: 40px; background: #f4f6f9; min-height: 100vh; font-family: 'Segoe UI', sans-serif; box-sizing: border-box; }
         
-        /* Inputs & Buttons */
-        input { padding: 10px; border: 1px solid #ddd; border-radius: 5px; }
-        .btn-create-main { background: #3498db; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; display: flex; align-items: center; gap: 8px; margin-top: 15px; }
+        /* Header */
+        .page-header-box { margin-bottom: 30px; border-bottom: 1px solid #ddd; padding-bottom: 15px; }
+        .page-header-box h2 { font-size: 26px; color: #2c3e50; margin: 0 0 5px 0; }
+        .page-header-box p { color: #7f8c8d; font-size: 15px; margin: 0; }
+
+        /* Sections */
+        .setting-section { background: #fff; padding: 25px; border-radius: 8px; margin-bottom: 25px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); border: 1px solid #e0e0e0; }
+        .section-header-row h3 { margin: 0; font-size: 18px; color: #34495e; }
+        .section-header-row p { margin: 5px 0 15px; font-size: 13px; color: #95a5a6; }
+
+        /* Forms Grid */
+        .form-grid { display: flex; flex-wrap: wrap; gap: 20px; margin-bottom: 15px; }
+        .input-group { flex: 1 1 45%; display: flex; flex-direction: column; gap: 6px; }
+        .input-group.full-width { flex: 1 1 100%; }
+        label { font-size: 13px; font-weight: 600; color: #555; }
+        input, textarea { padding: 10px; border: 1px solid #ced4da; border-radius: 5px; font-size: 14px; transition: 0.2s; }
+        input:focus { border-color: #3498db; outline: none; }
+
+        /* File Upload */
+        .file-drop-zone { border: 2px dashed #ced4da; border-radius: 5px; background: #fff; transition: 0.2s; }
+        .file-drop-zone.active { border-color: #27ae60; background: #eafaf1; }
+        .drop-zone-label { display: flex; align-items: center; gap: 12px; padding: 10px; cursor: pointer; }
+        .upload-icon-large { font-size: 22px; color: #95a5a6; }
+        .filename { font-weight: 600; font-size: 14px; color: #2c3e50; }
+        .support-text { font-size: 11px; color: #7f8c8d; margin-left: auto; }
+        .file-icon.csv { color: #27ae60; font-size: 22px; } .file-icon.xls { color: #2ecc71; font-size: 22px; }
+
+        /* Buttons */
+        .btn-create-main { width: 100%; padding: 12px; background: #3498db; color: white; border: none; border-radius: 5px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .btn-primary { background: #1abc9c; color: white; border: none; padding: 10px 25px; border-radius: 5px; cursor: pointer; font-weight: 600; }
         
         /* Accordion */
         .class-accordion-list { display: flex; flex-direction: column; gap: 10px; }
         .accordion-card { border: 1px solid #ddd; border-radius: 6px; background: white; overflow: hidden; }
+        .accordion-card.expanded { border-color: #3498db; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
         .accordion-header { padding: 15px; background: #f8f9fa; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+        .stream-name { font-weight: 700; color: #2c3e50; font-size: 15px; }
         .header-controls { display: flex; gap: 10px; align-items: center; }
-        .badge { background: #eee; padding: 4px 8px; border-radius: 4px; font-size: 12px; }
+        .badge { background: #eee; padding: 4px 8px; border-radius: 4px; font-size: 12px; color: #666; }
         .badge-blue { background: #e3f2fd; color: #1565c0; padding: 4px 8px; border-radius: 4px; font-size: 12px; font-weight: 600; }
-        
-        .accordion-body { padding: 20px; border-top: 1px solid #eee; }
-        .btn-manage-students { background: #2c3e50; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; display: flex; align-items: center; gap: 8px; font-weight: 600; }
-        .btn-manage-students:hover { background: #1a252f; }
-        
-        /* Subject Chips */
-        .subject-chips { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
-        .chip { background: #e0f2f1; padding: 5px 10px; border-radius: 15px; font-size: 13px; color: #00695c; display: flex; align-items: center; gap: 5px; }
-        .add-sub-row { display: flex; gap: 10px; max-width: 400px; }
+        .btn-icon-delete { background: none; border: 1px solid #e74c3c; color: #e74c3c; padding: 4px; border-radius: 4px; cursor: pointer; font-size: 12px; }
+        .btn-icon-delete:hover { background: #e74c3c; color: white; }
 
-        /* MODAL STYLES */
-        .modal-overlay {
-          position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-          background: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; z-index: 1000;
-        }
-        .modal-content {
-          background: white; width: 800px; max-height: 85vh; border-radius: 8px; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-        }
-        .modal-header {
-          padding: 15px 20px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; background: #f8f9fa;
-        }
-        .modal-header h3 { margin: 0; color: #2c3e50; }
+        /* Accordion Body */
+        .accordion-body { padding: 20px; border-top: 1px solid #eee; }
+        .sub-heading { margin: 0 0 10px 0; font-size: 13px; color: #7f8c8d; text-transform: uppercase; font-weight: 700; }
+        
+        .subject-chips { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
+        .chip { background: #e0f2f1; padding: 5px 12px; border-radius: 15px; font-size: 13px; color: #00695c; display: flex; align-items: center; gap: 6px; }
+        .x-btn { cursor: pointer; font-weight: bold; opacity: 0.6; } .x-btn:hover { opacity: 1; color: #d32f2f; }
+        
+        .add-sub-row { display: flex; gap: 10px; max-width: 400px; }
+        .add-sub-row button { background: #34495e; color: white; border: none; padding: 0 15px; border-radius: 4px; cursor: pointer; }
+        
+        .inner-divider { border: 0; border-top: 1px dashed #ddd; margin: 20px 0; }
+        
+        .btn-manage-students { background: #2c3e50; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; display: flex; align-items: center; gap: 8px; font-weight: 600; width: fit-content; }
+        
+        /* === MODAL STYLES === */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; justify-content: center; align-items: center; z-index: 1000; }
+        .modal-content { background: white; width: 850px; max-height: 85vh; border-radius: 8px; display: flex; flex-direction: column; overflow: hidden; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+        .modal-header { padding: 15px 25px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; background: #f8f9fa; }
+        .highlight-text { color: #3498db; }
         .close-btn { background: none; border: none; font-size: 18px; cursor: pointer; color: #7f8c8d; }
         
-        .modal-body { padding: 20px; overflow-y: auto; }
+        .modal-body { padding: 25px; overflow-y: auto; }
         
-        .modal-top-actions { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .btn-toggle-add { background: #27ae60; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: 600; }
+        .modal-top-actions { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .btn-toggle-add { background: #27ae60; color: white; border: none; padding: 8px 18px; border-radius: 5px; cursor: pointer; font-weight: 600; display: flex; align-items: center; gap: 6px; }
         .btn-toggle-add.active { background: #7f8c8d; }
-        .student-count { font-size: 14px; color: #7f8c8d; font-weight: 600; }
-
-        .add-student-form-row {
-          display: flex; gap: 10px; background: #f1f8e9; padding: 15px; border-radius: 6px; margin-bottom: 20px; border: 1px solid #c5e1a5;
-        }
-        .btn-save-student { background: #2ecc71; color: white; border: none; padding: 0 20px; border-radius: 5px; cursor: pointer; }
-
+        
+        /* Add Student Form Row */
+        .add-student-form-row { display: flex; gap: 10px; background: #f1f8e9; padding: 15px; border-radius: 6px; margin-bottom: 20px; border: 1px solid #c5e1a5; align-items: center; }
+        .inp-small { width: 80px; } .inp-med { flex: 1; } .inp-large { flex: 1.5; }
+        .btn-save-student { background: #2ecc71; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-weight: 600; display: flex; align-items: center; gap: 5px; white-space: nowrap; }
+        
         /* Table */
         .table-wrapper { border: 1px solid #eee; border-radius: 6px; overflow: hidden; }
         .student-table { width: 100%; border-collapse: collapse; font-size: 14px; }
-        .student-table th { background: #f8f9fa; padding: 12px; text-align: left; color: #555; font-weight: 600; border-bottom: 1px solid #eee; }
-        .student-table td { padding: 10px 12px; border-bottom: 1px solid #f5f5f5; color: #333; }
-        .student-table tr:last-child td { border-bottom: none; }
+        .student-table th { background: #f8f9fa; padding: 12px 15px; text-align: left; color: #555; font-weight: 600; border-bottom: 1px solid #eee; }
+        .student-table td { padding: 10px 15px; border-bottom: 1px solid #f5f5f5; color: #333; }
+        .student-table tr:hover { background: #fafafa; }
         .btn-delete-row { background: none; border: none; color: #e74c3c; cursor: pointer; transition: 0.2s; }
         .btn-delete-row:hover { transform: scale(1.2); }
         .no-data-msg { padding: 30px; text-align: center; color: #aaa; font-style: italic; }
+
       `}</style>
     </div>
   );
@@ -909,7 +1129,7 @@ const CollegeAdmin = () => {
   const { logout } = useContext(SystemAdminAuthContext);
   const sidebarRef = useRef(null);
   const [activeSection, setActiveSection] = useState(
-    sessionStorage.getItem("current_tab") || "Teachers"
+    sessionStorage.getItem("current_tab") || "Teachers",
   );
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   useEffect(() => {
