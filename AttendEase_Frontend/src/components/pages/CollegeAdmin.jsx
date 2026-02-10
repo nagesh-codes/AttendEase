@@ -7,6 +7,7 @@ import { apiClient } from "../../API/apiClient";
 import { toast } from "react-toastify";
 import { SystemAdminAuthContext } from "../../context/SystemAdminAuthContext";
 import Papa from "papaparse"; // npm install papaparse
+import * as XLSX from "xlsx";
 import {
   FaCloudUploadAlt,
   FaFileCsv,
@@ -517,46 +518,34 @@ const Setting = () => {
     setCollegeDetails({ ...collegeDetails, [e.target.name]: e.target.value });
   };
 
-const handleFileChange = (e) => {
+  const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
     setStudentFile(file);
 
     const fileName = file.name.toLowerCase();
 
-    // --- 1. EXCEL LOGIC (FIXED) ---
     if (fileName.endsWith(".xlsx") || fileName.endsWith(".xls")) {
       const reader = new FileReader();
 
       reader.onload = (evt) => {
         try {
-          // A. Read data as ArrayBuffer
           const data = new Uint8Array(evt.target.result);
-
-          // B. Parse using type: 'array'
           const workbook = XLSX.read(data, { type: "array" });
-
-          // C. Get first sheet
           const sheetName = workbook.SheetNames[0];
           const sheet = workbook.Sheets[sheetName];
-
-          // D. Convert to JSON
           const jsonData = XLSX.utils.sheet_to_json(sheet);
 
-          console.log("Extracted Data:", jsonData); // Check console to verify
+          console.log("Extracted Data:", jsonData);
           setParsedStudents(jsonData);
-
         } catch (error) {
-          console.error("Error parsing Excel:", error);
-          alert("Error reading file. Please make sure it is a valid Excel file.");
+          toast.error(
+            "Error reading file. Please make sure it is a valid Excel file.",
+          );
         }
       };
-
-      // IMPORTANT: Use readAsArrayBuffer
       reader.readAsArrayBuffer(file);
-    } 
-    
-    // --- 2. CSV LOGIC ---
+    }
     else if (fileName.endsWith(".csv")) {
       Papa.parse(file, {
         header: true,
