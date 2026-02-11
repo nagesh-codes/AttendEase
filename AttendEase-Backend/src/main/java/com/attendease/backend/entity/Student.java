@@ -12,7 +12,7 @@ public class Student {
 	private Long id;
 
 	@Column(name = "roll_number", nullable = false)
-	private String rollNumber;
+	private long rollNumber;
 
 	@Column(nullable = false)
 	private String name;
@@ -20,6 +20,10 @@ public class Student {
 	@ManyToOne
 	@JoinColumn(name = "college_id", nullable = false)
 	private College college;
+	
+	@ManyToOne
+	@JoinColumn(name = "class_id", nullable = false)
+	private ClassEntity classEntity;
 
 	@Column(name = "created_at")
 	private LocalDateTime createdAt = LocalDateTime.now();
@@ -54,11 +58,11 @@ public class Student {
 		this.id = id;
 	}
 
-	public String getRollNumber() {
+	public long getRollNumber() {
 		return rollNumber;
 	}
 
-	public void setRollNumber(String rollNumber) {
+	public void setRollNumber(long rollNumber) {
 		this.rollNumber = rollNumber;
 	}
 
@@ -76,6 +80,14 @@ public class Student {
 
 	public void setCollege(College college) {
 		this.college = college;
+	}
+
+	public ClassEntity getClassEntity() {
+		return classEntity;
+	}
+
+	public void setClassEntity(ClassEntity classEntity) {
+		this.classEntity = classEntity;
 	}
 
 	public LocalDateTime getCreatedAt() {

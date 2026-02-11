@@ -545,8 +545,7 @@ const Setting = () => {
         }
       };
       reader.readAsArrayBuffer(file);
-    }
-    else if (fileName.endsWith(".csv")) {
+    } else if (fileName.endsWith(".csv")) {
       Papa.parse(file, {
         header: true,
         skipEmptyLines: true,
@@ -572,10 +571,16 @@ const Setting = () => {
     const toastId = toast.loading("Creating Class...");
 
     try {
-      // await apiClient.post('/api/college-admin/add-class', {
-      //   className: newClassName,
-      //   students: parsedStudents
-      // });
+      const clgId = localStorage.getItem("collegeId");
+      if (!clgId) {
+        toast.error("There is a issue, Try Again Later.");
+        return;
+      }
+      await apiClient.post("/api/college-admin/add-class", {
+        className: newClassName,
+        collegeId: clgId,
+        students: parsedStudents,
+      });
 
       // Mock Success
       const newClassObj = {

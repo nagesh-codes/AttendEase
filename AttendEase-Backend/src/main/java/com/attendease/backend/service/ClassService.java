@@ -24,12 +24,14 @@ public class ClassService{
 	private CollegeRepository collegeRepository;
 	private SubjectService subjectService;
 	private SubjectRepository subjectRepository;
+	private StudentService studentService;
 	
-	public ClassService(ClassRepository classRepository,CollegeRepository collegeRepository,SubjectService subjectService,SubjectRepository subjectRepository) {
+	public ClassService(ClassRepository classRepository,CollegeRepository collegeRepository,SubjectService subjectService,SubjectRepository subjectRepository,StudentService studentService) {
 		this.classRepository = classRepository;
 		this.collegeRepository = collegeRepository;
 		this.subjectService = subjectService;
 		this.subjectRepository = subjectRepository;
+		this.studentService = studentService;
 	}
 	
 	@Transactional
@@ -37,7 +39,7 @@ public class ClassService{
 		try {
 			ClassEntity clsEntity;
 			clsEntity = classRepository.findByCollegeIdAndName(dto.getCollegeId(), dto.getClassName()).orElse(null);
-			if(clsEntity == null) {				
+			if(clsEntity == null) {
 				clsEntity = new ClassEntity();
 				clsEntity.setCollege(collegeRepository.findById(dto.getCollegeId()).orElse(null));
 				clsEntity.setName(dto.getClassName());
@@ -45,8 +47,9 @@ public class ClassService{
 				clsEntity.setDeleted(false);
 			}
 			classRepository.save(clsEntity);
+			clsEntity = classRepository.findByCollegeIdAndName(dto.getCollegeId(), dto.getClassName()).orElse(null);			
+			studentService.addClassStudents(clsEntity.getId(),dto);
 		} catch (Exception e) {
-			// TODO: handle exception
 			e.printStackTrace();
 			throw new RuntimeException("Class Not Saved");
 		}
